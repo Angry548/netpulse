@@ -1,0 +1,194 @@
+@startuml
+
+title NetPulse - Diagrama de Clases
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 35
+skinparam ranksep 45
+
+skinparam class {
+    BackgroundColor #F8F9FA
+    BorderColor #343A40
+    FontColor #212529
+}
+
+skinparam enum {
+    BackgroundColor #F1F3F5
+    BorderColor #495057
+}
+
+skinparam ArrowColor #495057
+skinparam ArrowFontColor #343A40
+
+' =========================================================
+' ENUMERACIONES
+' =========================================================
+
+enum TipoEquipo {
+    COMPUTADORA
+    SERVIDOR
+    ROUTER
+    IMPRESORA
+}
+
+enum EstadoEquipo {
+    ACTIVO
+    EN_REPARACION
+    FUERA_DE_SERVICIO
+}
+
+enum EstadoConexion {
+    ONLINE
+    OFFLINE
+}
+
+enum Prioridad {
+    BAJA
+    MEDIA
+    ALTA
+}
+
+enum EstadoTicket {
+    PENDIENTE
+    EN_PROCESO
+    RESUELTO
+}
+
+enum TipoMantenimiento {
+    PREVENTIVO
+    CORRECTIVO
+}
+
+' =========================================================
+' USUARIOS
+' =========================================================
+
+abstract class Usuario {
+    - id: Integer
+    - nombre: String
+    - correo: String
+
+    + iniciarSesion(): Boolean
+}
+
+class Empleado {
+    - departamento: String
+
+    + reportarIncidencia(): Ticket
+}
+
+class TecnicoSoporte {
+    - especialidad: String
+
+    + buscarEquipo(criterio: String): List<Equipo>
+    + cambiarEstadoEquipo(estado: EstadoEquipo): void
+    + actualizarTicket(estado: EstadoTicket): void
+    + registrarMantenimiento(): void
+}
+
+class AdministradorTI {
+    + registrarEquipo(): void
+    + asignarTicket(): void
+    + generarReporte(): void
+}
+
+class AdministradorRed {
+    + monitorearDispositivos(): void
+    + gestionarAlertas(): void
+}
+
+class GerenteTI {
+    + visualizarDashboard(): void
+}
+
+Usuario <|-- Empleado
+Usuario <|-- TecnicoSoporte
+Usuario <|-- AdministradorTI
+Usuario <|-- AdministradorRed
+Usuario <|-- GerenteTI
+
+' =========================================================
+' EQUIPOS
+' =========================================================
+
+class Equipo {
+    - id: Integer
+    - nombre: String
+    - tipo: TipoEquipo
+    - marca: String
+    - modelo: String
+    - numeroSerie: String
+    - ubicacion: String
+    - estado: EstadoEquipo
+    - estadoConexion: EstadoConexion
+
+    + cambiarEstado(estado: EstadoEquipo): void
+    + actualizarConexion(estado: EstadoConexion): void
+}
+
+' =========================================================
+' TICKETS
+' =========================================================
+
+class Ticket {
+    - id: Integer
+    - descripcion: String
+    - categoria: String
+    - prioridad: Prioridad
+    - estado: EstadoTicket
+    - fechaCreacion: Date
+
+    + asignarTecnico(): void
+    + cambiarEstado(estado: EstadoTicket): void
+    + cerrarTicket(): void
+}
+
+' =========================================================
+' MANTENIMIENTOS
+' =========================================================
+
+class Mantenimiento {
+    - id: Integer
+    - fecha: Date
+    - descripcion: String
+    - tipo: TipoMantenimiento
+    - repuestos: String
+
+    + registrar(): void
+}
+
+' =========================================================
+' ALERTAS
+' =========================================================
+
+class Alerta {
+    - id: Integer
+    - mensaje: String
+    - fecha: Date
+    - enviadaPorCorreo: Boolean
+
+    + generar(): void
+    + enviar(): void
+}
+
+' =========================================================
+' RELACIONES
+' =========================================================
+
+Usuario "1" -- "0..*" Equipo : responsable
+
+Empleado "1" -- "0..*" Ticket : reporta
+
+Equipo "1" -- "0..*" Ticket : relacionado
+
+TecnicoSoporte "0..1" -- "0..*" Ticket : atiende
+
+Equipo "1" -- "0..*" Mantenimiento : recibe
+
+TecnicoSoporte "1" -- "0..*" Mantenimiento : realiza
+
+Equipo "1" -- "0..*" Alerta : genera
+
+@enduml

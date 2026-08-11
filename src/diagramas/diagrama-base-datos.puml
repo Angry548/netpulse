@@ -1,0 +1,191 @@
+@startuml
+
+title NetPulse - Modelo Entidad-Relación
+
+hide methods
+hide stereotypes
+
+skinparam linetype ortho
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam nodesep 30
+skinparam ranksep 45
+
+skinparam entity {
+    BackgroundColor #F8F9FA
+    BorderColor #343A40
+    FontColor #212529
+}
+
+skinparam ArrowColor #495057
+skinparam ArrowFontColor #343A40
+
+' =========================================================
+' ROLES Y USUARIOS
+' =========================================================
+
+entity "roles" as roles {
+    * id_rol : INT <<PK>>
+    --
+    nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+}
+
+entity "usuarios" as usuarios {
+    * id_usuario : INT <<PK>>
+    --
+    id_rol : INT <<FK>>
+    nombre : VARCHAR(100) <<NOT NULL>>
+    correo : VARCHAR(100) <<UNIQUE, NOT NULL>>
+    departamento : VARCHAR(100)
+    activo : BOOLEAN <<DEFAULT TRUE>>
+}
+
+roles ||--o{ usuarios : asigna
+
+' =========================================================
+' CATALOGOS DE EQUIPOS
+' =========================================================
+
+entity "tipos_equipo" as tipos_equipo {
+    * id_tipo : INT <<PK>>
+    --
+    nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+}
+
+entity "estados_equipo" as estados_equipo {
+    * id_estado : INT <<PK>>
+    --
+    nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+}
+
+' =========================================================
+' EQUIPOS
+' =========================================================
+
+entity "equipos" as equipos {
+    * id_equipo : INT <<PK>>
+    --
+    id_tipo : INT <<FK>>
+    id_estado : INT <<FK>>
+    id_responsable : INT <<FK, NULL>>
+    nombre : VARCHAR(100) <<NOT NULL>>
+    marca : VARCHAR(50) <<NOT NULL>>
+    modelo : VARCHAR(50) <<NOT NULL>>
+    numero_serie : VARCHAR(100) <<UNIQUE, NOT NULL>>
+    ubicacion : VARCHAR(100) <<NOT NULL>>
+    ip_address : VARCHAR(45)
+    mac_address : VARCHAR(17)
+    estado_conexion : VARCHAR(20)
+    fecha_registro : DATETIME
+}
+
+tipos_equipo ||--o{ equipos : clasifica
+estados_equipo ||--o{ equipos : define
+usuarios ||--o{ equipos : responsable
+
+' =========================================================
+' CATALOGOS DE TICKETS
+' =========================================================
+
+entity "categorias_incidencia" as categorias {
+    * id_categoria : INT <<PK>>
+    --
+    nombre : VARCHAR(100) <<UNIQUE, NOT NULL>>
+}
+
+entity "prioridades_ticket" as prioridades {
+    * id_prioridad : INT <<PK>>
+    --
+    nombre : VARCHAR(20) <<UNIQUE, NOT NULL>>
+}
+
+entity "estados_ticket" as estados_ticket {
+    * id_estado : INT <<PK>>
+    --
+    nombre : VARCHAR(30) <<UNIQUE, NOT NULL>>
+}
+
+' =========================================================
+' TICKETS
+' =========================================================
+
+entity "tickets" as tickets {
+    * id_ticket : INT <<PK>>
+    --
+    id_equipo : INT <<FK>>
+    id_usuario_reporta : INT <<FK>>
+    id_tecnico : INT <<FK, NULL>>
+    id_categoria : INT <<FK>>
+    id_prioridad : INT <<FK>>
+    id_estado : INT <<FK>>
+    descripcion : TEXT <<NOT NULL>>
+    fecha_creacion : DATETIME
+    fecha_asignacion : DATETIME
+    fecha_resolucion : DATETIME
+}
+
+usuarios ||--o{ tickets : reporta
+usuarios ||--o{ tickets : atiende
+equipos ||--o{ tickets : afecta
+categorias ||--o{ tickets : clasifica
+prioridades ||--o{ tickets : prioriza
+estados_ticket ||--o{ tickets : estado
+
+' =========================================================
+' MANTENIMIENTOS
+' =========================================================
+
+entity "mantenimientos" as mantenimientos {
+    * id_mantenimiento : INT <<PK>>
+    --
+    id_equipo : INT <<FK>>
+    id_tecnico : INT <<FK>>
+    id_ticket : INT <<FK, NULL>>
+    tipo : VARCHAR(20) <<NOT NULL>>
+    descripcion : TEXT <<NOT NULL>>
+    repuestos : TEXT
+    fecha : DATETIME
+}
+
+equipos ||--o{ mantenimientos : recibe
+usuarios ||--o{ mantenimientos : realiza
+tickets ||--o| mantenimientos : origina
+
+' =========================================================
+' ALERTAS DE RED
+' =========================================================
+
+entity "alertas_red" as alertas {
+    * id_alerta : INT <<PK>>
+    --
+    id_equipo : INT <<FK>>
+    tipo_evento : VARCHAR(50) <<NOT NULL>>
+    mensaje : TEXT <<NOT NULL>>
+    notificacion_enviada : BOOLEAN <<DEFAULT FALSE>>
+    medio_notificacion : VARCHAR(20)
+    fecha : DATETIME
+}
+
+equipos ||--o{ alertas : genera
+
+' =========================================================
+' HISTORIAL DE ESTADOS
+' =========================================================
+
+entity "historial_estados" as historial {
+    * id_historial : INT <<PK>>
+    --
+    id_equipo : INT <<FK>>
+    id_estado_anterior : INT <<FK>>
+    id_estado_nuevo : INT <<FK>>
+    id_usuario : INT <<FK>>
+    fecha_cambio : DATETIME
+    motivo : VARCHAR(255)
+}
+
+equipos ||--o{ historial : registra
+estados_equipo ||--o{ historial : estado anterior
+estados_equipo ||--o{ historial : estado nuevo
+usuarios ||--o{ historial : modifica
+
+@enduml
