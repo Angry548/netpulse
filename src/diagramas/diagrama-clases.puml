@@ -90,6 +90,7 @@ class Rol {
 }
 
 class Empleado {
+    - id: Integer
     - codigoEmpleado: String
     - departamento: String
     - cargo: String

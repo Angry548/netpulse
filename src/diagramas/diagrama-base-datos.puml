@@ -121,7 +121,6 @@ entity "prioridades_ticket" as prioridades {
     * id_prioridad : INT <<PK>>
     --
     nombre : VARCHAR(20) <<UNIQUE, NOT NULL>>
-    nivel : INT <<NOT NULL>>
 }
 
 entity "estados_ticket" as estados_ticket {
