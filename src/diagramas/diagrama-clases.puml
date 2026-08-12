@@ -61,53 +61,45 @@ enum TipoMantenimiento {
     CORRECTIVO
 }
 
+enum EstadoEmpleado {
+    ACTIVO
+    INACTIVO
+}
+
 ' =========================================================
-' USUARIOS
+' USUARIOS Y ROLES
 ' =========================================================
 
-abstract class Usuario {
+class Usuario {
     - id: Integer
     - nombre: String
     - correo: String
+    - contrasena: String
+    - activo: Boolean
+    - fechaCreacion: DateTime
+    - ultimoAcceso: DateTime
 
     + iniciarSesion(): Boolean
+    + cerrarSesion(): void
+}
+
+class Rol {
+    - id: Integer
+    - nombre: String
+    - descripcion: String
 }
 
 class Empleado {
+    - codigoEmpleado: String
     - departamento: String
-
-    + reportarIncidencia(): Ticket
+    - cargo: String
+    - telefono: String
+    - fechaIngreso: Date
+    - estadoLaboral: EstadoEmpleado
 }
 
-class TecnicoSoporte {
-    - especialidad: String
-
-    + buscarEquipo(criterio: String): List<Equipo>
-    + cambiarEstadoEquipo(estado: EstadoEquipo): void
-    + actualizarTicket(estado: EstadoTicket): void
-    + registrarMantenimiento(): void
-}
-
-class AdministradorTI {
-    + registrarEquipo(): void
-    + asignarTicket(): void
-    + generarReporte(): void
-}
-
-class AdministradorRed {
-    + monitorearDispositivos(): void
-    + gestionarAlertas(): void
-}
-
-class GerenteTI {
-    + visualizarDashboard(): void
-}
-
-Usuario <|-- Empleado
-Usuario <|-- TecnicoSoporte
-Usuario <|-- AdministradorTI
-Usuario <|-- AdministradorRed
-Usuario <|-- GerenteTI
+Rol "1" -- "0..*" Usuario : asigna
+Usuario "1" -- "0..1" Empleado : corresponde
 
 ' =========================================================
 ' EQUIPOS
@@ -121,11 +113,27 @@ class Equipo {
     - modelo: String
     - numeroSerie: String
     - ubicacion: String
+    - ipAddress: String
+    - macAddress: String
     - estado: EstadoEquipo
     - estadoConexion: EstadoConexion
+    - fechaRegistro: DateTime
 
     + cambiarEstado(estado: EstadoEquipo): void
     + actualizarConexion(estado: EstadoConexion): void
+}
+
+Usuario "0..1" -- "0..*" Equipo : responsable
+
+' =========================================================
+' CATEGORÍAS DE INCIDENCIAS
+' =========================================================
+
+class CategoriaIncidencia {
+    - id: Integer
+    - nombre: String
+    - descripcion: String
+    - activo: Boolean
 }
 
 ' =========================================================
@@ -135,15 +143,21 @@ class Equipo {
 class Ticket {
     - id: Integer
     - descripcion: String
-    - categoria: String
     - prioridad: Prioridad
     - estado: EstadoTicket
-    - fechaCreacion: Date
+    - fechaCreacion: DateTime
+    - fechaAsignacion: DateTime
+    - fechaResolucion: DateTime
 
-    + asignarTecnico(): void
+    + asignarTecnico(usuario: Usuario): void
     + cambiarEstado(estado: EstadoTicket): void
     + cerrarTicket(): void
 }
+
+Usuario "1" -- "0..*" Ticket : reporta
+Usuario "0..1" -- "0..*" Ticket : atiende
+Equipo "1" -- "0..*" Ticket : relacionado
+CategoriaIncidencia "1" -- "0..*" Ticket : clasifica
 
 ' =========================================================
 ' MANTENIMIENTOS
@@ -151,7 +165,7 @@ class Ticket {
 
 class Mantenimiento {
     - id: Integer
-    - fecha: Date
+    - fecha: DateTime
     - descripcion: String
     - tipo: TipoMantenimiento
     - repuestos: String
@@ -159,36 +173,41 @@ class Mantenimiento {
     + registrar(): void
 }
 
+Equipo "1" -- "0..*" Mantenimiento : recibe
+Usuario "1" -- "0..*" Mantenimiento : realiza
+Ticket "0..1" -- "0..*" Mantenimiento : origina
+
 ' =========================================================
-' ALERTAS
+' ALERTAS DE RED
 ' =========================================================
 
-class Alerta {
+class AlertaRed {
     - id: Integer
+    - tipoEvento: String
     - mensaje: String
-    - fecha: Date
-    - enviadaPorCorreo: Boolean
+    - fecha: DateTime
+    - notificacionEnviada: Boolean
+    - medioNotificacion: String
 
     + generar(): void
     + enviar(): void
 }
 
+Equipo "1" -- "0..*" AlertaRed : genera
+
 ' =========================================================
-' RELACIONES
+' HISTORIAL DE ESTADOS
 ' =========================================================
 
-Usuario "1" -- "0..*" Equipo : responsable
+class HistorialEstado {
+    - id: Integer
+    - estadoAnterior: EstadoEquipo
+    - estadoNuevo: EstadoEquipo
+    - fechaCambio: DateTime
+    - motivo: String
+}
 
-Empleado "1" -- "0..*" Ticket : reporta
-
-Equipo "1" -- "0..*" Ticket : relacionado
-
-TecnicoSoporte "0..1" -- "0..*" Ticket : atiende
-
-Equipo "1" -- "0..*" Mantenimiento : recibe
-
-TecnicoSoporte "1" -- "0..*" Mantenimiento : realiza
-
-Equipo "1" -- "0..*" Alerta : genera
+Equipo "1" -- "0..*" HistorialEstado : registra
+Usuario "1" -- "0..*" HistorialEstado : realiza
 
 @enduml
