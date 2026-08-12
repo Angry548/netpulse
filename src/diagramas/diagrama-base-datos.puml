@@ -21,26 +21,42 @@ skinparam ArrowColor #495057
 skinparam ArrowFontColor #343A40
 
 ' =========================================================
-' ROLES Y USUARIOS
+' USUARIOS Y ROLES
 ' =========================================================
 
 entity "roles" as roles {
     * id_rol : INT <<PK>>
     --
     nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+    descripcion : VARCHAR(255)
 }
 
 entity "usuarios" as usuarios {
     * id_usuario : INT <<PK>>
     --
-    id_rol : INT <<FK>>
+    id_rol : INT <<FK, NOT NULL>>
     nombre : VARCHAR(100) <<NOT NULL>>
-    correo : VARCHAR(100) <<UNIQUE, NOT NULL>>
-    departamento : VARCHAR(100)
+    correo : VARCHAR(150) <<UNIQUE, NOT NULL>>
+    contrasena : VARCHAR(255) <<NOT NULL>>
     activo : BOOLEAN <<DEFAULT TRUE>>
+    fecha_creacion : DATETIME
+    ultimo_acceso : DATETIME
+}
+
+entity "empleados" as empleados {
+    * id_empleado : INT <<PK>>
+    --
+    id_usuario : INT <<FK, UNIQUE, NOT NULL>>
+    codigo_empleado : VARCHAR(30) <<UNIQUE, NOT NULL>>
+    departamento : VARCHAR(100) <<NOT NULL>>
+    cargo : VARCHAR(100) <<NOT NULL>>
+    telefono : VARCHAR(20)
+    fecha_ingreso : DATE
+    estado_laboral : VARCHAR(20) <<NOT NULL>>
 }
 
 roles ||--o{ usuarios : asigna
+usuarios ||--o| empleados : corresponde
 
 ' =========================================================
 ' CATALOGOS DE EQUIPOS
@@ -50,12 +66,14 @@ entity "tipos_equipo" as tipos_equipo {
     * id_tipo : INT <<PK>>
     --
     nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+    descripcion : VARCHAR(255)
 }
 
 entity "estados_equipo" as estados_equipo {
     * id_estado : INT <<PK>>
     --
     nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
+    descripcion : VARCHAR(255)
 }
 
 ' =========================================================
@@ -65,9 +83,9 @@ entity "estados_equipo" as estados_equipo {
 entity "equipos" as equipos {
     * id_equipo : INT <<PK>>
     --
-    id_tipo : INT <<FK>>
-    id_estado : INT <<FK>>
-    id_responsable : INT <<FK, NULL>>
+    id_tipo : INT <<FK, NOT NULL>>
+    id_estado : INT <<FK, NOT NULL>>
+    id_responsable : INT <<FK>>
     nombre : VARCHAR(100) <<NOT NULL>>
     marca : VARCHAR(50) <<NOT NULL>>
     modelo : VARCHAR(50) <<NOT NULL>>
@@ -75,7 +93,7 @@ entity "equipos" as equipos {
     ubicacion : VARCHAR(100) <<NOT NULL>>
     ip_address : VARCHAR(45)
     mac_address : VARCHAR(17)
-    estado_conexion : VARCHAR(20)
+    estado_conexion : VARCHAR(20) <<NOT NULL>>
     fecha_registro : DATETIME
 }
 
@@ -84,25 +102,33 @@ estados_equipo ||--o{ equipos : define
 usuarios ||--o{ equipos : responsable
 
 ' =========================================================
-' CATALOGOS DE TICKETS
+' CATEGORIAS DE INCIDENCIAS
 ' =========================================================
 
 entity "categorias_incidencia" as categorias {
     * id_categoria : INT <<PK>>
     --
     nombre : VARCHAR(100) <<UNIQUE, NOT NULL>>
+    descripcion : VARCHAR(255)
+    activo : BOOLEAN <<DEFAULT TRUE>>
 }
+
+' =========================================================
+' CATALOGOS DE TICKETS
+' =========================================================
 
 entity "prioridades_ticket" as prioridades {
     * id_prioridad : INT <<PK>>
     --
     nombre : VARCHAR(20) <<UNIQUE, NOT NULL>>
+    nivel : INT <<NOT NULL>>
 }
 
 entity "estados_ticket" as estados_ticket {
-    * id_estado : INT <<PK>>
+    * id_estado_ticket : INT <<PK>>
     --
     nombre : VARCHAR(30) <<UNIQUE, NOT NULL>>
+    descripcion : VARCHAR(255)
 }
 
 ' =========================================================
@@ -112,12 +138,12 @@ entity "estados_ticket" as estados_ticket {
 entity "tickets" as tickets {
     * id_ticket : INT <<PK>>
     --
-    id_equipo : INT <<FK>>
-    id_usuario_reporta : INT <<FK>>
-    id_tecnico : INT <<FK, NULL>>
-    id_categoria : INT <<FK>>
-    id_prioridad : INT <<FK>>
-    id_estado : INT <<FK>>
+    id_equipo : INT <<FK, NOT NULL>>
+    id_usuario_reporta : INT <<FK, NOT NULL>>
+    id_tecnico : INT <<FK>>
+    id_categoria : INT <<FK, NOT NULL>>
+    id_prioridad : INT <<FK, NOT NULL>>
+    id_estado_ticket : INT <<FK, NOT NULL>>
     descripcion : TEXT <<NOT NULL>>
     fecha_creacion : DATETIME
     fecha_asignacion : DATETIME
@@ -129,7 +155,7 @@ usuarios ||--o{ tickets : atiende
 equipos ||--o{ tickets : afecta
 categorias ||--o{ tickets : clasifica
 prioridades ||--o{ tickets : prioriza
-estados_ticket ||--o{ tickets : estado
+estados_ticket ||--o{ tickets : define
 
 ' =========================================================
 ' MANTENIMIENTOS
@@ -138,9 +164,9 @@ estados_ticket ||--o{ tickets : estado
 entity "mantenimientos" as mantenimientos {
     * id_mantenimiento : INT <<PK>>
     --
-    id_equipo : INT <<FK>>
-    id_tecnico : INT <<FK>>
-    id_ticket : INT <<FK, NULL>>
+    id_equipo : INT <<FK, NOT NULL>>
+    id_tecnico : INT <<FK, NOT NULL>>
+    id_ticket : INT <<FK>>
     tipo : VARCHAR(20) <<NOT NULL>>
     descripcion : TEXT <<NOT NULL>>
     repuestos : TEXT
@@ -149,7 +175,7 @@ entity "mantenimientos" as mantenimientos {
 
 equipos ||--o{ mantenimientos : recibe
 usuarios ||--o{ mantenimientos : realiza
-tickets ||--o| mantenimientos : origina
+tickets ||--o{ mantenimientos : origina
 
 ' =========================================================
 ' ALERTAS DE RED
@@ -158,7 +184,7 @@ tickets ||--o| mantenimientos : origina
 entity "alertas_red" as alertas {
     * id_alerta : INT <<PK>>
     --
-    id_equipo : INT <<FK>>
+    id_equipo : INT <<FK, NOT NULL>>
     tipo_evento : VARCHAR(50) <<NOT NULL>>
     mensaje : TEXT <<NOT NULL>>
     notificacion_enviada : BOOLEAN <<DEFAULT FALSE>>
@@ -175,10 +201,10 @@ equipos ||--o{ alertas : genera
 entity "historial_estados" as historial {
     * id_historial : INT <<PK>>
     --
-    id_equipo : INT <<FK>>
-    id_estado_anterior : INT <<FK>>
-    id_estado_nuevo : INT <<FK>>
-    id_usuario : INT <<FK>>
+    id_equipo : INT <<FK, NOT NULL>>
+    id_estado_anterior : INT <<FK, NOT NULL>>
+    id_estado_nuevo : INT <<FK, NOT NULL>>
+    id_usuario : INT <<FK, NOT NULL>>
     fecha_cambio : DATETIME
     motivo : VARCHAR(255)
 }
