@@ -26,34 +26,9 @@ skinparam ArrowFontColor #343A40
 ' ENUMERACIONES
 ' =========================================================
 
-enum TipoEquipo {
-    COMPUTADORA
-    SERVIDOR
-    ROUTER
-    IMPRESORA
-}
-
-enum EstadoEquipo {
-    ACTIVO
-    EN_REPARACION
-    FUERA_DE_SERVICIO
-}
-
 enum EstadoConexion {
     ONLINE
     OFFLINE
-}
-
-enum Prioridad {
-    BAJA
-    MEDIA
-    ALTA
-}
-
-enum EstadoTicket {
-    PENDIENTE
-    EN_PROCESO
-    RESUELTO
 }
 
 enum TipoMantenimiento {
@@ -70,31 +45,29 @@ enum EstadoEmpleado {
 ' USUARIOS Y ROLES
 ' =========================================================
 
-class Usuario {
-    - id: Integer
-    - nombre: String
-    - correo: String
-    - contrasena: String
-    - activo: Boolean
-    - fechaCreacion: DateTime
-    - ultimoAcceso: DateTime
-
-    + iniciarSesion(): Boolean
-    + cerrarSesion(): void
-}
-
-class Rol {
+class Rol <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
 }
 
-class Empleado {
+class Usuario <<Entity>> {
+    - id: Integer
+    - nombre: String
+    - correo: String
+    - contrasena: String
+    - activo: Boolean
+    - fechaCreacion: LocalDateTime
+    - ultimoAcceso: LocalDateTime
+}
+
+class Empleado <<Entity>> {
+    - id: Integer
     - codigoEmpleado: String
     - departamento: String
     - cargo: String
     - telefono: String
-    - fechaIngreso: Date
+    - fechaIngreso: LocalDate
     - estadoLaboral: EstadoEmpleado
 }
 
@@ -102,34 +75,47 @@ Rol "1" -- "0..*" Usuario : asigna
 Usuario "1" -- "0..1" Empleado : corresponde
 
 ' =========================================================
+' CATALOGOS DE EQUIPOS
+' =========================================================
+
+class TipoEquipo <<Entity>> {
+    - id: Integer
+    - nombre: String
+    - descripcion: String
+}
+
+class EstadoEquipo <<Entity>> {
+    - id: Integer
+    - nombre: String
+    - descripcion: String
+}
+
+' =========================================================
 ' EQUIPOS
 ' =========================================================
 
-class Equipo {
+class Equipo <<Entity>> {
     - id: Integer
     - nombre: String
-    - tipo: TipoEquipo
     - marca: String
     - modelo: String
     - numeroSerie: String
     - ubicacion: String
     - ipAddress: String
     - macAddress: String
-    - estado: EstadoEquipo
     - estadoConexion: EstadoConexion
-    - fechaRegistro: DateTime
-
-    + cambiarEstado(estado: EstadoEquipo): void
-    + actualizarConexion(estado: EstadoConexion): void
+    - fechaRegistro: LocalDateTime
 }
 
+TipoEquipo "1" -- "0..*" Equipo : clasifica
+EstadoEquipo "1" -- "0..*" Equipo : define
 Usuario "0..1" -- "0..*" Equipo : responsable
 
 ' =========================================================
-' CATEGORÍAS DE INCIDENCIAS
+' CATEGORIAS DE INCIDENCIAS
 ' =========================================================
 
-class CategoriaIncidencia {
+class CategoriaIncidencia <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
@@ -137,40 +123,49 @@ class CategoriaIncidencia {
 }
 
 ' =========================================================
+' CATALOGOS DE TICKETS
+' =========================================================
+
+class PrioridadTicket <<Entity>> {
+    - id: Integer
+    - nombre: String
+}
+
+class EstadoTicket <<Entity>> {
+    - id: Integer
+    - nombre: String
+    - descripcion: String
+}
+
+' =========================================================
 ' TICKETS
 ' =========================================================
 
-class Ticket {
+class Ticket <<Entity>> {
     - id: Integer
     - descripcion: String
-    - prioridad: Prioridad
-    - estado: EstadoTicket
-    - fechaCreacion: DateTime
-    - fechaAsignacion: DateTime
-    - fechaResolucion: DateTime
-
-    + asignarTecnico(usuario: Usuario): void
-    + cambiarEstado(estado: EstadoTicket): void
-    + cerrarTicket(): void
+    - fechaCreacion: LocalDateTime
+    - fechaAsignacion: LocalDateTime
+    - fechaResolucion: LocalDateTime
 }
 
 Usuario "1" -- "0..*" Ticket : reporta
 Usuario "0..1" -- "0..*" Ticket : atiende
-Equipo "1" -- "0..*" Ticket : relacionado
+Equipo "1" -- "0..*" Ticket : afecta
 CategoriaIncidencia "1" -- "0..*" Ticket : clasifica
+PrioridadTicket "1" -- "0..*" Ticket : prioriza
+EstadoTicket "1" -- "0..*" Ticket : define
 
 ' =========================================================
 ' MANTENIMIENTOS
 ' =========================================================
 
-class Mantenimiento {
+class Mantenimiento <<Entity>> {
     - id: Integer
-    - fecha: DateTime
-    - descripcion: String
     - tipo: TipoMantenimiento
+    - descripcion: String
     - repuestos: String
-
-    + registrar(): void
+    - fecha: LocalDateTime
 }
 
 Equipo "1" -- "0..*" Mantenimiento : recibe
@@ -181,16 +176,13 @@ Ticket "0..1" -- "0..*" Mantenimiento : origina
 ' ALERTAS DE RED
 ' =========================================================
 
-class AlertaRed {
+class AlertaRed <<Entity>> {
     - id: Integer
     - tipoEvento: String
     - mensaje: String
-    - fecha: DateTime
     - notificacionEnviada: Boolean
     - medioNotificacion: String
-
-    + generar(): void
-    + enviar(): void
+    - fecha: LocalDateTime
 }
 
 Equipo "1" -- "0..*" AlertaRed : genera
@@ -199,15 +191,17 @@ Equipo "1" -- "0..*" AlertaRed : genera
 ' HISTORIAL DE ESTADOS
 ' =========================================================
 
-class HistorialEstado {
+class HistorialEstado <<Entity>> {
     - id: Integer
     - estadoAnterior: EstadoEquipo
     - estadoNuevo: EstadoEquipo
-    - fechaCambio: DateTime
+    - fechaCambio: LocalDateTime
     - motivo: String
 }
 
 Equipo "1" -- "0..*" HistorialEstado : registra
-Usuario "1" -- "0..*" HistorialEstado : realiza
+EstadoEquipo "1" -- "0..*" HistorialEstado : estado anterior
+EstadoEquipo "1" -- "0..*" HistorialEstado : estado nuevo
+Usuario "1" -- "0..*" HistorialEstado : modifica
 
 @enduml
