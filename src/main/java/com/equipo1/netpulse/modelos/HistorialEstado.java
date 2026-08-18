@@ -1,6 +1,8 @@
 package com.equipo1.netpulse.modelos;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -9,6 +11,7 @@ public class HistorialEstado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_historial")
     private Integer id;
 
     @ManyToOne
@@ -27,8 +30,11 @@ public class HistorialEstado {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @Column(name = "fecha_cambio")
     private LocalDateTime fechaCambio;
 
+    @Size(max = 255, message = "El motivo no puede superar los 255 caracteres")
+    @Column(name = "motivo", length = 255)
     private String motivo;
 
     public Integer getId() {

@@ -4,15 +4,20 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
+@EntityListeners(AuditingEntityListener.class)
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id_ticket")
+    private Integer idTicket;
 
     @ManyToOne
     @JoinColumn(name = "id_equipo", nullable = false)
@@ -36,7 +41,7 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "id_prioridad", nullable = false)
     @NotNull(message = "La prioridad es requerida")
-    private Prioridad prioridad;
+    private PrioridadTicket prioridad;
 
     @ManyToOne
     @JoinColumn(name = "id_estado_ticket", nullable = false)
@@ -44,22 +49,25 @@ public class Ticket {
     private EstadoTicket estadoTicket;
 
     @NotBlank(message = "La descripción es requerida")
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "descripcion", columnDefinition = "TEXT", nullable = false)
     private String descripcion;
 
+    @CreatedDate
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
+    @Column(name = "fecha_asignacion")
     private LocalDateTime fechaAsignacion;
 
+    @Column(name = "fecha_resolucion")
     private LocalDateTime fechaResolucion;
 
-
-    public Integer getId() {
-        return id;
+    public Integer getIdTicket() {
+        return idTicket;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdTicket(Integer idTicket) {
+        this.idTicket = idTicket;
     }
 
     public Equipo getEquipo() {
@@ -94,11 +102,11 @@ public class Ticket {
         this.categoria = categoria;
     }
 
-    public Prioridad getPrioridad() {
+    public PrioridadTicket getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(Prioridad prioridad) {
+    public void setPrioridad(PrioridadTicket prioridad) {
         this.prioridad = prioridad;
     }
 

@@ -10,9 +10,10 @@ public class EstadoTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idEstadoTicket;
+    @Column(name = "id_estado_ticket")
+    private Integer id;
 
-    @NotBlank(message = "El nombre del estado es requerido")
+    @NotBlank(message = "El nombre del estado del ticket es requerido")
     @Size(max = 30, message = "El nombre del estado no puede superar los 30 caracteres")
     @Column(name = "nombre", nullable = false, unique = true, length = 30)
     private String nombre;
@@ -21,12 +22,12 @@ public class EstadoTicket {
     @Column(name = "descripcion", length = 255)
     private String descripcion;
 
-    public Integer getIdEstadoTicket() {
-        return idEstadoTicket;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdEstadoTicket(Integer idEstadoTicket) {
-        this.idEstadoTicket = idEstadoTicket;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {
