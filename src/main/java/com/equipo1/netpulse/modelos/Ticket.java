@@ -36,7 +36,7 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "id_prioridad", nullable = false)
     @NotNull(message = "La prioridad es requerida")
-    private Prioridad prioridad;
+    private PrioridadTicket prioridad;
 
     @ManyToOne
     @JoinColumn(name = "id_estado_ticket", nullable = false)
@@ -94,11 +94,11 @@ public class Ticket {
         this.categoria = categoria;
     }
 
-    public Prioridad getPrioridad() {
+    public PrioridadTicket getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(Prioridad prioridad) {
+    public void setPrioridad(PrioridadTicket prioridad) {
         this.prioridad = prioridad;
     }
 
