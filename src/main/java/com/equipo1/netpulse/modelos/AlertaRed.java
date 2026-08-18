@@ -6,12 +6,14 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "alertas_red")
 public class AlertaRed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_alerta")
     private Integer id;
 
     @ManyToOne
@@ -34,6 +36,7 @@ public class AlertaRed {
     @Column(name = "medio_notificacion", length = 20)
     private String medioNotificacion;
 
+    @Column(name = "fecha")
     private LocalDateTime fecha;
 
     public Integer getId() {
