@@ -49,6 +49,9 @@ class Rol <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
+    --
+    + asignarUsuario(usuario: Usuario): void
+    + actualizar(nombre: String, descripcion: String): void
 }
 
 class Usuario <<Entity>> {
@@ -59,6 +62,13 @@ class Usuario <<Entity>> {
     - activo: Boolean
     - fechaCreacion: LocalDateTime
     - ultimoAcceso: LocalDateTime
+    --
+    + registrar(): void
+    + actualizarDatos(nombre: String, correo: String): void
+    + cambiarContrasena(contrasena: String): void
+    + activar(): void
+    + desactivar(): void
+    + registrarAcceso(): void
 }
 
 class Empleado <<Entity>> {
@@ -69,6 +79,11 @@ class Empleado <<Entity>> {
     - telefono: String
     - fechaIngreso: LocalDate
     - estadoLaboral: EstadoEmpleado
+    --
+    + registrar(): void
+    + actualizarDatos(): void
+    + activar(): void
+    + desactivar(): void
 }
 
 Rol "1" -- "0..*" Usuario : asigna
@@ -82,12 +97,18 @@ class TipoEquipo <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
+    --
+    + crear(): void
+    + actualizar(): void
 }
 
 class EstadoEquipo <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
+    --
+    + crear(): void
+    + actualizar(): void
 }
 
 ' =========================================================
@@ -105,6 +126,12 @@ class Equipo <<Entity>> {
     - macAddress: String
     - estadoConexion: EstadoConexion
     - fechaRegistro: LocalDateTime
+    --
+    + registrar(): void
+    + actualizarDatos(): void
+    + asignarResponsable(usuario: Usuario): void
+    + cambiarEstado(estado: EstadoEquipo): void
+    + actualizarConexion(estado: EstadoConexion): void
 }
 
 TipoEquipo "1" -- "0..*" Equipo : clasifica
@@ -120,21 +147,32 @@ class CategoriaIncidencia <<Entity>> {
     - nombre: String
     - descripcion: String
     - activo: Boolean
+    --
+    + crear(): void
+    + actualizar(): void
+    + activar(): void
+    + desactivar(): void
 }
 
 ' =========================================================
 ' CATALOGOS DE TICKETS
 ' =========================================================
 
-class PrioridadTicket <<Entity>> {
+class Prioridad <<Entity>> {
     - id: Integer
     - nombre: String
+    --
+    + crear(): void
+    + actualizar(): void
 }
 
 class EstadoTicket <<Entity>> {
     - id: Integer
     - nombre: String
     - descripcion: String
+    --
+    + crear(): void
+    + actualizar(): void
 }
 
 ' =========================================================
@@ -147,13 +185,19 @@ class Ticket <<Entity>> {
     - fechaCreacion: LocalDateTime
     - fechaAsignacion: LocalDateTime
     - fechaResolucion: LocalDateTime
+    --
+    + registrar(): void
+    + asignarTecnico(usuario: Usuario): void
+    + cambiarEstado(estado: EstadoTicket): void
+    + cambiarPrioridad(prioridad: Prioridad): void
+    + resolver(): void
 }
 
 Usuario "1" -- "0..*" Ticket : reporta
 Usuario "0..1" -- "0..*" Ticket : atiende
 Equipo "1" -- "0..*" Ticket : afecta
 CategoriaIncidencia "1" -- "0..*" Ticket : clasifica
-PrioridadTicket "1" -- "0..*" Ticket : prioriza
+Prioridad "1" -- "0..*" Ticket : prioriza
 EstadoTicket "1" -- "0..*" Ticket : define
 
 ' =========================================================
@@ -166,6 +210,10 @@ class Mantenimiento <<Entity>> {
     - descripcion: String
     - repuestos: String
     - fecha: LocalDateTime
+    --
+    + registrar(): void
+    + actualizar(): void
+    + finalizar(): void
 }
 
 Equipo "1" -- "0..*" Mantenimiento : recibe
@@ -183,6 +231,10 @@ class AlertaRed <<Entity>> {
     - notificacionEnviada: Boolean
     - medioNotificacion: String
     - fecha: LocalDateTime
+    --
+    + generar(): void
+    + enviarNotificacion(): void
+    + marcarNotificacionEnviada(): void
 }
 
 Equipo "1" -- "0..*" AlertaRed : genera
@@ -197,6 +249,8 @@ class HistorialEstado <<Entity>> {
     - estadoNuevo: EstadoEquipo
     - fechaCambio: LocalDateTime
     - motivo: String
+    --
+    + registrarCambio(): void
 }
 
 Equipo "1" -- "0..*" HistorialEstado : registra
