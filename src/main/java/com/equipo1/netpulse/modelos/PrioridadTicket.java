@@ -6,10 +6,11 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "prioridades_ticket")
-public class Prioridad {
+public class PrioridadTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_prioridad")
     private Integer idPrioridad;
 
     @NotBlank(message = "El nombre de la prioridad es requerido")

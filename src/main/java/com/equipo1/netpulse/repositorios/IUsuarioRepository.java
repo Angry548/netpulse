@@ -1,4 +1,11 @@
 package com.equipo1.netpulse.repositorios;
 
-public class IUsuarioRepository {
+import com.equipo1.netpulse.modelos.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
+
+    Optional<Usuario> findByCorreo(String correo);
 }

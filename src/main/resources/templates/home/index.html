@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetPulse</title>
+    <title>Inicio</title>
 </head>
 <body>
 
-<h1>Bienvenido a NetPulse</h1>
-<p>El proyecto está funcionando correctamente.</p>
+<div layout:fragment="content">
+    <h1 class="mt-4 text-center">¡Bienvenidos a NetPulse!</h1>
+    <p class="text-center text-muted">
+        Sistema de gestión y monitoreo de infraestructura tecnológica.
+    </p>
+</div>
 
 </body>
 </html>

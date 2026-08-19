@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+
 @Entity
 @Table(name = "categorias_incidencia")
 public class CategoriaIncidencia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCategoria;
+    @Column(name = "id_categoria")
+    private Integer id;
 
     @NotBlank(message = "El nombre de la categoría es requerido")
     @Size(max = 100, message = "El nombre de la categoría no puede superar los 100 caracteres")
@@ -24,12 +26,12 @@ public class CategoriaIncidencia {
     @Column(name = "activo", nullable = false)
     private Boolean activo = true;
 
-    public Integer getIdCategoria() {
-        return idCategoria;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdCategoria(Integer idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {

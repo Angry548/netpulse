@@ -12,7 +12,9 @@ public class Mantenimiento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_mantenimiento")
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "id_equipo", nullable = false)
     @NotNull(message = "El equipo es requerido")
@@ -28,17 +30,18 @@ public class Mantenimiento {
     private Ticket ticket;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "tipo", nullable = false, length = 20)
     @NotNull(message = "El tipo de mantenimiento es requerido")
     private TipoMantenimiento tipo;
 
     @NotBlank(message = "La descripción del mantenimiento es requerida")
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "repuestos", columnDefinition = "TEXT")
     private String repuestos;
 
+    @Column(name = "fecha")
     private LocalDateTime fecha;
 
     public Integer getId() {
