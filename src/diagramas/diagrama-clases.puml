@@ -158,12 +158,14 @@ class CategoriaIncidencia <<Entity>> {
 ' CATALOGOS DE TICKETS
 ' =========================================================
 
-class Prioridad <<Entity>> {
-    - id: Integer
+class PrioridadTicket <<Entity>> {
+    - idPrioridad: Integer
     - nombre: String
     --
-    + crear(): void
-    + actualizar(): void
+    + getIdPrioridad(): Integer
+    + setIdPrioridad(idPrioridad: Integer): void
+    + getNombre(): String
+    + setNombre(nombre: String): void
 }
 
 class EstadoTicket <<Entity>> {
@@ -197,7 +199,7 @@ Usuario "1" -- "0..*" Ticket : reporta
 Usuario "0..1" -- "0..*" Ticket : atiende
 Equipo "1" -- "0..*" Ticket : afecta
 CategoriaIncidencia "1" -- "0..*" Ticket : clasifica
-Prioridad "1" -- "0..*" Ticket : prioriza
+PrioridadTicket "1" -- "0..*" Ticket : prioriza
 EstadoTicket "1" -- "0..*" Ticket : define
 
 ' =========================================================
