@@ -4,8 +4,6 @@ import com.equipo1.netpulse.modelos.EstadoEquipo;
 import com.equipo1.netpulse.repositorios.IEstadoEquipoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IEstadoEquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +15,18 @@ public class EstadoEquipoService implements IEstadoEquipoService {
     private IEstadoEquipoRepository estadoEquipoRepository;
 
     @Override
-    public Page<EstadoEquipo> obtenerTodosPaginados(Pageable pageable) {
-        return estadoEquipoRepository.findAll(pageable);
+    public EstadoEquipo crear(EstadoEquipo estadoEquipo) {
+        return estadoEquipoRepository.save(estadoEquipo);
+    }
+
+    @Override
+    public EstadoEquipo buscarPorId(Integer id) {
+        return estadoEquipoRepository.findById(id).get();
+    }
+
+    @Override
+    public EstadoEquipo buscarPorNombre(String nombre) {
+        return estadoEquipoRepository.findByNombre(nombre).orElse(null);
     }
 
     @Override
@@ -27,22 +35,12 @@ public class EstadoEquipoService implements IEstadoEquipoService {
     }
 
     @Override
-    public EstadoEquipo obtenerPorId(Integer id) {
-        return estadoEquipoRepository.findById(id).get();
-    }
-
-    @Override
-    public EstadoEquipo crearOEditar(EstadoEquipo estadoEquipo) {
+    public EstadoEquipo actualizar(EstadoEquipo estadoEquipo) {
         return estadoEquipoRepository.save(estadoEquipo);
     }
 
     @Override
     public void eliminarPorId(Integer id) {
         estadoEquipoRepository.deleteById(id);
-    }
-
-    @Override
-    public EstadoEquipo obtenerPorNombre(String nombre) {
-        return estadoEquipoRepository.findByNombre(nombre).orElse(null);
     }
 }
