@@ -4,8 +4,6 @@ import com.equipo1.netpulse.modelos.HistorialEstado;
 import com.equipo1.netpulse.repositorios.IHistorialEstadoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IHistorialEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +15,8 @@ public class HistorialEstadoService implements IHistorialEstadoService {
     private IHistorialEstadoRepository historialEstadoRepository;
 
     @Override
-    public List<HistorialEstado> obtenerTodos() {
-        return historialEstadoRepository.findAll();
-    }
-
-    @Override
-    public Page<HistorialEstado> buscarTodosPaginados(Pageable pageable) {
-        return historialEstadoRepository.findAll(pageable);
+    public HistorialEstado registrarCambio(HistorialEstado historial) {
+        return historialEstadoRepository.save(historial);
     }
 
     @Override
@@ -32,8 +25,8 @@ public class HistorialEstadoService implements IHistorialEstadoService {
     }
 
     @Override
-    public HistorialEstado crearOEditar(HistorialEstado historialEstado) {
-        return historialEstadoRepository.save(historialEstado);
+    public List<HistorialEstado> obtenerTodos() {
+        return historialEstadoRepository.findAll();
     }
 
     @Override
