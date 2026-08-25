@@ -4,12 +4,10 @@ import com.equipo1.netpulse.modelos.Usuario;
 import com.equipo1.netpulse.repositorios.IUsuarioRepository;
 import com.equipo1.netpulse.servicios.interfaces.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService implements IUsuarioService {
@@ -18,8 +16,18 @@ public class UsuarioService implements IUsuarioService {
     private IUsuarioRepository usuarioRepository;
 
     @Override
-    public Page<Usuario> obtenerTodosPaginados(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
+    public Usuario registrar(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public Usuario buscarPorId(Integer id) {
+        return usuarioRepository.findById(id).get();
+    }
+
+    @Override
+    public Usuario buscarPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo).orElse(null);
     }
 
     @Override
@@ -28,22 +36,35 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Usuario obtenerPorId(Integer id) {
-        return usuarioRepository.findById(id).orElse(null);
+    public Usuario actualizar(Usuario usuario) {
+        return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Optional<Usuario> obtenerPorCorreo(String correo) {
-        return usuarioRepository.findByCorreo(correo);
+    public Usuario cambiarContrasena(Usuario usuario) {
+        return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Usuario crearOEditar(Usuario usuario) {
+    public Usuario activar(Usuario usuario) {
+        usuario.setActivo(true);
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public Usuario desactivar(Usuario usuario) {
+        usuario.setActivo(false);
         return usuarioRepository.save(usuario);
     }
 
     @Override
     public void eliminarPorId(Integer id) {
         usuarioRepository.deleteById(id);
+    }
+
+    @Override
+    public Usuario registrarAcceso(Usuario usuario) {
+        usuario.setUltimoAcceso(LocalDateTime.now());
+        return usuarioRepository.save(usuario);
     }
 }
