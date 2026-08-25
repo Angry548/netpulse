@@ -4,8 +4,6 @@ import com.equipo1.netpulse.modelos.CategoriaIncidencia;
 import com.equipo1.netpulse.repositorios.ICategoriaIncidenciaRepository;
 import com.equipo1.netpulse.servicios.interfaces.ICategoriaIncidenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +15,18 @@ public class CategoriaIncidenciaService implements ICategoriaIncidenciaService {
     private ICategoriaIncidenciaRepository categoriaIncidenciaRepository;
 
     @Override
-    public Page<CategoriaIncidencia> obtenerTodosPaginados(Pageable pageable) {
-        return categoriaIncidenciaRepository.findAll(pageable);
+    public CategoriaIncidencia crear(CategoriaIncidencia categoria) {
+        return categoriaIncidenciaRepository.save(categoria);
+    }
+
+    @Override
+    public CategoriaIncidencia buscarPorId(Integer id) {
+        return categoriaIncidenciaRepository.findById(id).get();
+    }
+
+    @Override
+    public CategoriaIncidencia buscarPorNombre(String nombre) {
+        return categoriaIncidenciaRepository.findByNombre(nombre).orElse(null);
     }
 
     @Override
@@ -27,18 +35,20 @@ public class CategoriaIncidenciaService implements ICategoriaIncidenciaService {
     }
 
     @Override
-    public CategoriaIncidencia obtenerPorId(Integer id) {
-        return categoriaIncidenciaRepository.findById(id).get();
+    public CategoriaIncidencia actualizar(CategoriaIncidencia categoria) {
+        return categoriaIncidenciaRepository.save(categoria);
     }
 
     @Override
-    public CategoriaIncidencia obtenerPorNombre(String nombre) {
-        return categoriaIncidenciaRepository.findByNombre(nombre).orElse(null);
+    public CategoriaIncidencia activar(CategoriaIncidencia categoria) {
+        categoria.setActivo(true);
+        return categoriaIncidenciaRepository.save(categoria);
     }
 
     @Override
-    public CategoriaIncidencia crearOEditar(CategoriaIncidencia categoriaIncidencia) {
-        return categoriaIncidenciaRepository.save(categoriaIncidencia);
+    public CategoriaIncidencia desactivar(CategoriaIncidencia categoria) {
+        categoria.setActivo(false);
+        return categoriaIncidenciaRepository.save(categoria);
     }
 
     @Override

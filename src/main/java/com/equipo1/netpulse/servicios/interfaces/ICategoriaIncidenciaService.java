@@ -1,22 +1,24 @@
 package com.equipo1.netpulse.servicios.interfaces;
 
 import com.equipo1.netpulse.modelos.CategoriaIncidencia;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ICategoriaIncidenciaService {
 
-    Page<CategoriaIncidencia> obtenerTodosPaginados(Pageable pageable);
+    CategoriaIncidencia crear(CategoriaIncidencia categoria);
+
+    CategoriaIncidencia buscarPorId(Integer id);
+
+    CategoriaIncidencia buscarPorNombre(String nombre);
 
     List<CategoriaIncidencia> obtenerTodos();
 
-    CategoriaIncidencia obtenerPorId(Integer id);
+    CategoriaIncidencia actualizar(CategoriaIncidencia categoria);
 
-    CategoriaIncidencia obtenerPorNombre(String nombre);
+    CategoriaIncidencia activar(CategoriaIncidencia categoria);
 
-    CategoriaIncidencia crearOEditar(CategoriaIncidencia categoriaIncidencia);
+    CategoriaIncidencia desactivar(CategoriaIncidencia categoria);
 
     void eliminarPorId(Integer id);
 }
