@@ -50,12 +50,12 @@ class Rol <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
+    + crear(rol: Rol): Rol
     + buscarPorId(id: Integer): Rol
     + buscarPorNombre(nombre: String): Rol
     + obtenerTodos(): List<Rol>
-    + actualizar(nombre: String, descripcion: String): void
-    + eliminar(): void
+    + actualizar(rol: Rol): Rol
+    + eliminarPorId(id: Integer): void
     + asignarUsuario(usuario: Usuario): void
 }
 
@@ -68,16 +68,16 @@ class Usuario <<Entity>> {
     - fechaCreacion: LocalDateTime
     - ultimoAcceso: LocalDateTime
     --
-    + registrar(): void
+    + registrar(usuario: Usuario): Usuario
     + buscarPorId(id: Integer): Usuario
     + buscarPorCorreo(correo: String): Usuario
     + obtenerTodos(): List<Usuario>
-    + actualizarDatos(nombre: String, correo: String): void
-    + cambiarContrasena(contrasena: String): void
-    + activar(): void
-    + desactivar(): void
-    + eliminar(): void
-    + registrarAcceso(): void
+    + actualizar(usuario: Usuario): Usuario
+    + cambiarContrasena(usuario: Usuario): Usuario
+    + activar(usuario: Usuario): Usuario
+    + desactivar(usuario: Usuario): Usuario
+    + eliminarPorId(id: Integer): void
+    + registrarAcceso(usuario: Usuario): Usuario
 }
 
 class Empleado <<Entity>> {
@@ -89,14 +89,14 @@ class Empleado <<Entity>> {
     - fechaIngreso: LocalDate
     - estadoLaboral: EstadoEmpleado
     --
-    + registrar(): void
+    + registrar(empleado: Empleado): Empleado
     + buscarPorId(id: Integer): Empleado
     + buscarPorCodigoEmpleado(codigoEmpleado: String): Empleado
     + obtenerTodos(): List<Empleado>
-    + actualizarDatos(): void
-    + activar(): void
-    + desactivar(): void
-    + eliminar(): void
+    + actualizar(empleado: Empleado): Empleado
+    + activar(empleado: Empleado): Empleado
+    + desactivar(empleado: Empleado): Empleado
+    + eliminarPorId(id: Integer): void
 }
 
 Rol "1" -- "0..*" Usuario : asigna
@@ -111,12 +111,12 @@ class TipoEquipo <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
+    + crear(tipoEquipo: TipoEquipo): TipoEquipo
     + buscarPorId(id: Integer): TipoEquipo
     + buscarPorNombre(nombre: String): TipoEquipo
     + obtenerTodos(): List<TipoEquipo>
-    + actualizar(): void
-    + eliminar(): void
+    + actualizar(tipoEquipo: TipoEquipo): TipoEquipo
+    + eliminarPorId(id: Integer): void
 }
 
 class EstadoEquipo <<Entity>> {
@@ -124,12 +124,12 @@ class EstadoEquipo <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
+    + crear(estadoEquipo: EstadoEquipo): EstadoEquipo
     + buscarPorId(id: Integer): EstadoEquipo
     + buscarPorNombre(nombre: String): EstadoEquipo
     + obtenerTodos(): List<EstadoEquipo>
-    + actualizar(): void
-    + eliminar(): void
+    + actualizar(estadoEquipo: EstadoEquipo): EstadoEquipo
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -148,15 +148,15 @@ class Equipo <<Entity>> {
     - estadoConexion: EstadoConexion
     - fechaRegistro: LocalDateTime
     --
-    + registrar(): void
+    + registrar(equipo: Equipo): Equipo
     + buscarPorId(id: Integer): Equipo
     + buscarPorNumeroSerie(numeroSerie: String): Equipo
     + obtenerTodos(): List<Equipo>
-    + actualizarDatos(): void
-    + asignarResponsable(usuario: Usuario): void
-    + cambiarEstado(estado: EstadoEquipo): void
-    + actualizarConexion(estado: EstadoConexion): void
-    + eliminar(): void
+    + actualizar(equipo: Equipo): Equipo
+    + asignarResponsable(equipo: Equipo): Equipo
+    + cambiarEstado(equipo: Equipo): Equipo
+    + actualizarConexion(equipo: Equipo): Equipo
+    + eliminarPorId(id: Integer): void
 }
 
 TipoEquipo "1" -- "0..*" Equipo : clasifica
@@ -173,14 +173,14 @@ class CategoriaIncidencia <<Entity>> {
     - descripcion: String
     - activo: Boolean
     --
-    + crear(): void
+    + crear(categoria: CategoriaIncidencia): CategoriaIncidencia
     + buscarPorId(id: Integer): CategoriaIncidencia
     + buscarPorNombre(nombre: String): CategoriaIncidencia
     + obtenerTodos(): List<CategoriaIncidencia>
-    + actualizar(): void
-    + activar(): void
-    + desactivar(): void
-    + eliminar(): void
+    + actualizar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + activar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + desactivar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -191,12 +191,12 @@ class PrioridadTicket <<Entity>> {
     - idPrioridad: Integer
     - nombre: String
     --
-    + crear(): void
+    + crear(prioridad: PrioridadTicket): PrioridadTicket
     + buscarPorId(idPrioridad: Integer): PrioridadTicket
     + buscarPorNombre(nombre: String): PrioridadTicket
     + obtenerTodos(): List<PrioridadTicket>
-    + actualizar(nombre: String): void
-    + eliminar(): void
+    + actualizar(prioridad: PrioridadTicket): PrioridadTicket
+    + eliminarPorId(idPrioridad: Integer): void
 }
 
 class EstadoTicket <<Entity>> {
@@ -204,12 +204,12 @@ class EstadoTicket <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
+    + crear(estado: EstadoTicket): EstadoTicket
     + buscarPorId(id: Integer): EstadoTicket
     + buscarPorNombre(nombre: String): EstadoTicket
     + obtenerTodos(): List<EstadoTicket>
-    + actualizar(): void
-    + eliminar(): void
+    + actualizar(estado: EstadoTicket): EstadoTicket
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -223,15 +223,15 @@ class Ticket <<Entity>> {
     - fechaAsignacion: LocalDateTime
     - fechaResolucion: LocalDateTime
     --
-    + registrar(): void
+    + registrar(ticket: Ticket): Ticket
     + buscarPorId(id: Integer): Ticket
     + obtenerTodos(): List<Ticket>
-    + asignarTecnico(usuario: Usuario): void
-    + cambiarEstado(estado: EstadoTicket): void
-    + cambiarPrioridad(prioridad: PrioridadTicket): void
-    + resolver(): void
-    + actualizar(): void
-    + eliminar(): void
+    + asignarTecnico(ticket: Ticket): Ticket
+    + cambiarEstado(ticket: Ticket): Ticket
+    + cambiarPrioridad(ticket: Ticket): Ticket
+    + resolver(ticket: Ticket): Ticket
+    + actualizar(ticket: Ticket): Ticket
+    + eliminarPorId(id: Integer): void
 }
 
 Usuario "1" -- "0..*" Ticket : reporta
@@ -252,12 +252,12 @@ class Mantenimiento <<Entity>> {
     - repuestos: String
     - fecha: LocalDateTime
     --
-    + registrar(): void
+    + registrar(mantenimiento: Mantenimiento): Mantenimiento
     + buscarPorId(id: Integer): Mantenimiento
     + obtenerTodos(): List<Mantenimiento>
-    + actualizar(): void
-    + finalizar(): void
-    + eliminar(): void
+    + actualizar(mantenimiento: Mantenimiento): Mantenimiento
+    + finalizar(mantenimiento: Mantenimiento): Mantenimiento
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" Mantenimiento : recibe
@@ -276,12 +276,12 @@ class AlertaRed <<Entity>> {
     - medioNotificacion: String
     - fecha: LocalDateTime
     --
-    + generar(): void
+    + generar(alerta: AlertaRed): AlertaRed
     + buscarPorId(id: Integer): AlertaRed
     + obtenerTodos(): List<AlertaRed>
-    + enviarNotificacion(): void
-    + marcarNotificacionEnviada(): void
-    + eliminar(): void
+    + enviarNotificacion(alerta: AlertaRed): AlertaRed
+    + marcarNotificacionEnviada(alerta: AlertaRed): AlertaRed
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" AlertaRed : genera
@@ -297,14 +297,16 @@ class HistorialEstado <<Entity>> {
     - fechaCambio: LocalDateTime
     - motivo: String
     --
-    + registrarCambio(): void
+    + registrarCambio(historial: HistorialEstado): HistorialEstado
     + buscarPorId(id: Integer): HistorialEstado
     + obtenerTodos(): List<HistorialEstado>
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" HistorialEstado : registra
 EstadoEquipo "1" -- "0..*" HistorialEstado : estado anterior
 EstadoEquipo "1" -- "0..*" HistorialEstado : estado nuevo
 Usuario "1" -- "0..*" HistorialEstado : modifica
+
 
 @enduml
