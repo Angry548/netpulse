@@ -4,8 +4,6 @@ import com.equipo1.netpulse.modelos.AlertaRed;
 import com.equipo1.netpulse.repositorios.IAlertaRedRepository;
 import com.equipo1.netpulse.servicios.interfaces.IAlertaRedService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +15,8 @@ public class AlertaRedService implements IAlertaRedService {
     private IAlertaRedRepository alertaRedRepository;
 
     @Override
-    public List<AlertaRed> obtenerTodos() {
-        return alertaRedRepository.findAll();
-    }
-
-    @Override
-    public Page<AlertaRed> buscarTodosPaginados(Pageable pageable) {
-        return alertaRedRepository.findAll(pageable);
+    public AlertaRed generar(AlertaRed alerta) {
+        return alertaRedRepository.save(alerta);
     }
 
     @Override
@@ -32,8 +25,18 @@ public class AlertaRedService implements IAlertaRedService {
     }
 
     @Override
-    public AlertaRed crearOEditar(AlertaRed alertaRed) {
-        return alertaRedRepository.save(alertaRed);
+    public List<AlertaRed> obtenerTodos() {
+        return alertaRedRepository.findAll();
+    }
+
+    @Override
+    public AlertaRed enviarNotificacion(AlertaRed alerta) {
+        return alertaRedRepository.save(alerta);
+    }
+
+    @Override
+    public AlertaRed marcarNotificacionEnviada(AlertaRed alerta) {
+        return alertaRedRepository.save(alerta);
     }
 
     @Override
@@ -41,3 +44,4 @@ public class AlertaRedService implements IAlertaRedService {
         alertaRedRepository.deleteById(id);
     }
 }
+
