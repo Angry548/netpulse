@@ -54,6 +54,7 @@ class Rol <<Entity>> {
     + buscarPorId(id: Integer): Rol
     + buscarPorNombre(nombre: String): Rol
     + obtenerTodos(): List<Rol>
+    + buscarTodosPaginados(pageable: Pageable): Page<Rol>
     + actualizar(rol: Rol): Rol
     + eliminarPorId(id: Integer): void
     + asignarUsuario(usuario: Usuario): void
@@ -72,6 +73,8 @@ class Usuario <<Entity>> {
     + buscarPorId(id: Integer): Usuario
     + buscarPorCorreo(correo: String): Usuario
     + obtenerTodos(): List<Usuario>
+    + buscarTodosPaginados(pageable: Pageable): Page<Usuario>
+    + obtenerPorRol(rol: Rol): List<Usuario>
     + actualizar(usuario: Usuario): Usuario
     + cambiarContrasena(usuario: Usuario): Usuario
     + activar(usuario: Usuario): Usuario
@@ -93,6 +96,8 @@ class Empleado <<Entity>> {
     + buscarPorId(id: Integer): Empleado
     + buscarPorCodigoEmpleado(codigoEmpleado: String): Empleado
     + obtenerTodos(): List<Empleado>
+    + buscarTodosPaginados(pageable: Pageable): Page<Empleado>
+    + obtenerPorUsuario(usuario: Usuario): Empleado
     + actualizar(empleado: Empleado): Empleado
     + activar(empleado: Empleado): Empleado
     + desactivar(empleado: Empleado): Empleado
@@ -115,6 +120,7 @@ class TipoEquipo <<Entity>> {
     + buscarPorId(id: Integer): TipoEquipo
     + buscarPorNombre(nombre: String): TipoEquipo
     + obtenerTodos(): List<TipoEquipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<TipoEquipo>
     + actualizar(tipoEquipo: TipoEquipo): TipoEquipo
     + eliminarPorId(id: Integer): void
 }
@@ -128,6 +134,7 @@ class EstadoEquipo <<Entity>> {
     + buscarPorId(id: Integer): EstadoEquipo
     + buscarPorNombre(nombre: String): EstadoEquipo
     + obtenerTodos(): List<EstadoEquipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<EstadoEquipo>
     + actualizar(estadoEquipo: EstadoEquipo): EstadoEquipo
     + eliminarPorId(id: Integer): void
 }
@@ -152,6 +159,10 @@ class Equipo <<Entity>> {
     + buscarPorId(id: Integer): Equipo
     + buscarPorNumeroSerie(numeroSerie: String): Equipo
     + obtenerTodos(): List<Equipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<Equipo>
+    + obtenerPorTipo(tipoEquipo: TipoEquipo): List<Equipo>
+    + obtenerPorEstado(estadoEquipo: EstadoEquipo): List<Equipo>
+    + obtenerPorResponsable(usuario: Usuario): List<Equipo>
     + actualizar(equipo: Equipo): Equipo
     + asignarResponsable(equipo: Equipo): Equipo
     + cambiarEstado(equipo: Equipo): Equipo
@@ -177,6 +188,7 @@ class CategoriaIncidencia <<Entity>> {
     + buscarPorId(id: Integer): CategoriaIncidencia
     + buscarPorNombre(nombre: String): CategoriaIncidencia
     + obtenerTodos(): List<CategoriaIncidencia>
+    + buscarTodosPaginados(pageable: Pageable): Page<CategoriaIncidencia>
     + actualizar(categoria: CategoriaIncidencia): CategoriaIncidencia
     + activar(categoria: CategoriaIncidencia): CategoriaIncidencia
     + desactivar(categoria: CategoriaIncidencia): CategoriaIncidencia
@@ -195,6 +207,7 @@ class PrioridadTicket <<Entity>> {
     + buscarPorId(idPrioridad: Integer): PrioridadTicket
     + buscarPorNombre(nombre: String): PrioridadTicket
     + obtenerTodos(): List<PrioridadTicket>
+    + buscarTodosPaginados(pageable: Pageable): Page<PrioridadTicket>
     + actualizar(prioridad: PrioridadTicket): PrioridadTicket
     + eliminarPorId(idPrioridad: Integer): void
 }
@@ -208,6 +221,7 @@ class EstadoTicket <<Entity>> {
     + buscarPorId(id: Integer): EstadoTicket
     + buscarPorNombre(nombre: String): EstadoTicket
     + obtenerTodos(): List<EstadoTicket>
+    + buscarTodosPaginados(pageable: Pageable): Page<EstadoTicket>
     + actualizar(estado: EstadoTicket): EstadoTicket
     + eliminarPorId(id: Integer): void
 }
@@ -226,6 +240,13 @@ class Ticket <<Entity>> {
     + registrar(ticket: Ticket): Ticket
     + buscarPorId(id: Integer): Ticket
     + obtenerTodos(): List<Ticket>
+    + buscarTodosPaginados(pageable: Pageable): Page<Ticket>
+    + obtenerPorUsuarioReporta(usuario: Usuario): List<Ticket>
+    + obtenerPorTecnico(usuario: Usuario): List<Ticket>
+    + obtenerPorEquipo(equipo: Equipo): List<Ticket>
+    + obtenerPorCategoria(categoria: CategoriaIncidencia): List<Ticket>
+    + obtenerPorPrioridad(prioridad: PrioridadTicket): List<Ticket>
+    + obtenerPorEstado(estado: EstadoTicket): List<Ticket>
     + asignarTecnico(ticket: Ticket): Ticket
     + cambiarEstado(ticket: Ticket): Ticket
     + cambiarPrioridad(ticket: Ticket): Ticket
@@ -255,6 +276,10 @@ class Mantenimiento <<Entity>> {
     + registrar(mantenimiento: Mantenimiento): Mantenimiento
     + buscarPorId(id: Integer): Mantenimiento
     + obtenerTodos(): List<Mantenimiento>
+    + buscarTodosPaginados(pageable: Pageable): Page<Mantenimiento>
+    + obtenerPorEquipo(equipo: Equipo): List<Mantenimiento>
+    + obtenerPorUsuario(usuario: Usuario): List<Mantenimiento>
+    + obtenerPorTicket(ticket: Ticket): List<Mantenimiento>
     + actualizar(mantenimiento: Mantenimiento): Mantenimiento
     + finalizar(mantenimiento: Mantenimiento): Mantenimiento
     + eliminarPorId(id: Integer): void
@@ -279,6 +304,10 @@ class AlertaRed <<Entity>> {
     + generar(alerta: AlertaRed): AlertaRed
     + buscarPorId(id: Integer): AlertaRed
     + obtenerTodos(): List<AlertaRed>
+    + buscarTodosPaginados(pageable: Pageable): Page<AlertaRed>
+    + obtenerPorEquipo(equipo: Equipo): List<AlertaRed>
+    + obtenerNoNotificadas(): List<AlertaRed>
+    + obtenerPorTipoEvento(tipoEvento: String): List<AlertaRed>
     + enviarNotificacion(alerta: AlertaRed): AlertaRed
     + marcarNotificacionEnviada(alerta: AlertaRed): AlertaRed
     + eliminarPorId(id: Integer): void
@@ -300,6 +329,8 @@ class HistorialEstado <<Entity>> {
     + registrarCambio(historial: HistorialEstado): HistorialEstado
     + buscarPorId(id: Integer): HistorialEstado
     + obtenerTodos(): List<HistorialEstado>
+    + obtenerPorEquipo(equipo: Equipo): List<HistorialEstado>
+    + obtenerPorUsuario(usuario: Usuario): List<HistorialEstado>
     + eliminarPorId(id: Integer): void
 }
 
