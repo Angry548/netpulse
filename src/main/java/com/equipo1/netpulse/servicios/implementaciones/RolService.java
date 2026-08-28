@@ -4,6 +4,8 @@ import com.equipo1.netpulse.modelos.Rol;
 import com.equipo1.netpulse.repositorios.IRolRepository;
 import com.equipo1.netpulse.servicios.interfaces.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +28,17 @@ public class RolService implements IRolService {
 
     @Override
     public Rol buscarPorNombre(String nombre) {
-        return rolRepository.findByNombre(nombre).orElse(null);
+        return rolRepository.findByNombre(nombre).get();
     }
 
     @Override
     public List<Rol> obtenerTodos() {
         return rolRepository.findAll();
+    }
+
+    @Override
+    public Page<Rol> buscarTodosPaginados(Pageable pageable) {
+        return rolRepository.findAll(pageable);
     }
 
     @Override
@@ -42,10 +49,5 @@ public class RolService implements IRolService {
     @Override
     public void eliminarPorId(Integer id) {
         rolRepository.deleteById(id);
-    }
-
-    @Override
-    public void asignarUsuario(Rol rol) {
-        rolRepository.save(rol);
     }
 }
