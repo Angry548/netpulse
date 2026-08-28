@@ -1,9 +1,13 @@
 package com.equipo1.netpulse.servicios.implementaciones;
 
 import com.equipo1.netpulse.modelos.Empleado;
+import com.equipo1.netpulse.modelos.EstadoEmpleado;
+import com.equipo1.netpulse.modelos.Usuario;
 import com.equipo1.netpulse.repositorios.IEmpleadoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IEmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +30,22 @@ public class EmpleadoService implements IEmpleadoService {
 
     @Override
     public Empleado buscarPorCodigoEmpleado(String codigoEmpleado) {
-        return empleadoRepository.findByCodigoEmpleado(codigoEmpleado).orElse(null);
+        return empleadoRepository.findByCodigoEmpleado(codigoEmpleado).get();
     }
 
     @Override
     public List<Empleado> obtenerTodos() {
         return empleadoRepository.findAll();
+    }
+
+    @Override
+    public Page<Empleado> buscarTodosPaginados(Pageable pageable) {
+        return empleadoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Empleado obtenerPorUsuario(Usuario usuario) {
+        return empleadoRepository.findByUsuario(usuario).get();
     }
 
     @Override
@@ -41,17 +55,13 @@ public class EmpleadoService implements IEmpleadoService {
 
     @Override
     public Empleado activar(Empleado empleado) {
-        empleado.setEstadoLaboral(
-                com.equipo1.netpulse.modelos.EstadoEmpleado.ACTIVO
-        );
+        empleado.setEstadoLaboral(EstadoEmpleado.ACTIVO);
         return empleadoRepository.save(empleado);
     }
 
     @Override
     public Empleado desactivar(Empleado empleado) {
-        empleado.setEstadoLaboral(
-                com.equipo1.netpulse.modelos.EstadoEmpleado.INACTIVO
-        );
+        empleado.setEstadoLaboral(EstadoEmpleado.INACTIVO);
         return empleadoRepository.save(empleado);
     }
 
