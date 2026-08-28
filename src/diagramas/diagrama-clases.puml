@@ -200,16 +200,16 @@ class CategoriaIncidencia <<Entity>> {
 ' =========================================================
 
 class PrioridadTicket <<Entity>> {
-    - idPrioridad: Integer
+    - id: Integer
     - nombre: String
     --
     + crear(prioridad: PrioridadTicket): PrioridadTicket
-    + buscarPorId(idPrioridad: Integer): PrioridadTicket
+    + buscarPorId(id: Integer): PrioridadTicket
     + buscarPorNombre(nombre: String): PrioridadTicket
     + obtenerTodos(): List<PrioridadTicket>
     + buscarTodosPaginados(pageable: Pageable): Page<PrioridadTicket>
     + actualizar(prioridad: PrioridadTicket): PrioridadTicket
-    + eliminarPorId(idPrioridad: Integer): void
+    + eliminarPorId(id: Integer): void
 }
 
 class EstadoTicket <<Entity>> {
