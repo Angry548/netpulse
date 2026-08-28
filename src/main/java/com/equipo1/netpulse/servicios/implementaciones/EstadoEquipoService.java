@@ -4,6 +4,8 @@ import com.equipo1.netpulse.modelos.EstadoEquipo;
 import com.equipo1.netpulse.repositorios.IEstadoEquipoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IEstadoEquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +28,17 @@ public class EstadoEquipoService implements IEstadoEquipoService {
 
     @Override
     public EstadoEquipo buscarPorNombre(String nombre) {
-        return estadoEquipoRepository.findByNombre(nombre).orElse(null);
+        return estadoEquipoRepository.findByNombre(nombre).get();
     }
 
     @Override
     public List<EstadoEquipo> obtenerTodos() {
         return estadoEquipoRepository.findAll();
+    }
+
+    @Override
+    public Page<EstadoEquipo> buscarTodosPaginados(Pageable pageable) {
+        return estadoEquipoRepository.findAll(pageable);
     }
 
     @Override
