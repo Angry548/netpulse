@@ -10,7 +10,7 @@ public interface IPrioridadTicketService {
 
     PrioridadTicket crear(PrioridadTicket prioridad);
 
-    PrioridadTicket buscarPorId(Integer idPrioridad);
+    PrioridadTicket buscarPorId(Integer id);
 
     PrioridadTicket buscarPorNombre(String nombre);
 
@@ -20,5 +20,5 @@ public interface IPrioridadTicketService {
 
     PrioridadTicket actualizar(PrioridadTicket prioridad);
 
-    void eliminarPorId(Integer idPrioridad);
+    void eliminarPorId(Integer id);
 }

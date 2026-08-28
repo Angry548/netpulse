@@ -22,8 +22,8 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     }
 
     @Override
-    public PrioridadTicket buscarPorId(Integer idPrioridad) {
-        return prioridadTicketRepository.findById(idPrioridad).get();
+    public PrioridadTicket buscarPorId(Integer id) {
+        return prioridadTicketRepository.findById(id).get();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     }
 
     @Override
-    public void eliminarPorId(Integer idPrioridad) {
-        prioridadTicketRepository.deleteById(idPrioridad);
+    public void eliminarPorId(Integer id) {
+        prioridadTicketRepository.deleteById(id);
     }
 }
