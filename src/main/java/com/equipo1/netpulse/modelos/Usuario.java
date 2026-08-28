@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @Table(
         name = "usuarios",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_usuarios_correo", columnNames = "correo")
+                @UniqueConstraint(
+                        name = "uk_usuarios_correo",
+                        columnNames = "correo"
+                )
         }
 )
 public class Usuario {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,22 +33,47 @@ public class Usuario {
     private Rol rol;
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 100, message = "El nombre no puede superar los 100 caracteres")
-    @Column(name = "nombre", nullable = false, length = 100)
+    @Size(
+            max = 100,
+            message = "El nombre no puede superar los 100 caracteres"
+    )
+    @Column(
+            name = "nombre",
+            nullable = false,
+            length = 100
+    )
     private String nombre;
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "El correo debe tener un formato válido")
-    @Size(max = 150, message = "El correo no puede superar los 150 caracteres")
-    @Column(name = "correo", nullable = false, unique = true, length = 150)
+    @Size(
+            max = 150,
+            message = "El correo no puede superar los 150 caracteres"
+    )
+    @Column(
+            name = "correo",
+            nullable = false,
+            unique = true,
+            length = 150
+    )
     private String correo;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(max = 255, message = "La contraseña no puede superar los 255 caracteres")
-    @Column(name = "contrasena", nullable = false, length = 255)
+    @Size(
+            max = 255,
+            message = "La contraseña no puede superar los 255 caracteres"
+    )
+    @Column(
+            name = "contrasena",
+            nullable = false,
+            length = 255
+    )
     private String contrasena;
 
-    @Column(name = "activo", nullable = false)
+    @Column(
+            name = "activo",
+            nullable = false
+    )
     private Boolean activo = true;
 
     @Column(name = "fecha_creacion")
@@ -55,7 +82,7 @@ public class Usuario {
     @Column(name = "ultimo_acceso")
     private LocalDateTime ultimoAcceso;
 
-    // Constructores
+    // Constructor vacío requerido por JPA
 
     public Usuario() {
     }
