@@ -50,8 +50,14 @@ class Rol <<Entity>> {
     - nombre: String
     - descripcion: String
     --
+    + crear(rol: Rol): Rol
+    + buscarPorId(id: Integer): Rol
+    + buscarPorNombre(nombre: String): Rol
+    + obtenerTodos(): List<Rol>
+    + buscarTodosPaginados(pageable: Pageable): Page<Rol>
+    + actualizar(rol: Rol): Rol
+    + eliminarPorId(id: Integer): void
     + asignarUsuario(usuario: Usuario): void
-    + actualizar(nombre: String, descripcion: String): void
 }
 
 class Usuario <<Entity>> {
@@ -63,12 +69,18 @@ class Usuario <<Entity>> {
     - fechaCreacion: LocalDateTime
     - ultimoAcceso: LocalDateTime
     --
-    + registrar(): void
-    + actualizarDatos(nombre: String, correo: String): void
-    + cambiarContrasena(contrasena: String): void
-    + activar(): void
-    + desactivar(): void
-    + registrarAcceso(): void
+    + registrar(usuario: Usuario): Usuario
+    + buscarPorId(id: Integer): Usuario
+    + buscarPorCorreo(correo: String): Usuario
+    + obtenerTodos(): List<Usuario>
+    + buscarTodosPaginados(pageable: Pageable): Page<Usuario>
+    + obtenerPorRol(rol: Rol): List<Usuario>
+    + actualizar(usuario: Usuario): Usuario
+    + cambiarContrasena(usuario: Usuario): Usuario
+    + activar(usuario: Usuario): Usuario
+    + desactivar(usuario: Usuario): Usuario
+    + eliminarPorId(id: Integer): void
+    + registrarAcceso(usuario: Usuario): Usuario
 }
 
 class Empleado <<Entity>> {
@@ -80,10 +92,16 @@ class Empleado <<Entity>> {
     - fechaIngreso: LocalDate
     - estadoLaboral: EstadoEmpleado
     --
-    + registrar(): void
-    + actualizarDatos(): void
-    + activar(): void
-    + desactivar(): void
+    + registrar(empleado: Empleado): Empleado
+    + buscarPorId(id: Integer): Empleado
+    + buscarPorCodigoEmpleado(codigoEmpleado: String): Empleado
+    + obtenerTodos(): List<Empleado>
+    + buscarTodosPaginados(pageable: Pageable): Page<Empleado>
+    + obtenerPorUsuario(usuario: Usuario): Empleado
+    + actualizar(empleado: Empleado): Empleado
+    + activar(empleado: Empleado): Empleado
+    + desactivar(empleado: Empleado): Empleado
+    + eliminarPorId(id: Integer): void
 }
 
 Rol "1" -- "0..*" Usuario : asigna
@@ -98,8 +116,13 @@ class TipoEquipo <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
-    + actualizar(): void
+    + crear(tipoEquipo: TipoEquipo): TipoEquipo
+    + buscarPorId(id: Integer): TipoEquipo
+    + buscarPorNombre(nombre: String): TipoEquipo
+    + obtenerTodos(): List<TipoEquipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<TipoEquipo>
+    + actualizar(tipoEquipo: TipoEquipo): TipoEquipo
+    + eliminarPorId(id: Integer): void
 }
 
 class EstadoEquipo <<Entity>> {
@@ -107,8 +130,13 @@ class EstadoEquipo <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
-    + actualizar(): void
+    + crear(estadoEquipo: EstadoEquipo): EstadoEquipo
+    + buscarPorId(id: Integer): EstadoEquipo
+    + buscarPorNombre(nombre: String): EstadoEquipo
+    + obtenerTodos(): List<EstadoEquipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<EstadoEquipo>
+    + actualizar(estadoEquipo: EstadoEquipo): EstadoEquipo
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -127,11 +155,19 @@ class Equipo <<Entity>> {
     - estadoConexion: EstadoConexion
     - fechaRegistro: LocalDateTime
     --
-    + registrar(): void
-    + actualizarDatos(): void
-    + asignarResponsable(usuario: Usuario): void
-    + cambiarEstado(estado: EstadoEquipo): void
-    + actualizarConexion(estado: EstadoConexion): void
+    + registrar(equipo: Equipo): Equipo
+    + buscarPorId(id: Integer): Equipo
+    + buscarPorNumeroSerie(numeroSerie: String): Equipo
+    + obtenerTodos(): List<Equipo>
+    + buscarTodosPaginados(pageable: Pageable): Page<Equipo>
+    + obtenerPorTipo(tipoEquipo: TipoEquipo): List<Equipo>
+    + obtenerPorEstado(estadoEquipo: EstadoEquipo): List<Equipo>
+    + obtenerPorResponsable(usuario: Usuario): List<Equipo>
+    + actualizar(equipo: Equipo): Equipo
+    + asignarResponsable(equipo: Equipo): Equipo
+    + cambiarEstado(equipo: Equipo): Equipo
+    + actualizarConexion(equipo: Equipo): Equipo
+    + eliminarPorId(id: Integer): void
 }
 
 TipoEquipo "1" -- "0..*" Equipo : clasifica
@@ -148,10 +184,15 @@ class CategoriaIncidencia <<Entity>> {
     - descripcion: String
     - activo: Boolean
     --
-    + crear(): void
-    + actualizar(): void
-    + activar(): void
-    + desactivar(): void
+    + crear(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + buscarPorId(id: Integer): CategoriaIncidencia
+    + buscarPorNombre(nombre: String): CategoriaIncidencia
+    + obtenerTodos(): List<CategoriaIncidencia>
+    + buscarTodosPaginados(pageable: Pageable): Page<CategoriaIncidencia>
+    + actualizar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + activar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + desactivar(categoria: CategoriaIncidencia): CategoriaIncidencia
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -162,10 +203,13 @@ class PrioridadTicket <<Entity>> {
     - idPrioridad: Integer
     - nombre: String
     --
-    + getIdPrioridad(): Integer
-    + setIdPrioridad(idPrioridad: Integer): void
-    + getNombre(): String
-    + setNombre(nombre: String): void
+    + crear(prioridad: PrioridadTicket): PrioridadTicket
+    + buscarPorId(idPrioridad: Integer): PrioridadTicket
+    + buscarPorNombre(nombre: String): PrioridadTicket
+    + obtenerTodos(): List<PrioridadTicket>
+    + buscarTodosPaginados(pageable: Pageable): Page<PrioridadTicket>
+    + actualizar(prioridad: PrioridadTicket): PrioridadTicket
+    + eliminarPorId(idPrioridad: Integer): void
 }
 
 class EstadoTicket <<Entity>> {
@@ -173,8 +217,13 @@ class EstadoTicket <<Entity>> {
     - nombre: String
     - descripcion: String
     --
-    + crear(): void
-    + actualizar(): void
+    + crear(estado: EstadoTicket): EstadoTicket
+    + buscarPorId(id: Integer): EstadoTicket
+    + buscarPorNombre(nombre: String): EstadoTicket
+    + obtenerTodos(): List<EstadoTicket>
+    + buscarTodosPaginados(pageable: Pageable): Page<EstadoTicket>
+    + actualizar(estado: EstadoTicket): EstadoTicket
+    + eliminarPorId(id: Integer): void
 }
 
 ' =========================================================
@@ -188,11 +237,22 @@ class Ticket <<Entity>> {
     - fechaAsignacion: LocalDateTime
     - fechaResolucion: LocalDateTime
     --
-    + registrar(): void
-    + asignarTecnico(usuario: Usuario): void
-    + cambiarEstado(estado: EstadoTicket): void
-    + cambiarPrioridad(prioridad: Prioridad): void
-    + resolver(): void
+    + registrar(ticket: Ticket): Ticket
+    + buscarPorId(id: Integer): Ticket
+    + obtenerTodos(): List<Ticket>
+    + buscarTodosPaginados(pageable: Pageable): Page<Ticket>
+    + obtenerPorUsuarioReporta(usuario: Usuario): List<Ticket>
+    + obtenerPorTecnico(usuario: Usuario): List<Ticket>
+    + obtenerPorEquipo(equipo: Equipo): List<Ticket>
+    + obtenerPorCategoria(categoria: CategoriaIncidencia): List<Ticket>
+    + obtenerPorPrioridad(prioridad: PrioridadTicket): List<Ticket>
+    + obtenerPorEstado(estado: EstadoTicket): List<Ticket>
+    + asignarTecnico(ticket: Ticket): Ticket
+    + cambiarEstado(ticket: Ticket): Ticket
+    + cambiarPrioridad(ticket: Ticket): Ticket
+    + resolver(ticket: Ticket): Ticket
+    + actualizar(ticket: Ticket): Ticket
+    + eliminarPorId(id: Integer): void
 }
 
 Usuario "1" -- "0..*" Ticket : reporta
@@ -213,9 +273,16 @@ class Mantenimiento <<Entity>> {
     - repuestos: String
     - fecha: LocalDateTime
     --
-    + registrar(): void
-    + actualizar(): void
-    + finalizar(): void
+    + registrar(mantenimiento: Mantenimiento): Mantenimiento
+    + buscarPorId(id: Integer): Mantenimiento
+    + obtenerTodos(): List<Mantenimiento>
+    + buscarTodosPaginados(pageable: Pageable): Page<Mantenimiento>
+    + obtenerPorEquipo(equipo: Equipo): List<Mantenimiento>
+    + obtenerPorUsuario(usuario: Usuario): List<Mantenimiento>
+    + obtenerPorTicket(ticket: Ticket): List<Mantenimiento>
+    + actualizar(mantenimiento: Mantenimiento): Mantenimiento
+    + finalizar(mantenimiento: Mantenimiento): Mantenimiento
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" Mantenimiento : recibe
@@ -234,9 +301,16 @@ class AlertaRed <<Entity>> {
     - medioNotificacion: String
     - fecha: LocalDateTime
     --
-    + generar(): void
-    + enviarNotificacion(): void
-    + marcarNotificacionEnviada(): void
+    + generar(alerta: AlertaRed): AlertaRed
+    + buscarPorId(id: Integer): AlertaRed
+    + obtenerTodos(): List<AlertaRed>
+    + buscarTodosPaginados(pageable: Pageable): Page<AlertaRed>
+    + obtenerPorEquipo(equipo: Equipo): List<AlertaRed>
+    + obtenerNoNotificadas(): List<AlertaRed>
+    + obtenerPorTipoEvento(tipoEvento: String): List<AlertaRed>
+    + enviarNotificacion(alerta: AlertaRed): AlertaRed
+    + marcarNotificacionEnviada(alerta: AlertaRed): AlertaRed
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" AlertaRed : genera
@@ -252,12 +326,18 @@ class HistorialEstado <<Entity>> {
     - fechaCambio: LocalDateTime
     - motivo: String
     --
-    + registrarCambio(): void
+    + registrarCambio(historial: HistorialEstado): HistorialEstado
+    + buscarPorId(id: Integer): HistorialEstado
+    + obtenerTodos(): List<HistorialEstado>
+    + obtenerPorEquipo(equipo: Equipo): List<HistorialEstado>
+    + obtenerPorUsuario(usuario: Usuario): List<HistorialEstado>
+    + eliminarPorId(id: Integer): void
 }
 
 Equipo "1" -- "0..*" HistorialEstado : registra
 EstadoEquipo "1" -- "0..*" HistorialEstado : estado anterior
 EstadoEquipo "1" -- "0..*" HistorialEstado : estado nuevo
 Usuario "1" -- "0..*" HistorialEstado : modifica
+
 
 @enduml
