@@ -48,7 +48,7 @@ public class MantenimientoService implements IMantenimientoService {
 
     @Override
     public List<Mantenimiento> obtenerPorUsuario(Usuario usuario) {
-        return mantenimientoRepository.findByUsuario(usuario);
+        return mantenimientoRepository.findByTecnico(usuario);
     }
 
     @Override
