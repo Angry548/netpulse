@@ -12,7 +12,7 @@ infraestructura tecnológica.
 
 ## Diagrama de Clases
 
-![Diagrama de Clases](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Angry548/netpulse/refs/heads/develop/src/diagramas/diagrama-clases.puml?v=10)
+![Diagrama de Clases](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Angry548/netpulse/refs/heads/feature/SG-1-registro-equipos/src/diagramas/diagrama-clases.puml?v=11)
 
 ## Diagrama de Base de Datos
 
