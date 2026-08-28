@@ -17,9 +17,7 @@ public interface IMantenimientoRepository extends JpaRepository<Mantenimiento, I
 
     List<Mantenimiento> findByEquipo(Equipo equipo);
 
-    List<Mantenimiento> findByUsuario(Usuario usuario);
+    List<Mantenimiento> findByTecnico(Usuario tecnico);
 
     List<Mantenimiento> findByTicket(Ticket ticket);
 }
-
-
