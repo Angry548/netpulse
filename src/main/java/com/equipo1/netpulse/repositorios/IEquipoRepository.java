@@ -13,9 +13,9 @@ public interface IEquipoRepository extends JpaRepository<Equipo, Integer> {
 
     Optional<Equipo> findByNumeroSerie(String numeroSerie);
 
-    List<Equipo> findByTipoEquipo(TipoEquipo tipoEquipo);
+    List<Equipo> findByTipo(TipoEquipo tipoEquipo);
 
-    List<Equipo> findByEstadoEquipo(EstadoEquipo estadoEquipo);
+    List<Equipo> findByEstado(EstadoEquipo estadoEquipo);
 
     List<Equipo> findByResponsable(Usuario usuario);
 }
