@@ -50,7 +50,7 @@ public class TicketService implements ITicketService {
 
     @Override
     public List<Ticket> obtenerPorTecnico(Usuario usuario) {
-        return ticketRepository.findByUsuarioTecnico(usuario);
+        return ticketRepository.findByTecnico(usuario);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TicketService implements ITicketService {
 
     @Override
     public List<Ticket> obtenerPorEstado(EstadoTicket estado) {
-        return ticketRepository.findByEstado(estado);
+        return ticketRepository.findByEstadoTicket(estado);
     }
 
     @Override
