@@ -19,7 +19,7 @@ public interface ITicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByUsuarioReporta(Usuario usuario);
 
-    List<Ticket> findByUsuarioTecnico(Usuario usuario);
+    List<Ticket> findByTecnico(Usuario usuario);
 
     List<Ticket> findByEquipo(Equipo equipo);
 
@@ -27,5 +27,5 @@ public interface ITicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByPrioridad(PrioridadTicket prioridad);
 
-    List<Ticket> findByEstado(EstadoTicket estado);
+    List<Ticket> findByEstadoTicket(EstadoTicket estadoTicket);
 }
