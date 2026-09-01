@@ -17,8 +17,18 @@ public class EstadoEquipoService implements IEstadoEquipoService {
     private IEstadoEquipoRepository estadoEquipoRepository;
 
     @Override
-    public Page<EstadoEquipo> obtenerTodosPaginados(Pageable pageable) {
-        return estadoEquipoRepository.findAll(pageable);
+    public EstadoEquipo crear(EstadoEquipo estadoEquipo) {
+        return estadoEquipoRepository.save(estadoEquipo);
+    }
+
+    @Override
+    public EstadoEquipo buscarPorId(Integer id) {
+        return estadoEquipoRepository.findById(id).get();
+    }
+
+    @Override
+    public EstadoEquipo buscarPorNombre(String nombre) {
+        return estadoEquipoRepository.findByNombre(nombre).get();
     }
 
     @Override
@@ -27,22 +37,17 @@ public class EstadoEquipoService implements IEstadoEquipoService {
     }
 
     @Override
-    public EstadoEquipo obtenerPorId(Integer id) {
-        return estadoEquipoRepository.findById(id).get();
+    public Page<EstadoEquipo> buscarTodosPaginados(Pageable pageable) {
+        return estadoEquipoRepository.findAll(pageable);
     }
 
     @Override
-    public EstadoEquipo crearOEditar(EstadoEquipo estadoEquipo) {
+    public EstadoEquipo actualizar(EstadoEquipo estadoEquipo) {
         return estadoEquipoRepository.save(estadoEquipo);
     }
 
     @Override
     public void eliminarPorId(Integer id) {
         estadoEquipoRepository.deleteById(id);
-    }
-
-    @Override
-    public EstadoEquipo obtenerPorNombre(String nombre) {
-        return estadoEquipoRepository.findByNombre(nombre).orElse(null);
     }
 }

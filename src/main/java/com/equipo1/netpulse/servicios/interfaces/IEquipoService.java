@@ -1,6 +1,9 @@
 package com.equipo1.netpulse.servicios.interfaces;
 
 import com.equipo1.netpulse.modelos.Equipo;
+import com.equipo1.netpulse.modelos.EstadoEquipo;
+import com.equipo1.netpulse.modelos.TipoEquipo;
+import com.equipo1.netpulse.modelos.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -8,15 +11,29 @@ import java.util.List;
 
 public interface IEquipoService {
 
-    Page<Equipo> obtenerTodosPaginados(Pageable pageable);
+    Equipo registrar(Equipo equipo);
+
+    Equipo buscarPorId(Integer id);
+
+    Equipo buscarPorNumeroSerie(String numeroSerie);
 
     List<Equipo> obtenerTodos();
 
-    Equipo obtenerPorId(Integer id);
+    Page<Equipo> buscarTodosPaginados(Pageable pageable);
 
-    Equipo obtenerPorNumeroSerie(String numeroSerie);
+    List<Equipo> obtenerPorTipo(TipoEquipo tipoEquipo);
 
-    Equipo crearOEditar(Equipo equipo);
+    List<Equipo> obtenerPorEstado(EstadoEquipo estadoEquipo);
+
+    List<Equipo> obtenerPorResponsable(Usuario usuario);
+
+    Equipo actualizar(Equipo equipo);
+
+    Equipo asignarResponsable(Equipo equipo);
+
+    Equipo cambiarEstado(Equipo equipo);
+
+    Equipo actualizarConexion(Equipo equipo);
 
     void eliminarPorId(Integer id);
 }

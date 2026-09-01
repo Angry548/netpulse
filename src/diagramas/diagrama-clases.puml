@@ -57,7 +57,6 @@ class Rol <<Entity>> {
     + buscarTodosPaginados(pageable: Pageable): Page<Rol>
     + actualizar(rol: Rol): Rol
     + eliminarPorId(id: Integer): void
-    + asignarUsuario(usuario: Usuario): void
 }
 
 class Usuario <<Entity>> {
@@ -68,6 +67,7 @@ class Usuario <<Entity>> {
     - activo: Boolean
     - fechaCreacion: LocalDateTime
     - ultimoAcceso: LocalDateTime
+    - rol: Rol
     --
     + registrar(usuario: Usuario): Usuario
     + buscarPorId(id: Integer): Usuario
@@ -200,16 +200,16 @@ class CategoriaIncidencia <<Entity>> {
 ' =========================================================
 
 class PrioridadTicket <<Entity>> {
-    - idPrioridad: Integer
+    - id: Integer
     - nombre: String
     --
     + crear(prioridad: PrioridadTicket): PrioridadTicket
-    + buscarPorId(idPrioridad: Integer): PrioridadTicket
+    + buscarPorId(id: Integer): PrioridadTicket
     + buscarPorNombre(nombre: String): PrioridadTicket
     + obtenerTodos(): List<PrioridadTicket>
     + buscarTodosPaginados(pageable: Pageable): Page<PrioridadTicket>
     + actualizar(prioridad: PrioridadTicket): PrioridadTicket
-    + eliminarPorId(idPrioridad: Integer): void
+    + eliminarPorId(id: Integer): void
 }
 
 class EstadoTicket <<Entity>> {
@@ -281,7 +281,6 @@ class Mantenimiento <<Entity>> {
     + obtenerPorUsuario(usuario: Usuario): List<Mantenimiento>
     + obtenerPorTicket(ticket: Ticket): List<Mantenimiento>
     + actualizar(mantenimiento: Mantenimiento): Mantenimiento
-    + finalizar(mantenimiento: Mantenimiento): Mantenimiento
     + eliminarPorId(id: Integer): void
 }
 
