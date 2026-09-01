@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -11,12 +11,11 @@
 
     <title>Iniciar sesión - NetPulse</title>
 
-    <!-- CSS principal -->
     <link th:href="@{/css/styles.css}" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+    </script>
 
 </head>
 
@@ -36,8 +35,6 @@
 
                         <div class="card shadow-lg border-0 rounded-lg mt-5">
 
-                            <!-- ENCABEZADO -->
-
                             <div class="card-header">
 
                                 <h3 class="text-center font-weight-light my-4">
@@ -46,7 +43,6 @@
 
                             </div>
 
-                            <!-- FORMULARIO -->
 
                             <div class="card-body">
 
@@ -57,13 +53,14 @@
 
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control"
-                                               id="username"
-                                               name="username"
-                                               type="email"
-                                               placeholder="correo@ejemplo.com"
-                                               autocomplete="username"
-                                               required>
+                                        <input
+                                                class="form-control"
+                                                id="username"
+                                                name="username"
+                                                type="email"
+                                                placeholder="correo@ejemplo.com"
+                                                autocomplete="username"
+                                                required>
 
                                         <label for="username">
                                             Correo electrónico
@@ -71,17 +68,19 @@
 
                                     </div>
 
+
                                     <!-- CONTRASEÑA -->
 
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control"
-                                               id="password"
-                                               name="password"
-                                               type="password"
-                                               placeholder="Contraseña"
-                                               autocomplete="current-password"
-                                               required>
+                                        <input
+                                                class="form-control"
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                placeholder="Contraseña"
+                                                autocomplete="current-password"
+                                                required>
 
                                         <label for="password">
                                             Contraseña
@@ -89,7 +88,8 @@
 
                                     </div>
 
-                                    <!-- ERROR DE LOGIN -->
+
+                                    <!-- ERROR -->
 
                                     <div th:if="${param.error}"
                                          class="alert alert-danger">
@@ -99,6 +99,7 @@
                                         Correo o contraseña incorrectos.
 
                                     </div>
+
 
                                     <!-- LOGOUT -->
 
@@ -111,11 +112,13 @@
 
                                     </div>
 
+
                                     <!-- BOTÓN -->
 
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
 
-                                        <button class="btn btn-primary"
+                                        <button
+                                                class="btn btn-primary"
                                                 type="submit">
 
                                             <i class="fas fa-sign-in-alt me-1"></i>
@@ -130,7 +133,6 @@
 
                             </div>
 
-                            <!-- PIE -->
 
                             <div class="card-footer text-center py-3">
 

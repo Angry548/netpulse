@@ -16,6 +16,10 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class DatabaseWebSecurity {
 
+    // =========================================================
+    // USUARIOS DESDE LA BASE DE DATOS
+    // =========================================================
+
     @Bean
     public UserDetailsManager customUsers(DataSource dataSource) {
 
@@ -23,19 +27,13 @@ public class DatabaseWebSecurity {
                 new JdbcUserDetailsManager(dataSource);
 
         /*
-         * LOGIN:
-         * El usuario escribe su CORREO.
+         * Spring Security recibe:
          *
-         * La tabla usuarios contiene:
-         * id_usuario
-         * id_rol
-         * nombre
-         * correo
-         * contrasena
-         * activo
-         * fecha_creacion
-         * ultimo_acceso
+         * username = correo
+         * password = contrasena
+         * enabled  = activo
          */
+
         users.setUsersByUsernameQuery(
                 "SELECT correo, contrasena, activo " +
                         "FROM usuarios " +
@@ -43,17 +41,16 @@ public class DatabaseWebSecurity {
         );
 
         /*
-         * ROLES:
+         * Obtener el rol del usuario.
          *
          * usuarios.id_rol -> roles.id_rol
-         *
-         * Spring Security necesita:
-         * username, authority
          */
+
         users.setAuthoritiesByUsernameQuery(
                 "SELECT u.correo, r.nombre " +
                         "FROM usuarios u " +
-                        "INNER JOIN roles r ON u.id_rol = r.id_rol " +
+                        "INNER JOIN roles r " +
+                        "ON u.id_rol = r.id_rol " +
                         "WHERE u.correo = ?"
         );
 
@@ -61,16 +58,25 @@ public class DatabaseWebSecurity {
     }
 
 
+    // =========================================================
+    // CONFIGURACIÓN DE SEGURIDAD
+    // =========================================================
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
 
         http
+
+                // =================================================
+                // AUTORIZACIONES
+                // =================================================
+
                 .authorizeHttpRequests(authorize -> authorize
 
-                        // ==========================================
-                        // RECURSOS PÚBLICOS
-                        // ==========================================
+                        // -------------------------------
+                        // Archivos públicos
+                        // -------------------------------
 
                         .requestMatchers(
                                 "/css/**",
@@ -80,92 +86,88 @@ public class DatabaseWebSecurity {
                         ).permitAll()
 
 
-                        // ==========================================
-                        // LOGIN
-                        // ==========================================
+                        // -------------------------------
+                        // Login público
+                        // -------------------------------
 
-                        .requestMatchers(
-                                "/login"
-                        ).permitAll()
+                        .requestMatchers("/login")
+                        .permitAll()
 
 
-                        // ==========================================
-                        // PÁGINA PRINCIPAL
-                        // ==========================================
+                        // -------------------------------
+                        // Página principal
+                        // -------------------------------
 
-                        .requestMatchers("/")
+                        .requestMatchers("/index")
                         .authenticated()
 
 
-                        // ==========================================
-                        // ROLES
-                        // ==========================================
+                        // -------------------------------
+                        // Roles
+                        // -------------------------------
 
                         .requestMatchers("/roles/**")
                         .hasAuthority("admin")
 
 
-                        // ==========================================
-                        // TODO LO DEMÁS
-                        // REQUIERE INICIAR SESIÓN
-                        // ==========================================
+                        // -------------------------------
+                        // Todo lo demás necesita login
+                        // -------------------------------
 
                         .anyRequest()
                         .authenticated()
                 )
 
 
-                // ==========================================
-                // FORMULARIO DE LOGIN
-                // ==========================================
+                // =================================================
+                // LOGIN
+                // =================================================
 
                 .formLogin(form -> form
 
+                        // Página personalizada
                         .loginPage("/login")
 
-                        /*
-                         * Spring recibirá:
-                         *
-                         * username = correo
-                         * password = contraseña
-                         *
-                         * Aunque el campo se llame "username",
-                         * Spring lo utilizará como correo porque
-                         * nuestra consulta busca por correo.
-                         */
+                        // Después de iniciar sesión:
+                        // ir SIEMPRE a /index
+                        .defaultSuccessUrl("/index", true)
 
-                        .defaultSuccessUrl("/", true)
-
+                        // Si las credenciales son incorrectas
                         .failureUrl("/login?error=true")
 
                         .permitAll()
                 )
 
 
-                // ==========================================
+                // =================================================
                 // LOGOUT
-                // ==========================================
+                // =================================================
 
                 .logout(logout -> logout
 
+                        // Spring Security manejará POST /logout
                         .logoutUrl("/logout")
 
+                        // Después de cerrar sesión
                         .logoutSuccessUrl("/login?logout=true")
 
+                        // Eliminar sesión
                         .invalidateHttpSession(true)
 
+                        // Eliminar cookie
                         .deleteCookies("JSESSIONID")
 
                         .permitAll()
                 );
 
+
         return http.build();
     }
 
 
-    // ==========================================
-    // ENCODER DE CONTRASEÑAS
-    // ==========================================
+    // =========================================================
+    // PASSWORD ENCODER
+    // =========================================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
