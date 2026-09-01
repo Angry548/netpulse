@@ -11,19 +11,19 @@ public class PrioridadTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_prioridad")
-    private Integer idPrioridad;
+    private Integer id;
 
     @NotBlank(message = "El nombre de la prioridad es requerido")
     @Size(max = 20, message = "El nombre de la prioridad no puede superar los 20 caracteres")
     @Column(name = "nombre", nullable = false, unique = true, length = 20)
     private String nombre;
 
-    public Integer getIdPrioridad() {
-        return idPrioridad;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdPrioridad(Integer idPrioridad) {
-        this.idPrioridad = idPrioridad;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {

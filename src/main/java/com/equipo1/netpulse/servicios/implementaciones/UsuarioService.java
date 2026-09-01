@@ -1,9 +1,12 @@
 package com.equipo1.netpulse.servicios.implementaciones;
 
+import com.equipo1.netpulse.modelos.Rol;
 import com.equipo1.netpulse.modelos.Usuario;
 import com.equipo1.netpulse.repositorios.IUsuarioRepository;
 import com.equipo1.netpulse.servicios.interfaces.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,6 +36,16 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    public Page<Usuario> buscarTodosPaginados(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Usuario> obtenerPorRol(Rol rol) {
+        return usuarioRepository.findByRol(rol);
     }
 
     @Override

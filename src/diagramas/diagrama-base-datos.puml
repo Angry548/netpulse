@@ -38,9 +38,9 @@ entity "usuarios" as usuarios {
     nombre : VARCHAR(100) <<NOT NULL>>
     correo : VARCHAR(150) <<UNIQUE, NOT NULL>>
     contrasena : VARCHAR(255) <<NOT NULL>>
-    activo : BOOLEAN <<DEFAULT TRUE>>
-    fecha_creacion : DATETIME
-    ultimo_acceso : DATETIME
+    activo : BIT <<DEFAULT 1, NOT NULL>>
+    fecha_creacion : DATETIME2(7) <<DEFAULT GETDATE()>>
+    ultimo_acceso : DATETIME2(7)
 }
 
 entity "empleados" as empleados {
@@ -48,11 +48,11 @@ entity "empleados" as empleados {
     --
     id_usuario : INT <<FK, UNIQUE, NOT NULL>>
     codigo_empleado : VARCHAR(30) <<UNIQUE, NOT NULL>>
-    departamento : VARCHAR(100) <<NOT NULL>>
     cargo : VARCHAR(100) <<NOT NULL>>
+    departamento : VARCHAR(100) <<NOT NULL>>
     telefono : VARCHAR(20)
+    estado_laboral : VARCHAR(20) <<CHECK ('ACTIVO','INACTIVO'), NOT NULL>>
     fecha_ingreso : DATE
-    estado_laboral : VARCHAR(20) <<NOT NULL>>
 }
 
 roles ||--o{ usuarios : asigna
@@ -63,14 +63,14 @@ usuarios ||--o| empleados : corresponde
 ' =========================================================
 
 entity "tipos_equipo" as tipos_equipo {
-    * id_tipo : INT <<PK>>
+    * id : INT <<PK>>
     --
     nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
     descripcion : VARCHAR(255)
 }
 
 entity "estados_equipo" as estados_equipo {
-    * id_estado : INT <<PK>>
+    * id : INT <<PK>>
     --
     nombre : VARCHAR(50) <<UNIQUE, NOT NULL>>
     descripcion : VARCHAR(255)
@@ -83,18 +83,18 @@ entity "estados_equipo" as estados_equipo {
 entity "equipos" as equipos {
     * id_equipo : INT <<PK>>
     --
+    nombre : VARCHAR(100) <<NOT NULL>>
+    numero_serie : VARCHAR(100) <<UNIQUE, NOT NULL>>
+    marca : VARCHAR(50) <<NOT NULL>>
+    modelo : VARCHAR(50) <<NOT NULL>>
+    ubicacion : VARCHAR(100) <<NOT NULL>>
+    mac_address : VARCHAR(17)
+    ip_address : VARCHAR(45)
+    estado_conexion : VARCHAR(20) <<CHECK ('ONLINE','OFFLINE'), NOT NULL>>
+    fecha_registro : DATETIME2(7) <<DEFAULT GETDATE()>>
     id_tipo : INT <<FK, NOT NULL>>
     id_estado : INT <<FK, NOT NULL>>
     id_responsable : INT <<FK>>
-    nombre : VARCHAR(100) <<NOT NULL>>
-    marca : VARCHAR(50) <<NOT NULL>>
-    modelo : VARCHAR(50) <<NOT NULL>>
-    numero_serie : VARCHAR(100) <<UNIQUE, NOT NULL>>
-    ubicacion : VARCHAR(100) <<NOT NULL>>
-    ip_address : VARCHAR(45)
-    mac_address : VARCHAR(17)
-    estado_conexion : VARCHAR(20) <<NOT NULL>>
-    fecha_registro : DATETIME
 }
 
 tipos_equipo ||--o{ equipos : clasifica
@@ -110,7 +110,7 @@ entity "categorias_incidencia" as categorias {
     --
     nombre : VARCHAR(100) <<UNIQUE, NOT NULL>>
     descripcion : VARCHAR(255)
-    activo : BOOLEAN <<DEFAULT TRUE>>
+    activo : BIT <<DEFAULT 1, NOT NULL>>
 }
 
 ' =========================================================
@@ -137,16 +137,16 @@ entity "estados_ticket" as estados_ticket {
 entity "tickets" as tickets {
     * id_ticket : INT <<PK>>
     --
+    id_categoria : INT <<FK, NOT NULL>>
     id_equipo : INT <<FK, NOT NULL>>
+    id_estado_ticket : INT <<FK, NOT NULL>>
+    id_prioridad : INT <<FK, NOT NULL>>
     id_usuario_reporta : INT <<FK, NOT NULL>>
     id_tecnico : INT <<FK>>
-    id_categoria : INT <<FK, NOT NULL>>
-    id_prioridad : INT <<FK, NOT NULL>>
-    id_estado_ticket : INT <<FK, NOT NULL>>
-    descripcion : TEXT <<NOT NULL>>
-    fecha_creacion : DATETIME
-    fecha_asignacion : DATETIME
-    fecha_resolucion : DATETIME
+    descripcion : VARCHAR(MAX) <<NOT NULL>>
+    fecha_creacion : DATETIME2(7) <<DEFAULT GETDATE(), NOT NULL>>
+    fecha_asignacion : DATETIME2(7)
+    fecha_resolucion : DATETIME2(7)
 }
 
 usuarios ||--o{ tickets : reporta
@@ -166,10 +166,10 @@ entity "mantenimientos" as mantenimientos {
     id_equipo : INT <<FK, NOT NULL>>
     id_tecnico : INT <<FK, NOT NULL>>
     id_ticket : INT <<FK>>
-    tipo : VARCHAR(20) <<NOT NULL>>
-    descripcion : TEXT <<NOT NULL>>
-    repuestos : TEXT
-    fecha : DATETIME
+    tipo : VARCHAR(20) <<CHECK ('PREVENTIVO','CORRECTIVO'), NOT NULL>>
+    descripcion : VARCHAR(MAX) <<NOT NULL>>
+    repuestos : VARCHAR(MAX)
+    fecha : DATETIME2(7) <<DEFAULT GETDATE()>>
 }
 
 equipos ||--o{ mantenimientos : recibe
@@ -185,10 +185,10 @@ entity "alertas_red" as alertas {
     --
     id_equipo : INT <<FK, NOT NULL>>
     tipo_evento : VARCHAR(50) <<NOT NULL>>
-    mensaje : TEXT <<NOT NULL>>
-    notificacion_enviada : BOOLEAN <<DEFAULT FALSE>>
+    mensaje : VARCHAR(MAX) <<NOT NULL>>
     medio_notificacion : VARCHAR(20)
-    fecha : DATETIME
+    notificacion_enviada : BIT <<DEFAULT 0, NOT NULL>>
+    fecha : DATETIME2(7) <<DEFAULT GETDATE()>>
 }
 
 equipos ||--o{ alertas : genera
@@ -204,8 +204,8 @@ entity "historial_estados" as historial {
     id_estado_anterior : INT <<FK, NOT NULL>>
     id_estado_nuevo : INT <<FK, NOT NULL>>
     id_usuario : INT <<FK, NOT NULL>>
-    fecha_cambio : DATETIME
     motivo : VARCHAR(255)
+    fecha_cambio : DATETIME2(7) <<DEFAULT GETDATE()>>
 }
 
 equipos ||--o{ historial : registra

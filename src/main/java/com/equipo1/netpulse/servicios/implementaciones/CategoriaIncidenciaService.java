@@ -4,6 +4,8 @@ import com.equipo1.netpulse.modelos.CategoriaIncidencia;
 import com.equipo1.netpulse.repositorios.ICategoriaIncidenciaRepository;
 import com.equipo1.netpulse.servicios.interfaces.ICategoriaIncidenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class CategoriaIncidenciaService implements ICategoriaIncidenciaService {
     @Override
     public List<CategoriaIncidencia> obtenerTodos() {
         return categoriaIncidenciaRepository.findAll();
+    }
+
+    @Override
+    public Page<CategoriaIncidencia> buscarTodosPaginados(Pageable pageable) {
+        return categoriaIncidenciaRepository.findAll(pageable);
     }
 
     @Override

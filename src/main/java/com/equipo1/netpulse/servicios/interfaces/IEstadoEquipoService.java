@@ -8,15 +8,17 @@ import java.util.List;
 
 public interface IEstadoEquipoService {
 
-    Page<EstadoEquipo> obtenerTodosPaginados(Pageable pageable);
+    EstadoEquipo crear(EstadoEquipo estadoEquipo);
+
+    EstadoEquipo buscarPorId(Integer id);
+
+    EstadoEquipo buscarPorNombre(String nombre);
 
     List<EstadoEquipo> obtenerTodos();
 
-    EstadoEquipo obtenerPorId(Integer id);
+    Page<EstadoEquipo> buscarTodosPaginados(Pageable pageable);
 
-    EstadoEquipo crearOEditar(EstadoEquipo estadoEquipo);
+    EstadoEquipo actualizar(EstadoEquipo estadoEquipo);
 
     void eliminarPorId(Integer id);
-
-    EstadoEquipo obtenerPorNombre(String nombre);
 }
