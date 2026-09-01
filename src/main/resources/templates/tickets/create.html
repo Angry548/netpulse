@@ -1,10 +1,214 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Crear nuevo Ticket</h1>
+
+    <form th:action="@{/tickets/save}"
+          th:object="${ticket}"
+          method="post">
+
+        <div class="form-group mb-3">
+
+            <label for="equipo">Equipo</label>
+
+            <select class="form-control"
+                    th:field="*{equipo}"
+                    id="equipo"
+                    required>
+
+                <option value="">
+                    Seleccione un equipo
+                </option>
+
+                <option th:each="item : ${equipos}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('equipo')}"
+                 th:errors="*{equipo}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="usuarioReporta">
+                Usuario que reporta
+            </label>
+
+            <select class="form-control"
+                    th:field="*{usuarioReporta}"
+                    id="usuarioReporta"
+                    required>
+
+                <option value="">
+                    Seleccione un usuario
+                </option>
+
+                <option th:each="item : ${usuarios}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('usuarioReporta')}"
+                 th:errors="*{usuarioReporta}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="tecnico">
+                Técnico
+            </label>
+
+            <select class="form-control"
+                    th:field="*{tecnico}"
+                    id="tecnico">
+
+                <option value="">
+                    Sin asignar
+                </option>
+
+                <option th:each="item : ${usuarios}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="categoria">
+                Categoría
+            </label>
+
+            <select class="form-control"
+                    th:field="*{categoria}"
+                    id="categoria"
+                    required>
+
+                <option value="">
+                    Seleccione una categoría
+                </option>
+
+                <option th:each="item : ${categorias}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('categoria')}"
+                 th:errors="*{categoria}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="prioridad">
+                Prioridad
+            </label>
+
+            <select class="form-control"
+                    th:field="*{prioridad}"
+                    id="prioridad"
+                    required>
+
+                <option value="">
+                    Seleccione una prioridad
+                </option>
+
+                <option th:each="item : ${prioridades}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('prioridad')}"
+                 th:errors="*{prioridad}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="estadoTicket">
+                Estado
+            </label>
+
+            <select class="form-control"
+                    th:field="*{estadoTicket}"
+                    id="estadoTicket"
+                    required>
+
+                <option value="">
+                    Seleccione un estado
+                </option>
+
+                <option th:each="item : ${estados}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('estadoTicket')}"
+                 th:errors="*{estadoTicket}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <textarea class="form-control"
+                      th:field="*{descripcion}"
+                      id="descripcion"
+                      rows="5"
+                      required>
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('descripcion')}"
+                 th:errors="*{descripcion}">
+            </div>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Guardar
+        </button>
+
+        <a th:href="@{/tickets}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>

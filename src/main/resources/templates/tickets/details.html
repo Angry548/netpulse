@@ -1,10 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Detalles del Ticket</h1>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            ID
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.idTicket}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Equipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.equipo.nombre}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Usuario que reporta
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.usuarioReporta.nombre}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Técnico
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.tecnico != null ? ticket.tecnico.nombre : 'Sin asignar'}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Categoría
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.categoria.nombre}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Prioridad
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.prioridad.nombre}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Estado
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.estadoTicket.nombre}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Descripción
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.descripcion}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Fecha de creación
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.fechaCreacion}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Fecha de asignación
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.fechaAsignacion != null ? ticket.fechaAsignacion : 'No asignado'}">
+        </dd>
+
+        <dt class="col-sm-3">
+            Fecha de resolución
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${ticket.fechaResolucion != null ? ticket.fechaResolucion : 'No resuelto'}">
+        </dd>
+
+    </dl>
+
+    <a th:href="@{/tickets/edit/{id}(id=${ticket.idTicket})}"
+       class="btn btn-outline-info">
+        Editar
+    </a>
+
+    <a th:href="@{/tickets}"
+       class="btn btn-secondary">
+        Regresar
+    </a>
+
+</div>
+
 </html>
