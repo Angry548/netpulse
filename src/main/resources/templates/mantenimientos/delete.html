@@ -1,10 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Eliminar mantenimiento</h1>
+
+    <h3>
+        ¿Está seguro que desea eliminar este registro?
+    </h3>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            ID
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.id}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Equipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.equipo.nombre}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Técnico
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.tecnico.nombre}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Ticket
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${mantenimiento.ticket != null}"
+                  th:text="${'Ticket #' + mantenimiento.ticket.id}">
+            </span>
+
+            <span th:if="${mantenimiento.ticket == null}">
+                Sin ticket
+            </span>
+
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Tipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.tipo}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Descripción
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.descripcion}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Fecha
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${mantenimiento.fecha != null}"
+                  th:text="${#temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm')}">
+            </span>
+
+            <span th:if="${mantenimiento.fecha == null}">
+                Sin fecha
+            </span>
+
+        </dd>
+
+    </dl>
+
+
+    <form th:action="@{/mantenimientos/delete}"
+          method="post">
+
+        <input type="hidden"
+               name="id"
+               th:value="${mantenimiento.id}">
+
+        <input type="submit"
+               value="Eliminar"
+               class="btn btn-danger">
+
+        <a th:href="@{/mantenimientos}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>

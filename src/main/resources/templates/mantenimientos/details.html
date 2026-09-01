@@ -1,10 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Detalles del mantenimiento</h1>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            ID
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.id}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Equipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.equipo.nombre}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Técnico
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.tecnico.nombre}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Ticket relacionado
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${mantenimiento.ticket != null}"
+                  th:text="${'Ticket #' + mantenimiento.ticket.id}">
+            </span>
+
+            <span th:if="${mantenimiento.ticket == null}">
+                Sin ticket relacionado
+            </span>
+
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Tipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.tipo}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Descripción
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${mantenimiento.descripcion}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Repuestos
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${mantenimiento.repuestos != null and !mantenimiento.repuestos.isEmpty()}"
+                  th:text="${mantenimiento.repuestos}">
+            </span>
+
+            <span th:if="${mantenimiento.repuestos == null or mantenimiento.repuestos.isEmpty()}">
+                No se registraron repuestos
+            </span>
+
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Fecha
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${mantenimiento.fecha != null}"
+                  th:text="${#temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm')}">
+            </span>
+
+            <span th:if="${mantenimiento.fecha == null}">
+                Sin fecha registrada
+            </span>
+
+        </dd>
+
+    </dl>
+
+
+    <a th:href="@{/mantenimientos/edit/{id}(id=${mantenimiento.id})}"
+       class="btn btn-outline-info">
+        Editar
+    </a>
+
+    <a th:href="@{/mantenimientos}"
+       class="btn btn-secondary">
+        Regresar
+    </a>
+
+</div>
+
 </html>
+
