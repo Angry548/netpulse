@@ -18,6 +18,8 @@ public interface IRolService {
 
     Page<Rol> buscarTodosPaginados(Pageable pageable);
 
+    Page<Rol> buscarPorNombre(String nombre, Pageable pageable);
+
     Rol actualizar(Rol rol);
 
     void eliminarPorId(Integer id);
