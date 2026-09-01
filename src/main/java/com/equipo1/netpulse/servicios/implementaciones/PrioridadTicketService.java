@@ -4,6 +4,8 @@ import com.equipo1.netpulse.modelos.PrioridadTicket;
 import com.equipo1.netpulse.repositorios.IPrioridadTicketRepository;
 import com.equipo1.netpulse.servicios.interfaces.IPrioridadTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +22,8 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     }
 
     @Override
-    public PrioridadTicket buscarPorId(Integer idPrioridad) {
-        return prioridadTicketRepository.findById(idPrioridad).get();
+    public PrioridadTicket buscarPorId(Integer id) {
+        return prioridadTicketRepository.findById(id).get();
     }
 
     @Override
@@ -35,12 +37,17 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     }
 
     @Override
+    public Page<PrioridadTicket> buscarTodosPaginados(Pageable pageable) {
+        return prioridadTicketRepository.findAll(pageable);
+    }
+
+    @Override
     public PrioridadTicket actualizar(PrioridadTicket prioridad) {
         return prioridadTicketRepository.save(prioridad);
     }
 
     @Override
-    public void eliminarPorId(Integer idPrioridad) {
-        prioridadTicketRepository.deleteById(idPrioridad);
+    public void eliminarPorId(Integer id) {
+        prioridadTicketRepository.deleteById(id);
     }
 }
