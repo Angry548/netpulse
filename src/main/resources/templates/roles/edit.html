@@ -1,10 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Editar rol</h1>
+
+    <hr>
+
+    <form th:action="@{/roles/save}"
+          th:object="${rol}"
+          method="post">
+
+        <!-- ID -->
+
+        <input type="hidden"
+               th:field="*{idRol}">
+
+
+        <!-- NOMBRE -->
+
+        <div class="form-group mb-3">
+
+            <label for="nombre">
+                Nombre
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   th:field="*{nombre}"
+                   id="nombre"
+                   maxlength="50"
+                   required>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('nombre')}"
+                 th:errors="*{nombre}">
+
+            </div>
+
+        </div>
+
+
+        <!-- DESCRIPCIÓN -->
+
+        <div class="form-group mb-3">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <textarea class="form-control"
+                      th:field="*{descripcion}"
+                      id="descripcion"
+                      maxlength="255"
+                      rows="4">
+
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('descripcion')}"
+                 th:errors="*{descripcion}">
+
+            </div>
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            <i class="fas fa-save"></i>
+            Guardar cambios
+
+        </button>
+
+        <a th:href="@{/roles}"
+           class="btn btn-secondary">
+
+            Regresar
+
+        </a>
+
+    </form>
+
+</div>
+
 </html>
