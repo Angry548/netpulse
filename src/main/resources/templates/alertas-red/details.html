@@ -1,10 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Detalles de la alerta de red</h1>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            ID
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.id}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Equipo
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.equipo.nombre}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Tipo de evento
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.tipoEvento}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Mensaje
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.mensaje}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Notificación enviada
+        </dt>
+
+        <dd class="col-sm-9">
+
+            <span th:if="${alerta.notificacionEnviada}"
+                  class="badge bg-success">
+                Sí
+            </span>
+
+            <span th:unless="${alerta.notificacionEnviada}"
+                  class="badge bg-warning text-dark">
+                No
+            </span>
+
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Medio de notificación
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.medioNotificacion != null
+                      ? alerta.medioNotificacion
+                      : 'No especificado'}">
+        </dd>
+
+
+        <dt class="col-sm-3">
+            Fecha
+        </dt>
+
+        <dd class="col-sm-9"
+            th:text="${alerta.fecha != null
+                      ? #temporals.format(alerta.fecha, 'dd/MM/yyyy HH:mm')
+                      : 'Sin fecha'}">
+        </dd>
+
+    </dl>
+
+
+    <div class="mt-3">
+
+        <form th:if="${!alerta.notificacionEnviada}"
+              th:action="@{/alertas/notificar/{id}(id=${alerta.id})}"
+              method="post"
+              class="d-inline">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Enviar notificación
+            </button>
+
+        </form>
+
+
+        <form th:if="${!alerta.notificacionEnviada}"
+              th:action="@{/alertas/marcar-notificada/{id}(id=${alerta.id})}"
+              method="post"
+              class="d-inline">
+
+            <button type="submit"
+                    class="btn btn-outline-success">
+                Marcar como notificada
+            </button>
+
+        </form>
+
+
+        <a th:href="@{/alertas/remove/{id}(id=${alerta.id})}"
+           class="btn btn-outline-danger">
+            Eliminar
+        </a>
+
+        <a th:href="@{/alertas}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </div>
+
+</div>
+
 </html>

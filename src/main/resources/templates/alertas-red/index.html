@@ -1,10 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
+                text: '[[${msg}]]',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1>Listado de alertas de red</h1>
+
+    <form th:action="@{/alertas}"
+          method="get"
+          class="row g-2 my-3"
+          th:hx-get="@{/alertas/buscar}"
+          hx-target="#tabla-alertas"
+          hx-trigger="input changed delay:300ms"
+          hx-swap="outerHTML">
+
+        <div class="col-md-6">
+            <label for="tipoEvento" class="visually-hidden">
+                Tipo de evento
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="tipoEvento"
+                   name="tipoEvento"
+                   th:value="${tipoEvento}"
+                   placeholder="Buscar por tipo de evento">
+        </div>
+
+        <div class="col-auto">
+            <button type="submit"
+                    class="btn btn-outline-secondary">
+                Buscar
+            </button>
+        </div>
+
+        <div class="col-auto">
+            <a th:href="@{/alertas}"
+               class="btn btn-outline-secondary">
+                Limpiar
+            </a>
+        </div>
+
+    </form>
+
+
+    <div id="tabla-alertas"
+         th:fragment="tablaAlertas">
+
+        <table class="table table-striped">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Equipo</th>
+                <th>Tipo de evento</th>
+                <th>Mensaje</th>
+                <th>Notificación</th>
+                <th>Medio</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${alertas}">
+
+                <td th:text="${item.id}">
+                </td>
+
+                <td th:text="${item.equipo.nombre}">
+                </td>
+
+                <td th:text="${item.tipoEvento}">
+                </td>
+
+                <td th:text="${item.mensaje}">
+                </td>
+
+                <td>
+                    <span th:if="${item.notificacionEnviada}"
+                          class="badge bg-success">
+                        Enviada
+                    </span>
+
+                    <span th:unless="${item.notificacionEnviada}"
+                          class="badge bg-warning text-dark">
+                        Pendiente
+                    </span>
+                </td>
+
+                <td th:text="${item.medioNotificacion != null
+                              ? item.medioNotificacion
+                              : 'No especificado'}">
+                </td>
+
+                <td th:text="${item.fecha != null
+                              ? #temporals.format(item.fecha, 'dd/MM/yyyy HH:mm')
+                              : 'Sin fecha'}">
+                </td>
+
+                <td>
+
+                    <a th:href="@{/alertas/details/{id}(id=${item.id})}"
+                       class="btn btn-outline-secondary">
+                        Detalles
+                    </a>
+
+                    <a th:if="${!item.notificacionEnviada}"
+                       th:href="@{/alertas/details/{id}(id=${item.id})}"
+                       class="btn btn-outline-primary">
+                        Notificar
+                    </a>
+
+                    <a th:href="@{/alertas/remove/{id}(id=${item.id})}"
+                       class="btn btn-outline-danger">
+                        Eliminar
+                    </a>
+
+                </td>
+
+            </tr>
+
+            <tr th:if="${alertas.isEmpty()}">
+                <td colspan="8"
+                    class="text-center">
+                    No hay alertas de red registradas.
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <nav aria-label="Paginación">
+
+            <ul class="pagination">
+
+                <li class="page-item"
+                    th:each="pageNumber : ${pageNumbers}">
+
+                    <a class="page-link"
+                       th:href="@{|/alertas?page=${pageNumber}&tipoEvento=${tipoEvento}|}"
+                       th:text="${pageNumber}">
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+
+    <script src="https://unpkg.com/htmx.org@2.0.4">
+    </script>
+
+</div>
+
 </html>
+
