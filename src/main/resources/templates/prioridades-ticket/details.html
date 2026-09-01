@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Detalles de la prioridad de ticket</h1>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            ID
+        </dt>
+
+        <dd class="col-sm-10"
+            th:text="${prioridadTicket.id}">
+        </dd>
+
+        <dt class="col-sm-2">
+            Nombre
+        </dt>
+
+        <dd class="col-sm-10"
+            th:text="${prioridadTicket.nombre}">
+        </dd>
+
+    </dl>
+
+    <a th:href="@{/prioridades-ticket/edit/{id}(id=${prioridadTicket.id})}"
+       class="btn btn-outline-info">
+        Editar
+    </a>
+
+    <a th:href="@{/prioridades-ticket}"
+       class="btn btn-secondary">
+        Regresar
+    </a>
+
+</div>
+
 </html>

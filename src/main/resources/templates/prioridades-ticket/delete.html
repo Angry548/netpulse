@@ -1,10 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Eliminar prioridad de ticket</h1>
+
+    <h3>
+        ¿Está seguro que desea eliminar este registro?
+    </h3>
+
+    <hr>
+
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            ID
+        </dt>
+
+        <dd class="col-sm-10"
+            th:text="${prioridadTicket.id}">
+        </dd>
+
+        <dt class="col-sm-2">
+            Nombre
+        </dt>
+
+        <dd class="col-sm-10"
+            th:text="${prioridadTicket.nombre}">
+        </dd>
+
+    </dl>
+
+    <form th:action="@{/prioridades-ticket/delete}"
+          method="post">
+
+        <input type="hidden"
+               name="id"
+               th:value="${prioridadTicket.id}">
+
+        <input type="submit"
+               value="Eliminar"
+               class="btn btn-danger">
+
+        <a th:href="@{/prioridades-ticket}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>
