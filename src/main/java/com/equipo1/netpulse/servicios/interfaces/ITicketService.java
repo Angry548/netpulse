@@ -1,11 +1,11 @@
 package com.equipo1.netpulse.servicios.interfaces;
 
+import com.equipo1.netpulse.modelos.CategoriaIncidencia;
+import com.equipo1.netpulse.modelos.Equipo;
+import com.equipo1.netpulse.modelos.EstadoTicket;
+import com.equipo1.netpulse.modelos.PrioridadTicket;
 import com.equipo1.netpulse.modelos.Ticket;
 import com.equipo1.netpulse.modelos.Usuario;
-import com.equipo1.netpulse.modelos.Equipo;
-import com.equipo1.netpulse.modelos.CategoriaIncidencia;
-import com.equipo1.netpulse.modelos.PrioridadTicket;
-import com.equipo1.netpulse.modelos.EstadoTicket;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,4 +45,5 @@ public interface ITicketService {
     Ticket actualizar(Ticket ticket);
 
     void eliminarPorId(Integer id);
+
 }
