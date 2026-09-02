@@ -1,125 +1,205 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Detalles del Mantenimiento</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Detalles del mantenimiento</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <dl class="row">
+            <div>
 
-        <dt class="col-sm-3">
-            ID
-        </dt>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Detalles del Mantenimiento
+                </h2>
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.id}">
-        </dd>
+                <p class="text-muted mb-0">
+                    Información del mantenimiento seleccionado.
+                </p>
 
+            </div>
 
-        <dt class="col-sm-3">
-            Equipo
-        </dt>
-
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.equipo.nombre}">
-        </dd>
+        </div>
 
 
-        <dt class="col-sm-3">
-            Técnico
-        </dt>
+        <div class="card shadow-sm">
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.tecnico.nombre}">
-        </dd>
+            <div class="card-header">
 
+                <h5 class="mb-0">
+                    Información general
+                </h5>
 
-        <dt class="col-sm-3">
-            Ticket relacionado
-        </dt>
-
-        <dd class="col-sm-9">
-
-            <span th:if="${mantenimiento.ticket != null}"
-                  th:text="${'Ticket #' + mantenimiento.ticket.id}">
-            </span>
-
-            <span th:if="${mantenimiento.ticket == null}">
-                Sin ticket relacionado
-            </span>
-
-        </dd>
+            </div>
 
 
-        <dt class="col-sm-3">
-            Tipo
-        </dt>
+            <div class="card-body">
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.tipo}">
-        </dd>
+                <div class="row">
 
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
 
-        <dt class="col-sm-3">
-            Descripción
-        </dt>
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.descripcion}">
-        </dd>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.id}"
+                               readonly>
 
-
-        <dt class="col-sm-3">
-            Repuestos
-        </dt>
-
-        <dd class="col-sm-9">
-
-            <span th:if="${mantenimiento.repuestos != null and !mantenimiento.repuestos.isEmpty()}"
-                  th:text="${mantenimiento.repuestos}">
-            </span>
-
-            <span th:if="${mantenimiento.repuestos == null or mantenimiento.repuestos.isEmpty()}">
-                No se registraron repuestos
-            </span>
-
-        </dd>
+                    </div>
 
 
-        <dt class="col-sm-3">
-            Fecha
-        </dt>
+                    <!-- EQUIPO -->
+                    <div class="col-md-6 mb-3">
 
-        <dd class="col-sm-9">
+                        <label class="form-label fw-bold">
+                            Equipo
+                        </label>
 
-            <span th:if="${mantenimiento.fecha != null}"
-                  th:text="${#temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm')}">
-            </span>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.equipo != null ? mantenimiento.equipo.nombre : 'Sin equipo'}"
+                               readonly>
 
-            <span th:if="${mantenimiento.fecha == null}">
-                Sin fecha registrada
-            </span>
-
-        </dd>
-
-    </dl>
+                    </div>
 
 
-    <a th:href="@{/mantenimientos/edit/{id}(id=${mantenimiento.id})}"
-       class="btn btn-outline-info">
-        Editar
-    </a>
+                    <!-- TÉCNICO -->
+                    <div class="col-md-6 mb-3">
 
-    <a th:href="@{/mantenimientos}"
-       class="btn btn-secondary">
-        Regresar
-    </a>
+                        <label class="form-label fw-bold">
+                            Técnico
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.tecnico != null ? mantenimiento.tecnico.nombre : 'Sin técnico'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TICKET -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Ticket
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.ticket != null ? 'Ticket #' + mantenimiento.ticket.id : 'Sin ticket asociado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TIPO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Tipo de mantenimiento
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.tipo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- FECHA -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.fecha != null ? #temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  readonly
+                                  th:text="${mantenimiento.descripcion}">
+                        </textarea>
+
+                    </div>
+
+
+                    <!-- REPUESTOS -->
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Repuestos utilizados
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="3"
+                                  readonly
+                                  th:text="${mantenimiento.repuestos != null and !mantenimiento.repuestos.isBlank() ? mantenimiento.repuestos : 'No se registraron repuestos'}">
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/mantenimientos/edit/{id}(id=${mantenimiento.id})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/mantenimientos}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>
-

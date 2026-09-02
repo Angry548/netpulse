@@ -1,196 +1,266 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Editar Mantenimiento</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Editar mantenimiento</h1>
+    <div class="container-fluid">
 
-    <form th:action="@{/mantenimientos/save}"
-          th:object="${mantenimiento}"
-          method="post">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <input type="hidden"
-               th:field="*{id}">
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Editar Mantenimiento
+                </h2>
 
-
-        <!-- EQUIPO -->
-
-        <div class="form-group mb-3">
-
-            <label for="equipo">Equipo</label>
-
-            <select class="form-control"
-                    th:field="*{equipo}"
-                    id="equipo"
-                    required>
-
-                <option th:each="item : ${equipos}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
-
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('equipo')}"
-                 th:errors="*{equipo}">
+                <p class="text-muted mb-0">
+                    Modifica la información del mantenimiento.
+                </p>
             </div>
 
         </div>
 
+        <div class="card shadow-sm">
 
-        <!-- TECNICO -->
+            <div class="card-header">
 
-        <div class="form-group mb-3">
+                <h5 class="mb-0">
+                    Información del mantenimiento
+                </h5>
 
-            <label for="tecnico">
-                Técnico responsable
-            </label>
+            </div>
 
-            <select class="form-control"
-                    th:field="*{tecnico}"
-                    id="tecnico"
-                    required>
+            <div class="card-body">
 
-                <option th:each="item : ${usuarios}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
+                <form th:action="@{/mantenimientos/save}"
+                      th:object="${mantenimiento}"
+                      method="post">
 
-            </select>
+                    <input type="hidden"
+                           th:field="*{id}">
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('tecnico')}"
-                 th:errors="*{tecnico}">
+                    <div class="row">
+
+                        <!-- EQUIPO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idEquipo"
+                                   class="form-label">
+                                Equipo
+                            </label>
+
+                            <select id="idEquipo"
+                                    name="idEquipo"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un equipo
+                                </option>
+
+                                <option th:each="equipo : ${equipos}"
+                                        th:value="${equipo.id}"
+                                        th:text="${equipo.nombre}"
+                                        th:selected="${mantenimiento.equipo != null and mantenimiento.equipo.id == equipo.id}">
+                                </option>
+
+                            </select>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('equipo')}"
+                                 th:errors="*{equipo}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- TÉCNICO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idTecnico"
+                                   class="form-label">
+                                Técnico
+                            </label>
+
+                            <select id="idTecnico"
+                                    name="idTecnico"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un técnico
+                                </option>
+
+                                <option th:each="tecnico : ${tecnicos}"
+                                        th:value="${tecnico.id}"
+                                        th:text="${tecnico.nombre}"
+                                        th:selected="${mantenimiento.tecnico != null and mantenimiento.tecnico.id == tecnico.id}">
+                                </option>
+
+                            </select>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('tecnico')}"
+                                 th:errors="*{tecnico}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- TICKET -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idTicket"
+                                   class="form-label">
+                                Ticket
+                            </label>
+
+                            <select id="idTicket"
+                                    name="idTicket"
+                                    class="form-select">
+
+                                <option value="">
+                                    Sin ticket asociado
+                                </option>
+
+                                <option th:each="ticket : ${tickets}"
+                                        th:value="${ticket.id}"
+                                        th:text="'Ticket #' + ${ticket.id}"
+                                        th:selected="${mantenimiento.ticket != null and mantenimiento.ticket.id == ticket.id}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- TIPO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="tipo"
+                                   class="form-label">
+                                Tipo de mantenimiento
+                            </label>
+
+                            <select id="tipo"
+                                    th:field="*{tipo}"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un tipo
+                                </option>
+
+                                <option th:each="tipo : ${tiposMantenimiento}"
+                                        th:value="${tipo}"
+                                        th:text="${tipo}">
+                                </option>
+
+                            </select>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('tipo')}"
+                                 th:errors="*{tipo}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+                        <div class="col-md-12 mb-3">
+
+                            <label for="descripcion"
+                                   class="form-label">
+                                Descripción
+                            </label>
+
+                            <textarea id="descripcion"
+                                      th:field="*{descripcion}"
+                                      class="form-control"
+                                      rows="4"
+                                      required></textarea>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- REPUESTOS -->
+                        <div class="col-md-12 mb-3">
+
+                            <label for="repuestos"
+                                   class="form-label">
+                                Repuestos utilizados
+                            </label>
+
+                            <textarea id="repuestos"
+                                      th:field="*{repuestos}"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Ingrese los repuestos utilizados, si aplica"></textarea>
+
+                        </div>
+
+
+                        <!-- FECHA -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="fecha"
+                                   class="form-label">
+                                Fecha
+                            </label>
+
+                            <input type="datetime-local"
+                                   id="fecha"
+                                   th:field="*{fecha}"
+                                   class="form-control">
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/mantenimientos}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
 
-
-        <!-- TICKET -->
-
-        <div class="form-group mb-3">
-
-            <label for="ticket">
-                Ticket relacionado
-            </label>
-
-            <select class="form-control"
-                    th:field="*{ticket}"
-                    id="ticket">
-
-                <option value="">
-                    Sin ticket relacionado
-                </option>
-
-                <option th:each="item : ${tickets}"
-                        th:value="${item.id}"
-                        th:text="${'Ticket #' + item.id}">
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- TIPO -->
-
-        <div class="form-group mb-3">
-
-            <label for="tipo">
-                Tipo de mantenimiento
-            </label>
-
-            <select class="form-control"
-                    th:field="*{tipo}"
-                    id="tipo"
-                    required>
-
-                <option th:each="item : ${tipos}"
-                        th:value="${item}"
-                        th:text="${item}">
-                </option>
-
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('tipo')}"
-                 th:errors="*{tipo}">
-            </div>
-
-        </div>
-
-
-        <!-- DESCRIPCIÓN -->
-
-        <div class="form-group mb-3">
-
-            <label for="descripcion">
-                Descripción del mantenimiento
-            </label>
-
-            <textarea class="form-control"
-                      th:field="*{descripcion}"
-                      id="descripcion"
-                      rows="4"
-                      required>
-            </textarea>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('descripcion')}"
-                 th:errors="*{descripcion}">
-            </div>
-
-        </div>
-
-
-        <!-- REPUESTOS -->
-
-        <div class="form-group mb-3">
-
-            <label for="repuestos">
-                Repuestos utilizados
-            </label>
-
-            <textarea class="form-control"
-                      th:field="*{repuestos}"
-                      id="repuestos"
-                      rows="3">
-            </textarea>
-
-        </div>
-
-
-        <!-- FECHA -->
-
-        <div class="form-group mb-3">
-
-            <label for="fecha">
-                Fecha del mantenimiento
-            </label>
-
-            <input type="datetime-local"
-                   class="form-control"
-                   th:field="*{fecha}"
-                   id="fecha">
-
-        </div>
-
-
-        <button type="submit"
-                class="btn btn-primary">
-            Guardar cambios
-        </button>
-
-        <a th:href="@{/mantenimientos}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
+</body>
 </html>

@@ -1,119 +1,215 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Eliminar Mantenimiento</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Eliminar mantenimiento</h1>
+    <div class="container-fluid">
 
-    <h3>
-        ¿Está seguro que desea eliminar este registro?
-    </h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <hr>
+            <div>
 
-    <dl class="row">
+                <h2 class="mb-1 text-danger">
+                    <i class="fa-solid fa-trash"></i>
+                    Eliminar Mantenimiento
+                </h2>
 
-        <dt class="col-sm-3">
-            ID
-        </dt>
+                <p class="text-muted mb-0">
+                    Confirma la eliminación del mantenimiento.
+                </p>
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.id}">
-        </dd>
+            </div>
 
-
-        <dt class="col-sm-3">
-            Equipo
-        </dt>
-
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.equipo.nombre}">
-        </dd>
+        </div>
 
 
-        <dt class="col-sm-3">
-            Técnico
-        </dt>
+        <div class="card shadow-sm border-danger">
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.tecnico.nombre}">
-        </dd>
+            <div class="card-header bg-danger text-white">
 
+                <h5 class="mb-0">
+                    Confirmación
+                </h5>
 
-        <dt class="col-sm-3">
-            Ticket
-        </dt>
-
-        <dd class="col-sm-9">
-
-            <span th:if="${mantenimiento.ticket != null}"
-                  th:text="${'Ticket #' + mantenimiento.ticket.id}">
-            </span>
-
-            <span th:if="${mantenimiento.ticket == null}">
-                Sin ticket
-            </span>
-
-        </dd>
+            </div>
 
 
-        <dt class="col-sm-3">
-            Tipo
-        </dt>
-
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.tipo}">
-        </dd>
+            <div class="card-body">
 
 
-        <dt class="col-sm-3">
-            Descripción
-        </dt>
+                <div class="alert alert-warning">
 
-        <dd class="col-sm-9"
-            th:text="${mantenimiento.descripcion}">
-        </dd>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
+                    <strong>¡Atención!</strong>
 
-        <dt class="col-sm-3">
-            Fecha
-        </dt>
+                    ¿Está seguro de que desea eliminar este mantenimiento?
 
-        <dd class="col-sm-9">
+                    Esta acción no se puede deshacer.
 
-            <span th:if="${mantenimiento.fecha != null}"
-                  th:text="${#temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm')}">
-            </span>
-
-            <span th:if="${mantenimiento.fecha == null}">
-                Sin fecha
-            </span>
-
-        </dd>
-
-    </dl>
+                </div>
 
 
-    <form th:action="@{/mantenimientos/delete}"
-          method="post">
+                <div class="row">
 
-        <input type="hidden"
-               name="id"
-               th:value="${mantenimiento.id}">
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
 
-        <input type="submit"
-               value="Eliminar"
-               class="btn btn-danger">
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
 
-        <a th:href="@{/mantenimientos}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.id}"
+                               readonly>
 
-    </form>
+                    </div>
+
+
+                    <!-- EQUIPO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Equipo
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.equipo != null ? mantenimiento.equipo.nombre : 'Sin equipo'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TÉCNICO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Técnico
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.tecnico != null ? mantenimiento.tecnico.nombre : 'Sin técnico'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TICKET -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Ticket
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.ticket != null ? 'Ticket #' + mantenimiento.ticket.id : 'Sin ticket asociado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TIPO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Tipo de mantenimiento
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.tipo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- FECHA -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${mantenimiento.fecha != null ? #temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  readonly
+                                  th:text="${mantenimiento.descripcion}">
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <form th:action="@{/mantenimientos/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="id"
+                           th:value="${mantenimiento.id}">
+
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/mantenimientos}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar mantenimiento
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>
