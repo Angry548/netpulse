@@ -1,11 +1,15 @@
 package com.equipo1.netpulse.controladores;
 
+import com.equipo1.netpulse.modelos.Equipo;
 import com.equipo1.netpulse.modelos.Mantenimiento;
+import com.equipo1.netpulse.modelos.Ticket;
 import com.equipo1.netpulse.modelos.TipoMantenimiento;
-import com.equipo1.netpulse.servicios.interfaces.IEquipoService;
+import com.equipo1.netpulse.modelos.Usuario;
+import com.equipo1.netpulse.repositorios.IEquipoRepository;
+import com.equipo1.netpulse.repositorios.ITicketRepository;
+import com.equipo1.netpulse.repositorios.IUsuarioRepository;
 import com.equipo1.netpulse.servicios.interfaces.IMantenimientoService;
-import com.equipo1.netpulse.servicios.interfaces.ITicketService;
-import com.equipo1.netpulse.servicios.interfaces.IUsuarioService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,83 +33,293 @@ import java.util.stream.IntStream;
 public class MantenimientoController {
 
     private final IMantenimientoService mantenimientoService;
-    private final IEquipoService equipoService;
-    private final IUsuarioService usuarioService;
-    private final ITicketService ticketService;
+    private final IEquipoRepository equipoRepository;
+    private final IUsuarioRepository usuarioRepository;
+    private final ITicketRepository ticketRepository;
 
     public MantenimientoController(
             IMantenimientoService mantenimientoService,
-            IEquipoService equipoService,
-            IUsuarioService usuarioService,
-            ITicketService ticketService) {
+            IEquipoRepository equipoRepository,
+            IUsuarioRepository usuarioRepository,
+            ITicketRepository ticketRepository) {
 
         this.mantenimientoService = mantenimientoService;
-        this.equipoService = equipoService;
-        this.usuarioService = usuarioService;
-        this.ticketService = ticketService;
+        this.equipoRepository = equipoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     @GetMapping
     public String index(
             Model model,
             @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size) {
+            @RequestParam("size") Optional<Integer> size,
+            @RequestParam("id") Optional<Integer> id) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
-        Page<Mantenimiento> mantenimientos =
-                mantenimientoService.buscarTodosPaginados(pageable);
+        Page<Mantenimiento> mantenimientos;
 
-        model.addAttribute("mantenimientos", mantenimientos);
-        agregarNumerosDePagina(model, mantenimientos);
+        if (id.isPresent()) {
 
-        return "mantenimiento/index";
+            mantenimientos = mantenimientoService.buscarTodosPaginados(pageable);
+
+            Optional<Mantenimiento> mantenimiento =
+                    mantenimientos.getContent()
+                            .stream()
+                            .filter(item -> item.getId().equals(id.get()))
+                            .findFirst();
+
+            if (mantenimiento.isPresent()) {
+
+                mantenimientos = new org.springframework.data.domain.PageImpl<>(
+                        List.of(mantenimiento.get()),
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                mantenimientos = new org.springframework.data.domain.PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
+        } else {
+
+            mantenimientos =
+                    mantenimientoService.buscarTodosPaginados(pageable);
+        }
+
+        model.addAttribute(
+                "mantenimientos",
+                mantenimientos
+        );
+
+        model.addAttribute(
+                "id",
+                id.orElse(null)
+        );
+
+        agregarNumerosDePagina(
+                model,
+                mantenimientos
+        );
+
+        return "mantenimientos/index";
     }
 
     @GetMapping("/create")
-    public String create(Mantenimiento mantenimiento, Model model) {
+    public String create(Model model) {
 
-        cargarCatalogos(model);
+        Mantenimiento mantenimiento = new Mantenimiento();
 
-        return "mantenimiento/create";
+        model.addAttribute(
+                "mantenimiento",
+                mantenimiento
+        );
+
+        model.addAttribute(
+                "equipos",
+                equipoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "usuarios",
+                usuarioRepository.findAll()
+        );
+
+        model.addAttribute(
+                "tickets",
+                ticketRepository.findAll()
+        );
+
+        model.addAttribute(
+                "tipos",
+                TipoMantenimiento.values()
+        );
+
+        return "mantenimientos/create";
     }
 
     @PostMapping("/save")
     public String save(
+            @RequestParam("idEquipo") Integer idEquipo,
+            @RequestParam("idTecnico") Integer idTecnico,
+            @RequestParam(value = "idTicket", required = false) Integer idTicket,
             Mantenimiento mantenimiento,
             BindingResult result,
             Model model,
             RedirectAttributes attributes) {
 
+        boolean esEdicion =
+                mantenimiento.getId() != null;
+
         if (result.hasErrors()) {
-            model.addAttribute("mantenimiento", mantenimiento);
-            cargarCatalogos(model);
 
-            attributes.addFlashAttribute(
+            cargarDatosFormulario(model);
+
+            if (esEdicion) {
+                return "mantenimientos/edit";
+            }
+
+            return "mantenimientos/create";
+        }
+
+        Optional<Equipo> equipo =
+                equipoRepository.findById(idEquipo);
+
+        if (equipo.isEmpty()) {
+
+            cargarDatosFormulario(model);
+
+            model.addAttribute(
                     "error",
-                    "No se pudo guardar debido a un error.");
+                    "El equipo seleccionado no existe."
+            );
 
-            return "mantenimiento/create";
+            if (esEdicion) {
+                return "mantenimientos/edit";
+            }
+
+            return "mantenimientos/create";
         }
 
-        if (mantenimiento.getFecha() == null) {
-            mantenimiento.setFecha(java.time.LocalDateTime.now());
+        Optional<Usuario> tecnico =
+                usuarioRepository.findById(idTecnico);
+
+        if (tecnico.isEmpty()) {
+
+            cargarDatosFormulario(model);
+
+            model.addAttribute(
+                    "error",
+                    "El técnico seleccionado no existe."
+            );
+
+            if (esEdicion) {
+                return "mantenimientos/edit";
+            }
+
+            return "mantenimientos/create";
         }
 
-        if (mantenimiento.getId() == null) {
-            mantenimientoService.registrar(mantenimiento);
+        Ticket ticket = null;
+
+        if (idTicket != null) {
+
+            Optional<Ticket> ticketEncontrado =
+                    ticketRepository.findById(idTicket);
+
+            if (ticketEncontrado.isEmpty()) {
+
+                cargarDatosFormulario(model);
+
+                model.addAttribute(
+                        "error",
+                        "El ticket seleccionado no existe."
+                );
+
+                if (esEdicion) {
+                    return "mantenimientos/edit";
+                }
+
+                return "mantenimientos/create";
+            }
+
+            ticket = ticketEncontrado.get();
+        }
+
+        /*
+         * ==========================================================
+         * EDITAR MANTENIMIENTO
+         * ==========================================================
+         */
+
+        if (esEdicion) {
+
+            Mantenimiento mantenimientoExistente =
+                    mantenimientoService.buscarPorId(
+                            mantenimiento.getId()
+                    );
+
+            if (mantenimientoExistente == null) {
+
+                attributes.addFlashAttribute(
+                        "error",
+                        "El mantenimiento que intenta editar no existe."
+                );
+
+                return "redirect:/mantenimientos";
+            }
+
+            mantenimientoExistente.setEquipo(
+                    equipo.get()
+            );
+
+            mantenimientoExistente.setTecnico(
+                    tecnico.get()
+            );
+
+            mantenimientoExistente.setTicket(
+                    ticket
+            );
+
+            mantenimientoExistente.setTipo(
+                    mantenimiento.getTipo()
+            );
+
+            mantenimientoExistente.setDescripcion(
+                    mantenimiento.getDescripcion()
+            );
+
+            mantenimientoExistente.setRepuestos(
+                    mantenimiento.getRepuestos()
+            );
+
+            mantenimientoService.actualizar(
+                    mantenimientoExistente
+            );
+
             attributes.addFlashAttribute(
                     "msg",
-                    "Mantenimiento registrado correctamente");
-        } else {
-            mantenimientoService.actualizar(mantenimiento);
-            attributes.addFlashAttribute(
-                    "msg",
-                    "Mantenimiento actualizado correctamente");
+                    "Mantenimiento actualizado correctamente"
+            );
+
+            return "redirect:/mantenimientos";
         }
+
+        /*
+         * ==========================================================
+         * CREAR MANTENIMIENTO
+         * ==========================================================
+         */
+
+        mantenimiento.setEquipo(
+                equipo.get()
+        );
+
+        mantenimiento.setTecnico(
+                tecnico.get()
+        );
+
+        mantenimiento.setTicket(
+                ticket
+        );
+
+        mantenimientoService.registrar(
+                mantenimiento
+        );
+
+        attributes.addFlashAttribute(
+                "msg",
+                "Mantenimiento guardado correctamente"
+        );
 
         return "redirect:/mantenimientos";
     }
@@ -115,11 +329,25 @@ public class MantenimientoController {
             @PathVariable Integer id,
             Model model) {
 
+        Mantenimiento mantenimiento =
+                mantenimientoService.buscarPorId(id);
+
+        if (mantenimiento == null) {
+
+            model.addAttribute(
+                    "error",
+                    "El mantenimiento no existe."
+            );
+
+            return "redirect:/mantenimientos";
+        }
+
         model.addAttribute(
                 "mantenimiento",
-                mantenimientoService.buscarPorId(id).orElseThrow());
+                mantenimiento
+        );
 
-        return "mantenimiento/details";
+        return "mantenimientos/details";
     }
 
     @GetMapping("/edit/{id}")
@@ -127,13 +355,27 @@ public class MantenimientoController {
             @PathVariable Integer id,
             Model model) {
 
+        Mantenimiento mantenimiento =
+                mantenimientoService.buscarPorId(id);
+
+        if (mantenimiento == null) {
+
+            model.addAttribute(
+                    "error",
+                    "El mantenimiento no existe."
+            );
+
+            return "redirect:/mantenimientos";
+        }
+
         model.addAttribute(
                 "mantenimiento",
-                mantenimientoService.buscarPorId(id).orElseThrow());
+                mantenimiento
+        );
 
-        cargarCatalogos(model);
+        cargarDatosFormulario(model);
 
-        return "mantenimiento/edit";
+        return "mantenimientos/edit";
     }
 
     @GetMapping("/remove/{id}")
@@ -141,11 +383,25 @@ public class MantenimientoController {
             @PathVariable Integer id,
             Model model) {
 
+        Mantenimiento mantenimiento =
+                mantenimientoService.buscarPorId(id);
+
+        if (mantenimiento == null) {
+
+            model.addAttribute(
+                    "error",
+                    "El mantenimiento no existe."
+            );
+
+            return "redirect:/mantenimientos";
+        }
+
         model.addAttribute(
                 "mantenimiento",
-                mantenimientoService.buscarPorId(id).orElseThrow());
+                mantenimiento
+        );
 
-        return "mantenimiento/delete";
+        return "mantenimientos/delete";
     }
 
     @PostMapping("/delete")
@@ -153,21 +409,39 @@ public class MantenimientoController {
             Mantenimiento mantenimiento,
             RedirectAttributes attributes) {
 
-        mantenimientoService.eliminarPorId(mantenimiento.getId());
+        mantenimientoService.eliminarPorId(
+                mantenimiento.getId()
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Mantenimiento eliminado correctamente");
+                "Mantenimiento eliminado correctamente"
+        );
 
         return "redirect:/mantenimientos";
     }
 
-    private void cargarCatalogos(Model model) {
+    private void cargarDatosFormulario(Model model) {
 
-        model.addAttribute("equipos", equipoService.obtenerTodos());
-        model.addAttribute("usuarios", usuarioService.obtenerTodos());
-        model.addAttribute("tickets", ticketService.obtenerTodos());
-        model.addAttribute("tipos", TipoMantenimiento.values());
+        model.addAttribute(
+                "equipos",
+                equipoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "usuarios",
+                usuarioRepository.findAll()
+        );
+
+        model.addAttribute(
+                "tickets",
+                ticketRepository.findAll()
+        );
+
+        model.addAttribute(
+                "tipos",
+                TipoMantenimiento.values()
+        );
     }
 
     private void agregarNumerosDePagina(
@@ -176,13 +450,18 @@ public class MantenimientoController {
 
         if (mantenimientos.getTotalPages() > 0) {
 
-            List<Integer> pageNumbers = IntStream
-                    .rangeClosed(1, mantenimientos.getTotalPages())
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers =
+                    IntStream.rangeClosed(
+                                    1,
+                                    mantenimientos.getTotalPages()
+                            )
+                            .boxed()
+                            .collect(Collectors.toList());
 
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute(
+                    "pageNumbers",
+                    pageNumbers
+            );
         }
     }
 }
-
