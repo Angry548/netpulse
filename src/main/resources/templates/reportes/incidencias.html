@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<head>
+    <title>Reporte de Incidencias</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ============================================================
+             ENCABEZADO
+        ============================================================ -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-chart-column"></i>
+                    Reporte de Incidencias
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Genera reportes de incidencias aplicando diferentes filtros.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- ============================================================
+             MENSAJE DE ERROR
+        ============================================================ -->
+        <div th:if="${error != null}"
+             class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+
+            <span th:text="${error}">
+                Error al generar el reporte.
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+
+
+        <!-- ============================================================
+             FILTROS
+        ============================================================ -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fa-solid fa-filter me-2"></i>
+                    Filtros del reporte
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <form th:action="@{/reportes/incidencias}"
+                      method="get">
+
+                    <div class="row">
+
+                        <!-- FECHA INICIAL -->
+                        <div class="col-md-3 mb-3">
+
+                            <label for="fechaInicio"
+                                   class="form-label">
+                                Fecha inicial
+                            </label>
+
+                            <input type="date"
+                                   id="fechaInicio"
+                                   name="fechaInicio"
+                                   class="form-control"
+                                   th:value="${fechaInicio}">
+
+                        </div>
+
+
+                        <!-- FECHA FINAL -->
+                        <div class="col-md-3 mb-3">
+
+                            <label for="fechaFin"
+                                   class="form-label">
+                                Fecha final
+                            </label>
+
+                            <input type="date"
+                                   id="fechaFin"
+                                   name="fechaFin"
+                                   class="form-control"
+                                   th:value="${fechaFin}">
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+                        <div class="col-md-3 mb-3">
+
+                            <label for="estadoId"
+                                   class="form-label">
+                                Estado
+                            </label>
+
+                            <select id="estadoId"
+                                    name="estadoId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Todos los estados
+                                </option>
+
+                                <option th:each="estado : ${estados}"
+                                        th:value="${estado.id}"
+                                        th:text="${estado.nombre}"
+                                        th:selected="${estadoId != null and estado.id == estadoId}">
+                                    Estado
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CATEGORÍA -->
+                        <div class="col-md-3 mb-3">
+
+                            <label for="categoriaId"
+                                   class="form-label">
+                                Tipo de incidencia
+                            </label>
+
+                            <select id="categoriaId"
+                                    name="categoriaId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Todas las categorías
+                                </option>
+
+                                <option th:each="categoria : ${categorias}"
+                                        th:value="${categoria.id}"
+                                        th:text="${categoria.nombre}"
+                                        th:selected="${categoriaId != null and categoria.id == categoriaId}">
+                                    Categoría
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BOTONES -->
+                    <div class="d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-magnifying-glass me-1"></i>
+                            Generar reporte
+
+                        </button>
+
+
+                        <a th:href="@{/reportes/incidencias}"
+                           class="btn btn-outline-secondary">
+
+                            <i class="fa-solid fa-rotate-left me-1"></i>
+                            Limpiar filtros
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- ============================================================
+             RESULTADOS DEL REPORTE
+        ============================================================ -->
+        <div th:if="${reporteGenerado}">
+
+            <!-- ========================================================
+                 RESUMEN
+            ========================================================= -->
+            <div class="row mb-4">
+
+                <!-- TOTAL INCIDENCIAS -->
+                <div class="col-md-4 mb-3">
+
+                    <div class="card shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="me-3">
+
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px;">
+
+                                        <i class="fa-solid fa-ticket"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="text-muted mb-1">
+                                        Total de incidencias
+                                    </h6>
+
+                                    <h3 class="mb-0"
+                                        th:text="${totalIncidencias}">
+                                        0
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FECHA DE GENERACIÓN -->
+                <div class="col-md-4 mb-3">
+
+                    <div class="card shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="me-3">
+
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px;">
+
+                                        <i class="fa-solid fa-calendar-check"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="text-muted mb-1">
+                                        Reporte generado
+                                    </h6>
+
+                                    <p class="mb-0"
+                                       th:text="${#temporals.format(fechaGeneracion, 'dd/MM/yyyy HH:mm:ss')}">
+                                        00/00/0000 00:00:00
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ESTADO DEL REPORTE -->
+                <div class="col-md-4 mb-3">
+
+                    <div class="card shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="me-3">
+
+                                    <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px;">
+
+                                        <i class="fa-solid fa-file-lines"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="text-muted mb-1">
+                                        Estado del reporte
+                                    </h6>
+
+                                    <span class="badge bg-success">
+                                        Generado correctamente
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================================
+                 ENCABEZADO DE RESULTADOS
+            ========================================================= -->
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-0">
+
+                            <i class="fa-solid fa-list me-2"></i>
+                            Incidencias encontradas
+
+                        </h5>
+
+
+                        <!-- EXPORTAR PDF -->
+                        <form th:action="@{/reportes/incidencias/pdf}"
+                              method="get"
+                              target="_blank">
+
+                            <input type="hidden"
+                                   name="fechaInicio"
+                                   th:value="${fechaInicio}">
+
+                            <input type="hidden"
+                                   name="fechaFin"
+                                   th:value="${fechaFin}">
+
+                            <input type="hidden"
+                                   name="estadoId"
+                                   th:value="${estadoId}">
+
+                            <input type="hidden"
+                                   name="categoriaId"
+                                   th:value="${categoriaId}">
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+
+                                <i class="fa-solid fa-file-pdf me-1"></i>
+                                Exportar PDF
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================================
+                     TABLA
+                ===================================================== -->
+                <div class="card-body">
+
+                    <!-- SIN RESULTADOS -->
+                    <div th:if="${tickets == null or #lists.isEmpty(tickets)}"
+                         class="text-center py-5">
+
+                        <div class="mb-3">
+
+                            <i class="fa-solid fa-folder-open fa-3x text-muted"></i>
+
+                        </div>
+
+                        <h5 class="text-muted">
+                            No se encontraron incidencias
+                        </h5>
+
+                        <p class="text-muted mb-0">
+
+                            No existen tickets que coincidan con los filtros
+                            seleccionados.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- CON RESULTADOS -->
+                    <div th:if="${tickets != null and !#lists.isEmpty(tickets)}"
+                         class="table-responsive">
+
+                        <table class="table table-hover table-bordered align-middle">
+
+                            <thead class="table-light">
+
+                            <tr>
+
+                                <th class="text-center">
+                                    #
+                                </th>
+
+                                <th>
+                                    Equipo
+                                </th>
+
+                                <th>
+                                    Usuario reporta
+                                </th>
+
+                                <th>
+                                    Técnico
+                                </th>
+
+                                <th>
+                                    Tipo de incidencia
+                                </th>
+
+                                <th>
+                                    Prioridad
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th>
+                                    Descripción
+                                </th>
+
+                                <th>
+                                    Fecha de creación
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <tr th:each="ticket, iteracion : ${tickets}">
+
+                                <!-- NÚMERO -->
+                                <td class="text-center"
+                                    th:text="${iteracion.count}">
+                                    1
+                                </td>
+
+
+                                <!-- EQUIPO -->
+                                <td>
+
+                                    <span th:if="${ticket.equipo != null}"
+                                          th:text="${ticket.equipo.nombre}">
+                                        Equipo
+                                    </span>
+
+                                    <span th:if="${ticket.equipo == null}"
+                                          class="text-muted">
+                                        Sin equipo
+                                    </span>
+
+                                </td>
+
+
+                                <!-- USUARIO REPORTA -->
+                                <td>
+
+                                    <span th:if="${ticket.usuarioReporta != null}"
+                                          th:text="${ticket.usuarioReporta.nombre}">
+                                        Usuario
+                                    </span>
+
+                                    <span th:if="${ticket.usuarioReporta == null}"
+                                          class="text-muted">
+                                        Sin usuario
+                                    </span>
+
+                                </td>
+
+
+                                <!-- TÉCNICO -->
+                                <td>
+
+                                    <span th:if="${ticket.tecnico != null}"
+                                          th:text="${ticket.tecnico.nombre}">
+                                        Técnico
+                                    </span>
+
+                                    <span th:if="${ticket.tecnico == null}"
+                                          class="text-muted">
+                                        Sin asignar
+                                    </span>
+
+                                </td>
+
+
+                                <!-- CATEGORÍA -->
+                                <td>
+
+                                    <span th:if="${ticket.categoria != null}"
+                                          th:text="${ticket.categoria.nombre}">
+                                        Categoría
+                                    </span>
+
+                                    <span th:if="${ticket.categoria == null}"
+                                          class="text-muted">
+                                        Sin categoría
+                                    </span>
+
+                                </td>
+
+
+                                <!-- PRIORIDAD -->
+                                <td>
+
+                                    <span th:if="${ticket.prioridad != null}"
+                                          th:text="${ticket.prioridad.nombre}">
+                                        Prioridad
+                                    </span>
+
+                                    <span th:if="${ticket.prioridad == null}"
+                                          class="text-muted">
+                                        Sin prioridad
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ESTADO -->
+                                <td>
+
+                                    <span th:if="${ticket.estadoTicket != null}"
+                                          th:text="${ticket.estadoTicket.nombre}"
+                                          class="badge bg-secondary">
+                                        Estado
+                                    </span>
+
+                                    <span th:if="${ticket.estadoTicket == null}"
+                                          class="text-muted">
+                                        Sin estado
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DESCRIPCIÓN -->
+                                <td style="min-width: 250px;">
+
+                                    <span th:text="${ticket.descripcion}">
+                                        Descripción de la incidencia
+                                    </span>
+
+                                </td>
+
+
+                                <!-- FECHA DE CREACIÓN -->
+                                <td>
+
+                                    <span th:if="${ticket.fechaCreacion != null}"
+                                          th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                                        00/00/0000 00:00
+                                    </span>
+
+                                    <span th:if="${ticket.fechaCreacion == null}"
+                                          class="text-muted">
+                                        Sin fecha
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -15,4 +15,11 @@ public interface IReporteService {
             EstadoTicket estadoTicket,
             CategoriaIncidencia categoria
     );
+
+    byte[] generarReportePDF(
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
+            EstadoTicket estadoTicket,
+            CategoriaIncidencia categoria
+    );
 }
