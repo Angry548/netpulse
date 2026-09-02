@@ -1,54 +1,121 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Detalles del Estado de Ticket</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Detalles del estado de ticket</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <dl class="row">
+            <div>
 
-        <dt class="col-sm-2">
-            ID
-        </dt>
+                <h2 class="mb-1">
 
-        <dd class="col-sm-10"
-            th:text="${estadoTicket.id}">
-        </dd>
+                    <i class="fa-solid fa-ticket"></i>
+                    Detalles del Estado de Ticket
 
+                </h2>
 
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
+                <p class="text-muted mb-0">
+                    Información del estado seleccionado.
+                </p>
 
-        <dd class="col-sm-10"
-            th:text="${estadoTicket.nombre}">
-        </dd>
+            </div>
 
+        </div>
 
-        <dt class="col-sm-2">
-            Descripción
-        </dt>
+        <div class="card shadow-sm">
 
-        <dd class="col-sm-10"
-            th:text="${estadoTicket.descripcion}">
-        </dd>
+            <div class="card-header">
 
-    </dl>
+                <h5 class="mb-0">
+                    Información general
+                </h5>
 
-    <a th:href="@{/estados-ticket/edit/{id}(id=${estadoTicket.id})}"
-       class="btn btn-outline-info">
-        Editar
-    </a>
+            </div>
 
-    <a th:href="@{/estados-ticket}"
-       class="btn btn-secondary">
-        Regresar
-    </a>
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${estado.id}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${estado.nombre}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="3"
+                                  th:text="${estado.descripcion != null ? estado.descripcion : 'Sin descripción'}"
+                                  readonly></textarea>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/estados-ticket/edit/{id}(id=${estado.id})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/estados-ticket}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>

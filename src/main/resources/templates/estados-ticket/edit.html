@@ -1,67 +1,147 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Editar Estado de Ticket</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Editar estado de ticket</h1>
+    <div class="container-fluid">
 
-    <form th:action="@{/estados-ticket/save}"
-          th:object="${estadoTicket}"
-          method="post">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <input type="hidden"
-               th:field="*{id}">
+            <div>
 
-        <div class="form-group mb-3">
+                <h2 class="mb-1">
 
-            <label for="nombre">Nombre</label>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Editar Estado de Ticket
 
-            <input type="text"
-                   class="form-control"
-                   th:field="*{nombre}"
-                   id="nombre"
-                   maxlength="30"
-                   required>
+                </h2>
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('nombre')}"
-                 th:errors="*{nombre}">
+                <p class="text-muted mb-0">
+                    Modifica la información del estado seleccionado.
+                </p>
+
             </div>
 
         </div>
 
-        <div class="form-group mb-3">
+        <div class="card shadow-sm">
 
-            <label for="descripcion">Descripción</label>
+            <div class="card-header">
 
-            <textarea class="form-control"
-                      th:field="*{descripcion}"
-                      id="descripcion"
-                      maxlength="255"
-                      rows="4">
-            </textarea>
+                <h5 class="mb-0">
+                    Información del estado
+                </h5>
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('descripcion')}"
-                 th:errors="*{descripcion}">
+            </div>
+
+            <div class="card-body">
+
+                <form th:action="@{/estados-ticket/save}"
+                      th:object="${estado}"
+                      method="post">
+
+                    <input type="hidden"
+                           th:field="*{id}">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+
+                                Nombre
+
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="30"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="descripcion"
+                                   class="form-label">
+
+                                Descripción
+
+                            </label>
+
+                            <input type="text"
+                                   id="descripcion"
+                                   th:field="*{descripcion}"
+                                   class="form-control"
+                                   maxlength="255">
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div th:if="${error}"
+                         class="alert alert-danger">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span th:text="${error}">
+                            Error
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/estados-ticket}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
 
-        <button type="submit"
-                class="btn btn-primary">
-            Guardar cambios
-        </button>
-
-        <a th:href="@{/estados-ticket}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
+</body>
 </html>
