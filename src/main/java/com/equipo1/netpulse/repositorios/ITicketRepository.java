@@ -206,4 +206,63 @@ public interface ITicketRepository extends JpaRepository<Ticket, Integer> {
             @Param("categoria") CategoriaIncidencia categoria
     );
 
+    /*
+     * ============================================================
+     * DASHBOARD DE KPIs
+     * ============================================================
+     */
+
+    @Query("""
+        SELECT COUNT(t)
+        FROM Ticket t
+        WHERE (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio)
+        AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)
+        """)
+    long contarTicketsParaDashboard(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin
+    );
+
+
+    @Query("""
+        SELECT t.estadoTicket.nombre, COUNT(t)
+        FROM Ticket t
+        WHERE (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio)
+        AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)
+        GROUP BY t.estadoTicket.nombre
+        ORDER BY COUNT(t) DESC
+        """)
+    List<Object[]> contarTicketsPorEstadoParaDashboard(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin
+    );
+
+
+    @Query("""
+        SELECT t.categoria.nombre, COUNT(t)
+        FROM Ticket t
+        WHERE (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio)
+        AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)
+        GROUP BY t.categoria.nombre
+        ORDER BY COUNT(t) DESC
+        """)
+    List<Object[]> contarTicketsPorCategoriaParaDashboard(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin
+    );
+
+
+    @Query("""
+        SELECT t.prioridad.nombre, COUNT(t)
+        FROM Ticket t
+        WHERE (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio)
+        AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)
+        GROUP BY t.prioridad.nombre
+        ORDER BY COUNT(t) DESC
+        """)
+    List<Object[]> contarTicketsPorPrioridadParaDashboard(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin
+    );
+
 }
