@@ -6,18 +6,21 @@ import com.equipo1.netpulse.modelos.TipoEquipo;
 import com.equipo1.netpulse.modelos.Usuario;
 import com.equipo1.netpulse.repositorios.IEquipoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IEquipoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class EquipoService implements IEquipoService {
 
-    @Autowired
-    private IEquipoRepository equipoRepository;
+    private final IEquipoRepository equipoRepository;
+
+    public EquipoService(IEquipoRepository equipoRepository) {
+        this.equipoRepository = equipoRepository;
+    }
 
     @Override
     public Equipo registrar(Equipo equipo) {
@@ -25,37 +28,94 @@ public class EquipoService implements IEquipoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Equipo buscarPorId(Integer id) {
-        return equipoRepository.findById(id).get();
+        return equipoRepository
+                .findByIdWithRelations(id)
+                .orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Equipo buscarPorNumeroSerie(String numeroSerie) {
-        return equipoRepository.findByNumeroSerie(numeroSerie).get();
+        return equipoRepository
+                .findByNumeroSerie(numeroSerie)
+                .orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Equipo> obtenerTodos() {
         return equipoRepository.findAll();
     }
 
     @Override
-    public Page<Equipo> buscarTodosPaginados(Pageable pageable) {
-        return equipoRepository.findAll(pageable);
+    @Transactional(readOnly = true)
+    public Page<Equipo> buscarTodosPaginados(
+            Pageable pageable) {
+
+        return equipoRepository.findAllWithRelations(pageable);
     }
 
     @Override
-    public List<Equipo> obtenerPorTipo(TipoEquipo tipoEquipo) {
+    @Transactional(readOnly = true)
+    public Page<Equipo> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable) {
+
+        return equipoRepository.findByIdWithRelations(
+                id,
+                pageable
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Equipo> buscarPorNumeroSerie(
+            String numeroSerie,
+            Pageable pageable) {
+
+        return equipoRepository
+                .findByNumeroSerieContainingIgnoreCaseWithRelations(
+                        numeroSerie,
+                        pageable
+                );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Equipo> buscarPorNombre(
+            String nombre,
+            Pageable pageable) {
+
+        return equipoRepository
+                .findByNombreContainingIgnoreCaseWithRelations(
+                        nombre,
+                        pageable
+                );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Equipo> obtenerPorTipo(
+            TipoEquipo tipoEquipo) {
+
         return equipoRepository.findByTipo(tipoEquipo);
     }
 
     @Override
-    public List<Equipo> obtenerPorEstado(EstadoEquipo estadoEquipo) {
+    @Transactional(readOnly = true)
+    public List<Equipo> obtenerPorEstado(
+            EstadoEquipo estadoEquipo) {
+
         return equipoRepository.findByEstado(estadoEquipo);
     }
 
     @Override
-    public List<Equipo> obtenerPorResponsable(Usuario usuario) {
+    @Transactional(readOnly = true)
+    public List<Equipo> obtenerPorResponsable(
+            Usuario usuario) {
+
         return equipoRepository.findByResponsable(usuario);
     }
 
@@ -65,17 +125,29 @@ public class EquipoService implements IEquipoService {
     }
 
     @Override
-    public Equipo asignarResponsable(Equipo equipo) {
+    public Equipo asignarResponsable(
+            Equipo equipo,
+            Usuario usuario) {
+
+        equipo.setResponsable(usuario);
+
         return equipoRepository.save(equipo);
     }
 
     @Override
-    public Equipo cambiarEstado(Equipo equipo) {
+    public Equipo cambiarEstado(
+            Equipo equipo,
+            EstadoEquipo estado) {
+
+        equipo.setEstado(estado);
+
         return equipoRepository.save(equipo);
     }
 
     @Override
-    public Equipo actualizarConexion(Equipo equipo) {
+    public Equipo actualizarConexion(
+            Equipo equipo) {
+
         return equipoRepository.save(equipo);
     }
 

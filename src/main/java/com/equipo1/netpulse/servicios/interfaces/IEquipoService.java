@@ -21,6 +21,21 @@ public interface IEquipoService {
 
     Page<Equipo> buscarTodosPaginados(Pageable pageable);
 
+    Page<Equipo> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable
+    );
+
+    Page<Equipo> buscarPorNumeroSerie(
+            String numeroSerie,
+            Pageable pageable
+    );
+
+    Page<Equipo> buscarPorNombre(
+            String nombre,
+            Pageable pageable
+    );
+
     List<Equipo> obtenerPorTipo(TipoEquipo tipoEquipo);
 
     List<Equipo> obtenerPorEstado(EstadoEquipo estadoEquipo);
@@ -29,11 +44,19 @@ public interface IEquipoService {
 
     Equipo actualizar(Equipo equipo);
 
-    Equipo asignarResponsable(Equipo equipo);
+    Equipo asignarResponsable(
+            Equipo equipo,
+            Usuario usuario
+    );
 
-    Equipo cambiarEstado(Equipo equipo);
+    Equipo cambiarEstado(
+            Equipo equipo,
+            EstadoEquipo estado
+    );
 
-    Equipo actualizarConexion(Equipo equipo);
+    Equipo actualizarConexion(
+            Equipo equipo
+    );
 
     void eliminarPorId(Integer id);
 }
