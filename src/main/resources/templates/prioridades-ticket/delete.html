@@ -1,56 +1,132 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Eliminar Prioridad</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Eliminar prioridad de ticket</h1>
+    <div class="container-fluid">
 
-    <h3>
-        ¿Está seguro que desea eliminar este registro?
-    </h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <hr>
+            <div>
 
-    <dl class="row">
+                <h2 class="mb-1 text-danger">
 
-        <dt class="col-sm-2">
-            ID
-        </dt>
+                    <i class="fa-solid fa-flag"></i>
+                    Eliminar Prioridad
 
-        <dd class="col-sm-10"
-            th:text="${prioridadTicket.id}">
-        </dd>
+                </h2>
 
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
+                <p class="text-muted mb-0">
 
-        <dd class="col-sm-10"
-            th:text="${prioridadTicket.nombre}">
-        </dd>
+                    Confirma la eliminación de la prioridad.
 
-    </dl>
+                </p>
 
-    <form th:action="@{/prioridades-ticket/delete}"
-          method="post">
+            </div>
 
-        <input type="hidden"
-               name="id"
-               th:value="${prioridadTicket.id}">
+        </div>
 
-        <input type="submit"
-               value="Eliminar"
-               class="btn btn-danger">
+        <div class="card shadow-sm border-danger">
 
-        <a th:href="@{/prioridades-ticket}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
+            <div class="card-header bg-danger text-white">
 
-    </form>
+                <h5 class="mb-0">
+                    Confirmación
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="alert alert-warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <strong>¡Atención!</strong>
+
+                    ¿Está seguro de que desea eliminar esta prioridad?
+
+                    Esta acción no se puede deshacer.
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${prioridad.id}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${prioridad.nombre}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <form th:action="@{/prioridades-ticket/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="id"
+                           th:value="${prioridad.id}">
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/prioridades-ticket}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar prioridad
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>
