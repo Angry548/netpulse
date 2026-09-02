@@ -2,8 +2,6 @@ package com.equipo1.netpulse.controladores;
 
 import com.equipo1.netpulse.modelos.AlertaRed;
 import com.equipo1.netpulse.servicios.interfaces.IAlertaRedService;
-import com.equipo1.netpulse.servicios.interfaces.IEquipoService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,152 +20,230 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/alertas")
+@RequestMapping("/alertas-red")
 public class AlertaRedController {
 
     private final IAlertaRedService alertaRedService;
-    private final IEquipoService equipoService;
 
-    public AlertaRedController(IAlertaRedService alertaRedService,
-                               IEquipoService equipoService) {
+    public AlertaRedController(
+            IAlertaRedService alertaRedService) {
+
         this.alertaRedService = alertaRedService;
-        this.equipoService = equipoService;
     }
 
+    /*
+     * ==========================================================
+     * LISTADO
+     * ==========================================================
+     */
+
     @GetMapping
-    public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size,
-                        @RequestParam("tipoEvento") Optional<String> tipoEvento) {
+    public String index(
+            Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size,
+            @RequestParam("id") Optional<Integer> id,
+            @RequestParam("tipoEvento") Optional<String> tipoEvento) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
-
-        String filtroTipoEvento = tipoEvento.orElse("").trim();
-
-        Page<AlertaRed> alertas;
-
-        if (filtroTipoEvento.isEmpty()) {
-            alertas = alertaRedService.buscarTodosPaginados(pageable);
-        } else {
-            alertas = alertaRedService.obtenerPorTipoEventoPaginado(
-                    filtroTipoEvento,
-                    pageable
-            );
-        }
-
-        model.addAttribute("alertas", alertas);
-        model.addAttribute("tipoEvento", filtroTipoEvento);
-
-        agregarNumerosDePagina(model, alertas);
-
-        return "alerta/index";
-    }
-
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam("tipoEvento") String tipoEvento,
-                         @RequestParam("size") Optional<Integer> size,
-                         Model model) {
-
-        Pageable pageable = PageRequest.of(0, size.orElse(10));
-
-        Page<AlertaRed> alertas =
-                alertaRedService.obtenerPorTipoEventoPaginado(
-                        tipoEvento.trim(),
-                        pageable
+        Pageable pageable =
+                PageRequest.of(
+                        currentPage,
+                        pageSize
                 );
 
-        model.addAttribute("alertas", alertas);
-        model.addAttribute("tipoEvento", tipoEvento.trim());
+        String filtroTipoEvento =
+                tipoEvento.orElse("").trim();
 
-        agregarNumerosDePagina(model, alertas);
+        Page<AlertaRed> alertasRed;
 
-        return "alerta/index :: tablaAlertas";
+        if (id.isPresent()) {
+
+            alertasRed =
+                    alertaRedService.buscarPorIdPaginado(
+                            id.get(),
+                            pageable
+                    );
+
+        } else if (!filtroTipoEvento.isEmpty()) {
+
+            alertasRed =
+                    alertaRedService.buscarPorTipoEvento(
+                            filtroTipoEvento,
+                            pageable
+                    );
+
+        } else {
+
+            alertasRed =
+                    alertaRedService.buscarTodosPaginados(
+                            pageable
+                    );
+        }
+
+        model.addAttribute(
+                "alertasRed",
+                alertasRed
+        );
+
+        model.addAttribute(
+                "id",
+                id.orElse(null)
+        );
+
+        model.addAttribute(
+                "tipoEvento",
+                filtroTipoEvento
+        );
+
+        agregarNumerosDePagina(
+                model,
+                alertasRed
+        );
+
+        return "alertas-red/index";
     }
+
+    /*
+     * ==========================================================
+     * DETALLES
+     * ==========================================================
+     */
 
     @GetMapping("/details/{id}")
-    public String details(@PathVariable Integer id, Model model) {
+    public String details(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        AlertaRed alerta =
+                alertaRedService.buscarPorId(id);
+
+        if (alerta == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La alerta de red solicitada no existe."
+            );
+
+            return "redirect:/alertas-red";
+        }
 
         model.addAttribute(
                 "alerta",
-                alertaRedService.buscarPorId(id).orElseThrow()
+                alerta
         );
 
-        return "alerta/details";
+        return "alertas-red/details";
     }
+
+    /*
+     * ==========================================================
+     * ELIMINAR - CONFIRMACIÓN
+     * ==========================================================
+     */
 
     @GetMapping("/remove/{id}")
-    public String remove(@PathVariable Integer id, Model model) {
+    public String remove(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        AlertaRed alerta =
+                alertaRedService.buscarPorId(id);
+
+        if (alerta == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La alerta de red que intenta eliminar no existe."
+            );
+
+            return "redirect:/alertas-red";
+        }
 
         model.addAttribute(
                 "alerta",
-                alertaRedService.buscarPorId(id).orElseThrow()
+                alerta
         );
 
-        return "alerta/delete";
+        return "alertas-red/delete";
     }
+
+    /*
+     * ==========================================================
+     * ELIMINAR
+     * ==========================================================
+     */
 
     @PostMapping("/delete")
-    public String delete(AlertaRed alerta,
-                         RedirectAttributes attributes) {
+    public String delete(
+            AlertaRed alerta,
+            RedirectAttributes attributes) {
 
-        alertaRedService.eliminarPorId(alerta.getId());
+        if (alerta.getId() == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "No se pudo identificar la alerta de red."
+            );
+
+            return "redirect:/alertas-red";
+        }
+
+        AlertaRed alertaExistente =
+                alertaRedService.buscarPorId(
+                        alerta.getId()
+                );
+
+        if (alertaExistente == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La alerta de red que intenta eliminar no existe."
+            );
+
+            return "redirect:/alertas-red";
+        }
+
+        alertaRedService.eliminarPorId(
+                alerta.getId()
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Alerta eliminada correctamente"
+                "Alerta de red eliminada correctamente"
         );
 
-        return "redirect:/alertas";
+        return "redirect:/alertas-red";
     }
 
-    @PostMapping("/notificar/{id}")
-    public String notificar(@PathVariable Integer id,
-                            RedirectAttributes attributes) {
+    /*
+     * ==========================================================
+     * PAGINACIÓN
+     * ==========================================================
+     */
 
-        AlertaRed alerta =
-                alertaRedService.buscarPorId(id).orElseThrow();
+    private void agregarNumerosDePagina(
+            Model model,
+            Page<AlertaRed> alertasRed) {
 
-        alertaRedService.enviarNotificacion(alerta);
-
-        attributes.addFlashAttribute(
-                "msg",
-                "Notificación enviada correctamente"
-        );
-
-        return "redirect:/alertas";
-    }
-
-    @PostMapping("/marcar-notificada/{id}")
-    public String marcarNotificada(@PathVariable Integer id,
-                                   RedirectAttributes attributes) {
-
-        AlertaRed alerta =
-                alertaRedService.buscarPorId(id).orElseThrow();
-
-        alertaRedService.marcarNotificacionEnviada(alerta);
-
-        attributes.addFlashAttribute(
-                "msg",
-                "La alerta fue marcada como notificada"
-        );
-
-        return "redirect:/alertas";
-    }
-
-    private void agregarNumerosDePagina(Model model,
-                                        Page<AlertaRed> alertas) {
-
-        if (alertas.getTotalPages() > 0) {
+        if (alertasRed.getTotalPages() > 0) {
 
             List<Integer> pageNumbers =
-                    IntStream.rangeClosed(1, alertas.getTotalPages())
+                    IntStream.rangeClosed(
+                                    1,
+                                    alertasRed.getTotalPages()
+                            )
                             .boxed()
                             .collect(Collectors.toList());
 
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute(
+                    "pageNumbers",
+                    pageNumbers
+            );
         }
     }
 }
