@@ -2,8 +2,8 @@ package com.equipo1.netpulse.controladores;
 
 import com.equipo1.netpulse.modelos.CategoriaIncidencia;
 import com.equipo1.netpulse.servicios.interfaces.ICategoriaIncidenciaService;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -30,8 +30,7 @@ public class CategoriaIncidenciaController {
     public CategoriaIncidenciaController(
             ICategoriaIncidenciaService categoriaIncidenciaService) {
 
-        this.categoriaIncidenciaService =
-                categoriaIncidenciaService;
+        this.categoriaIncidenciaService = categoriaIncidenciaService;
     }
 
     @GetMapping
@@ -45,13 +44,24 @@ public class CategoriaIncidenciaController {
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable =
-                PageRequest.of(currentPage, pageSize);
+        if (currentPage < 0) {
+            currentPage = 0;
+        }
 
-        String filtroNombre =
-                nombre.orElse("").trim();
+        Pageable pageable = PageRequest.of(
+                currentPage,
+                pageSize
+        );
+
+        String filtroNombre = nombre.orElse("").trim();
 
         Page<CategoriaIncidencia> categorias;
+
+        /*
+         * ==========================================================
+         * BUSCAR POR ID
+         * ==========================================================
+         */
 
         if (id.isPresent()) {
 
@@ -62,7 +72,7 @@ public class CategoriaIncidenciaController {
 
             if (categoria != null) {
 
-                categorias = new PageImpl<>(
+                categorias = new org.springframework.data.domain.PageImpl<>(
                         List.of(categoria),
                         pageable,
                         1
@@ -70,44 +80,39 @@ public class CategoriaIncidenciaController {
 
             } else {
 
-                categorias = new PageImpl<>(
+                categorias = new org.springframework.data.domain.PageImpl<>(
                         List.of(),
                         pageable,
                         0
                 );
             }
+
+            /*
+             * ==========================================================
+             * BUSCAR POR NOMBRE
+             * ==========================================================
+             */
 
         } else if (!filtroNombre.isEmpty()) {
 
-            CategoriaIncidencia categoria =
-                    categoriaIncidenciaService.buscarPorNombre(
-                            filtroNombre
+            categorias =
+                    categoriaIncidenciaService.buscarPorNombrePaginado(
+                            filtroNombre,
+                            pageable
                     );
 
-            if (categoria != null) {
-
-                categorias = new PageImpl<>(
-                        List.of(categoria),
-                        pageable,
-                        1
-                );
-
-            } else {
-
-                categorias = new PageImpl<>(
-                        List.of(),
-                        pageable,
-                        0
-                );
-            }
+            /*
+             * ==========================================================
+             * LISTAR TODAS
+             * ==========================================================
+             */
 
         } else {
 
             categorias =
-                    categoriaIncidenciaService
-                            .buscarTodosPaginados(
-                                    pageable
-                            );
+                    categoriaIncidenciaService.buscarTodosPaginados(
+                            pageable
+                    );
         }
 
         model.addAttribute(
@@ -134,8 +139,7 @@ public class CategoriaIncidenciaController {
     }
 
     @GetMapping("/create")
-    public String create(
-            Model model) {
+    public String create(Model model) {
 
         CategoriaIncidencia categoria =
                 new CategoriaIncidencia();
@@ -161,7 +165,6 @@ public class CategoriaIncidenciaController {
         if (result.hasErrors()) {
 
             if (esEdicion) {
-
                 return "categorias-incidencia/edit";
             }
 
@@ -183,7 +186,6 @@ public class CategoriaIncidenciaController {
             );
 
             if (esEdicion) {
-
                 return "categorias-incidencia/edit";
             }
 

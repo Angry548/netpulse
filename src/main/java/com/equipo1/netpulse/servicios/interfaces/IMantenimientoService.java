@@ -12,21 +12,42 @@ import java.util.List;
 
 public interface IMantenimientoService {
 
-    Mantenimiento registrar(Mantenimiento mantenimiento);
+    Mantenimiento registrar(
+            Mantenimiento mantenimiento
+    );
 
-    Mantenimiento buscarPorId(Integer id);
+    Mantenimiento buscarPorId(
+            Integer id
+    );
+
+    Page<Mantenimiento> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable
+    );
+
+    Page<Mantenimiento> buscarTodosPaginados(
+            Pageable pageable
+    );
 
     List<Mantenimiento> obtenerTodos();
 
-    Page<Mantenimiento> buscarTodosPaginados(Pageable pageable);
+    List<Mantenimiento> obtenerPorEquipo(
+            Equipo equipo
+    );
 
-    List<Mantenimiento> obtenerPorEquipo(Equipo equipo);
+    List<Mantenimiento> obtenerPorTecnico(
+            Usuario tecnico
+    );
 
-    List<Mantenimiento> obtenerPorUsuario(Usuario usuario);
+    List<Mantenimiento> obtenerPorTicket(
+            Ticket ticket
+    );
 
-    List<Mantenimiento> obtenerPorTicket(Ticket ticket);
+    Mantenimiento actualizar(
+            Mantenimiento mantenimiento
+    );
 
-    Mantenimiento actualizar(Mantenimiento mantenimiento);
-
-    void eliminarPorId(Integer id);
+    void eliminarPorId(
+            Integer id
+    );
 }

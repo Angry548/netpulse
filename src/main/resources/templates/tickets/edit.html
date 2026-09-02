@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -14,33 +15,29 @@
 
     <div class="container-fluid">
 
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
-
                 <h2 class="mb-1">
-
                     <i class="fa-solid fa-ticket"></i>
                     Editar Ticket
-
                 </h2>
 
                 <p class="text-muted mb-0">
                     Modifica la información del ticket.
                 </p>
-
             </div>
 
         </div>
 
+        <!-- TARJETA -->
         <div class="card shadow-sm">
 
             <div class="card-header">
-
                 <h5 class="mb-0">
                     Información del ticket
                 </h5>
-
             </div>
 
             <div class="card-body">
@@ -49,26 +46,25 @@
                       th:object="${ticket}"
                       method="post">
 
+                    <!-- ID OCULTO -->
                     <input type="hidden"
                            th:field="*{idTicket}">
 
                     <div class="row">
 
                         <!-- DESCRIPCIÓN -->
-
                         <div class="col-md-12 mb-3">
 
                             <label for="descripcion"
                                    class="form-label">
-
                                 Descripción
-
                             </label>
 
                             <textarea id="descripcion"
                                       th:field="*{descripcion}"
                                       class="form-control"
                                       rows="4"
+                                      maxlength="1000"
                                       required></textarea>
 
                             <div class="text-danger"
@@ -78,15 +74,13 @@
 
                         </div>
 
-                        <!-- EQUIPO -->
 
+                        <!-- EQUIPO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEquipo"
                                    class="form-label">
-
                                 Equipo
-
                             </label>
 
                             <select id="idEquipo"
@@ -99,24 +93,27 @@
                                 </option>
 
                                 <option th:each="equipo : ${equipos}"
-                                        th:value="${equipo.id}"
+                                        th:value="${equipo.idEquipo}"
                                         th:text="${equipo.nombre}"
-                                        th:selected="${ticket.equipo != null and ticket.equipo.id == equipo.id}">
+                                        th:selected="${ticket.equipo != null and ticket.equipo.idEquipo == equipo.idEquipo}">
                                 </option>
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('equipo')}"
+                                 th:errors="*{equipo}">
+                            </div>
+
                         </div>
 
-                        <!-- USUARIO REPORTA -->
 
+                        <!-- USUARIO QUE REPORTA -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idUsuarioReporta"
                                    class="form-label">
-
                                 Usuario que reporta
-
                             </label>
 
                             <select id="idUsuarioReporta"
@@ -136,17 +133,20 @@
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('usuarioReporta')}"
+                                 th:errors="*{usuarioReporta}">
+                            </div>
+
                         </div>
 
-                        <!-- TÉCNICO -->
 
+                        <!-- TÉCNICO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idTecnico"
                                    class="form-label">
-
                                 Técnico
-
                             </label>
 
                             <select id="idTecnico"
@@ -165,17 +165,20 @@
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('tecnico')}"
+                                 th:errors="*{tecnico}">
+                            </div>
+
                         </div>
 
-                        <!-- CATEGORÍA -->
 
+                        <!-- CATEGORÍA -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idCategoria"
                                    class="form-label">
-
                                 Categoría
-
                             </label>
 
                             <select id="idCategoria"
@@ -195,17 +198,20 @@
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('categoria')}"
+                                 th:errors="*{categoria}">
+                            </div>
+
                         </div>
 
-                        <!-- PRIORIDAD -->
 
+                        <!-- PRIORIDAD -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idPrioridad"
                                    class="form-label">
-
                                 Prioridad
-
                             </label>
 
                             <select id="idPrioridad"
@@ -225,17 +231,20 @@
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('prioridad')}"
+                                 th:errors="*{prioridad}">
+                            </div>
+
                         </div>
 
-                        <!-- ESTADO -->
 
+                        <!-- ESTADO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEstadoTicket"
                                    class="form-label">
-
                                 Estado
-
                             </label>
 
                             <select id="idEstadoTicket"
@@ -255,23 +264,27 @@
 
                             </select>
 
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('estadoTicket')}"
+                                 th:errors="*{estadoTicket}">
+                            </div>
+
                         </div>
 
                     </div>
 
-                    <div th:if="${error != null}"
-                         class="alert alert-danger">
 
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                        <span th:text="${error}">
-                            Error
-                        </span>
-
+                    <!-- ERROR GENERAL -->
+                    <div class="text-danger"
+                         th:if="${error}"
+                         th:text="${error}">
                     </div>
+
 
                     <hr>
 
+
+                    <!-- BOTONES -->
                     <div class="d-flex justify-content-end gap-2">
 
                         <a th:href="@{/tickets}"
@@ -285,6 +298,7 @@
                                 class="btn btn-primary">
 
                             <i class="fa-solid fa-save"></i>
+
                             Guardar Cambios
 
                         </button>

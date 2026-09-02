@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -14,53 +15,29 @@
 
     <div class="container-fluid">
 
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
-
                 <h2 class="mb-1">
-
                     <i class="fa-solid fa-ticket"></i>
                     Detalles del Ticket
-
                 </h2>
 
                 <p class="text-muted mb-0">
                     Información del ticket seleccionado.
                 </p>
-
             </div>
 
         </div>
 
-        <div th:if="${msg != null}">
-            <script th:inline="javascript">
-                Swal.fire({
-                    title: "Confirmación",
-                    text: /*[[${msg}]]*/ "",
-                    icon: "success"
-                });
-            </script>
-        </div>
-
-        <div th:if="${error != null}">
-            <script th:inline="javascript">
-                Swal.fire({
-                    title: "Error",
-                    text: /*[[${error}]]*/ "",
-                    icon: "error"
-                });
-            </script>
-        </div>
-
+        <!-- TARJETA -->
         <div class="card shadow-sm">
 
             <div class="card-header">
-
                 <h5 class="mb-0">
                     Información general
                 </h5>
-
             </div>
 
             <div class="card-body">
@@ -68,7 +45,6 @@
                 <div class="row">
 
                     <!-- ID -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -82,8 +58,8 @@
 
                     </div>
 
-                    <!-- FECHA CREACIÓN -->
 
+                    <!-- FECHA DE CREACIÓN -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -97,8 +73,8 @@
 
                     </div>
 
-                    <!-- DESCRIPCIÓN -->
 
+                    <!-- DESCRIPCIÓN -->
                     <div class="col-md-12 mb-3">
 
                         <label class="form-label fw-bold">
@@ -113,8 +89,8 @@
 
                     </div>
 
-                    <!-- USUARIO REPORTA -->
 
+                    <!-- USUARIO QUE REPORTA -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -128,12 +104,12 @@
 
                     </div>
 
-                    <!-- TÉCNICO -->
 
+                    <!-- TÉCNICO -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
-                            Técnico
+                            Técnico asignado
                         </label>
 
                         <input type="text"
@@ -143,8 +119,8 @@
 
                     </div>
 
-                    <!-- EQUIPO -->
 
+                    <!-- EQUIPO -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -158,8 +134,8 @@
 
                     </div>
 
-                    <!-- CATEGORÍA -->
 
+                    <!-- CATEGORÍA -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -173,8 +149,8 @@
 
                     </div>
 
-                    <!-- PRIORIDAD -->
 
+                    <!-- PRIORIDAD -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -188,8 +164,8 @@
 
                     </div>
 
-                    <!-- ESTADO -->
 
+                    <!-- ESTADO -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -201,7 +177,7 @@
                             <span th:if="${ticket.estadoTicket != null}"
                                   class="badge bg-primary"
                                   th:text="${ticket.estadoTicket.nombre}">
-                                Abierto
+                                Estado
                             </span>
 
                             <span th:unless="${ticket.estadoTicket != null}"
@@ -213,8 +189,8 @@
 
                     </div>
 
-                    <!-- FECHA ASIGNACIÓN -->
 
+                    <!-- FECHA DE ASIGNACIÓN -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -228,8 +204,8 @@
 
                     </div>
 
-                    <!-- FECHA RESOLUCIÓN -->
 
+                    <!-- FECHA DE RESOLUCIÓN -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -247,188 +223,7 @@
 
                 <hr>
 
-                <!-- ==================================================
-                     ASIGNAR TÉCNICO
-                     ================================================== -->
-
-                <h5 class="mb-3">
-                    <i class="fa-solid fa-user-gear"></i>
-                    Asignar técnico
-                </h5>
-
-                <form th:action="@{/tickets/asignar-tecnico}"
-                      method="post"
-                      class="row g-2 mb-4">
-
-                    <input type="hidden"
-                           name="idTicket"
-                           th:value="${ticket.idTicket}">
-
-                    <div class="col-md-8">
-
-                        <select name="idTecnico"
-                                class="form-select"
-                                required>
-
-                            <option value="">
-                                Seleccione un técnico
-                            </option>
-
-                            <option th:each="tecnico : ${tecnicos}"
-                                    th:value="${tecnico.id}"
-                                    th:text="${tecnico.nombre}"
-                                    th:selected="${ticket.tecnico != null and ticket.tecnico.id == tecnico.id}">
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <button type="submit"
-                                class="btn btn-primary">
-
-                            <i class="fa-solid fa-user-check"></i>
-                            Asignar técnico
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-                <!-- ==================================================
-                     CAMBIAR ESTADO
-                     ================================================== -->
-
-                <h5 class="mb-3">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                    Cambiar estado
-                </h5>
-
-                <form th:action="@{/tickets/cambiar-estado}"
-                      method="post"
-                      class="row g-2 mb-4">
-
-                    <input type="hidden"
-                           name="idTicket"
-                           th:value="${ticket.idTicket}">
-
-                    <div class="col-md-8">
-
-                        <select name="idEstadoTicket"
-                                class="form-select"
-                                required>
-
-                            <option value="">
-                                Seleccione un estado
-                            </option>
-
-                            <option th:each="estado : ${estados}"
-                                    th:value="${estado.id}"
-                                    th:text="${estado.nombre}"
-                                    th:selected="${ticket.estadoTicket != null and ticket.estadoTicket.id == estado.id}">
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <button type="submit"
-                                class="btn btn-primary">
-
-                            <i class="fa-solid fa-check"></i>
-                            Cambiar estado
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-                <!-- ==================================================
-                     CAMBIAR PRIORIDAD
-                     ================================================== -->
-
-                <h5 class="mb-3">
-                    <i class="fa-solid fa-flag"></i>
-                    Cambiar prioridad
-                </h5>
-
-                <form th:action="@{/tickets/cambiar-prioridad}"
-                      method="post"
-                      class="row g-2 mb-4">
-
-                    <input type="hidden"
-                           name="idTicket"
-                           th:value="${ticket.idTicket}">
-
-                    <div class="col-md-8">
-
-                        <select name="idPrioridad"
-                                class="form-select"
-                                required>
-
-                            <option value="">
-                                Seleccione una prioridad
-                            </option>
-
-                            <option th:each="prioridad : ${prioridades}"
-                                    th:value="${prioridad.id}"
-                                    th:text="${prioridad.nombre}"
-                                    th:selected="${ticket.prioridad != null and ticket.prioridad.id == prioridad.id}">
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <button type="submit"
-                                class="btn btn-warning">
-
-                            <i class="fa-solid fa-flag"></i>
-                            Cambiar prioridad
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-                <!-- ==================================================
-                     RESOLVER
-                     ================================================== -->
-
-                <h5 class="mb-3">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Resolver ticket
-                </h5>
-
-                <form th:action="@{/tickets/resolver}"
-                      method="post"
-                      class="mb-4">
-
-                    <input type="hidden"
-                           name="idTicket"
-                           th:value="${ticket.idTicket}">
-
-                    <button type="submit"
-                            class="btn btn-success">
-
-                        <i class="fa-solid fa-check-double"></i>
-                        Marcar como resuelto
-
-                    </button>
-
-                </form>
-
-                <hr>
-
+                <!-- BOTONES -->
                 <div class="d-flex justify-content-end gap-2">
 
                     <a th:href="@{/tickets/edit/{id}(id=${ticket.idTicket})}"

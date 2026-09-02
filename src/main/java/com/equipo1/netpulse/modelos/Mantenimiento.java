@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "mantenimientos")
@@ -41,6 +42,7 @@ public class Mantenimiento {
     @Column(name = "repuestos", columnDefinition = "TEXT")
     private String repuestos;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "fecha")
     private LocalDateTime fecha;
 

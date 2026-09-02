@@ -49,10 +49,16 @@ public class UsuarioController {
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Pageable pageable = PageRequest.of(
+                currentPage,
+                pageSize
+        );
 
-        String filtroNombre = nombre.orElse("").trim();
-        String filtroCorreo = correo.orElse("").trim();
+        String filtroNombre =
+                nombre.orElse("").trim();
+
+        String filtroCorreo =
+                correo.orElse("").trim();
 
         Page<Usuario> usuarios;
 
@@ -112,6 +118,11 @@ public class UsuarioController {
         return "usuarios/index";
     }
 
+    /*
+     * ==========================================================
+     * FORMULARIO CREAR
+     * ==========================================================
+     */
     @GetMapping("/create")
     public String create(
             Model model) {
@@ -131,6 +142,11 @@ public class UsuarioController {
         return "usuarios/create";
     }
 
+    /*
+     * ==========================================================
+     * GUARDAR / EDITAR
+     * ==========================================================
+     */
     @PostMapping("/save")
     public String save(
             @RequestParam("idRol") Integer idRol,
@@ -140,13 +156,16 @@ public class UsuarioController {
             RedirectAttributes attributes) {
 
         /*
-         * Si el ID existe, estamos editando un usuario.
-         * Si el ID es null, estamos creando uno nuevo.
+         * Si el ID existe, estamos editando.
+         * Si el ID es null, estamos creando.
          */
-        boolean esEdicion = usuario.getId() != null;
+        boolean esEdicion =
+                usuario.getId() != null;
 
         /*
-         * Validación de errores de formulario.
+         * ======================================================
+         * VALIDACIÓN
+         * ======================================================
          */
         if (result.hasErrors()) {
 
@@ -156,6 +175,7 @@ public class UsuarioController {
             );
 
             if (esEdicion) {
+
                 return "usuarios/edit";
             }
 
@@ -163,9 +183,12 @@ public class UsuarioController {
         }
 
         /*
-         * Buscamos el rol seleccionado.
+         * ======================================================
+         * BUSCAR ROL
+         * ======================================================
          */
-        Optional<Rol> rol = rolRepository.findById(idRol);
+        Optional<Rol> rol =
+                rolRepository.findById(idRol);
 
         if (rol.isEmpty()) {
 
@@ -180,6 +203,7 @@ public class UsuarioController {
             );
 
             if (esEdicion) {
+
                 return "usuarios/edit";
             }
 
@@ -187,17 +211,19 @@ public class UsuarioController {
         }
 
         /*
-         * ==========================================================
+         * ======================================================
          * EDITAR USUARIO
-         * ==========================================================
+         * ======================================================
          */
         if (esEdicion) {
 
             Usuario usuarioExistente =
-                    usuarioService.buscarPorId(usuario.getId());
+                    usuarioService.buscarPorId(
+                            usuario.getId()
+                    );
 
             /*
-             * Verificamos que el usuario realmente exista.
+             * Verificamos que exista.
              */
             if (usuarioExistente == null) {
 
@@ -210,8 +236,7 @@ public class UsuarioController {
             }
 
             /*
-             * Actualizamos solamente los campos que se pueden
-             * modificar desde el formulario.
+             * Actualizamos los campos editables.
              */
             usuarioExistente.setNombre(
                     usuario.getNombre()
@@ -226,10 +251,8 @@ public class UsuarioController {
             );
 
             /*
-             * Si el checkbox de activo llegó con un valor,
-             * lo actualizamos.
-             *
-             * Si llegó null, conservamos el valor anterior.
+             * Conservamos el estado anterior si el formulario
+             * no envía el checkbox.
              */
             if (usuario.getActivo() != null) {
 
@@ -239,13 +262,16 @@ public class UsuarioController {
             }
 
             /*
-             * IMPORTANTE:
-             *
-             * Si la contraseña viene vacía, NO modificamos
-             * la contraseña que ya tiene el usuario.
+             * ==================================================
+             * CONTRASEÑA
+             * ==================================================
              *
              * Si el usuario escribió una nueva contraseña,
-             * entonces sí la actualizamos.
+             * la enviamos al servicio.
+             *
+             * El servicio se encargará de convertirla a BCrypt.
+             *
+             * Si viene vacía, conservamos la contraseña actual.
              */
             if (usuario.getContrasena() != null
                     && !usuario.getContrasena().isBlank()) {
@@ -256,7 +282,7 @@ public class UsuarioController {
             }
 
             /*
-             * Guardamos el usuario existente.
+             * El servicio se encarga de BCrypt.
              */
             usuarioService.actualizar(
                     usuarioExistente
@@ -271,18 +297,16 @@ public class UsuarioController {
         }
 
         /*
-         * ==========================================================
+         * ======================================================
          * CREAR USUARIO
-         * ==========================================================
+         * ======================================================
          */
-
         usuario.setRol(
                 rol.get()
         );
 
         /*
-         * Los usuarios nuevos quedan activos por defecto
-         * si el formulario no envía el valor.
+         * Los usuarios nuevos quedan activos por defecto.
          */
         if (usuario.getActivo() == null) {
 
@@ -290,7 +314,15 @@ public class UsuarioController {
         }
 
         /*
-         * Guardamos el nuevo usuario.
+         * ======================================================
+         * IMPORTANTE
+         * ======================================================
+         *
+         * Aquí NO hacemos BCrypt.
+         *
+         * UsuarioService.registrar() recibe la contraseña
+         * normal y automáticamente la convierte a BCrypt
+         * antes de guardarla.
          */
         usuarioService.registrar(
                 usuario
@@ -304,14 +336,18 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
+    /*
+     * ==========================================================
+     * DETALLES
+     * ==========================================================
+     */
     @GetMapping("/details/{id}")
     public String details(
             @PathVariable Integer id,
             Model model) {
 
-        Usuario usuario = usuarioService.buscarPorId(
-                id
-        );
+        Usuario usuario =
+                usuarioService.buscarPorId(id);
 
         model.addAttribute(
                 "usuario",
@@ -321,14 +357,18 @@ public class UsuarioController {
         return "usuarios/details";
     }
 
+    /*
+     * ==========================================================
+     * EDITAR
+     * ==========================================================
+     */
     @GetMapping("/edit/{id}")
     public String edit(
             @PathVariable Integer id,
             Model model) {
 
-        Usuario usuario = usuarioService.buscarPorId(
-                id
-        );
+        Usuario usuario =
+                usuarioService.buscarPorId(id);
 
         model.addAttribute(
                 "usuario",
@@ -343,14 +383,18 @@ public class UsuarioController {
         return "usuarios/edit";
     }
 
+    /*
+     * ==========================================================
+     * ELIMINAR - CONFIRMACIÓN
+     * ==========================================================
+     */
     @GetMapping("/remove/{id}")
     public String remove(
             @PathVariable Integer id,
             Model model) {
 
-        Usuario usuario = usuarioService.buscarPorId(
-                id
-        );
+        Usuario usuario =
+                usuarioService.buscarPorId(id);
 
         model.addAttribute(
                 "usuario",
@@ -360,6 +404,11 @@ public class UsuarioController {
         return "usuarios/delete";
     }
 
+    /*
+     * ==========================================================
+     * ELIMINAR
+     * ==========================================================
+     */
     @PostMapping("/delete")
     public String delete(
             Usuario usuario,
@@ -377,6 +426,11 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
+    /*
+     * ==========================================================
+     * NÚMEROS DE PÁGINA
+     * ==========================================================
+     */
     private void agregarNumerosDePagina(
             Model model,
             Page<Usuario> usuarios) {

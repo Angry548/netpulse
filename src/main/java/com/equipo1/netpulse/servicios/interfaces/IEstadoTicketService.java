@@ -14,9 +14,16 @@ public interface IEstadoTicketService {
 
     EstadoTicket buscarPorNombre(String nombre);
 
+    Page<EstadoTicket> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable
+    );
+
     List<EstadoTicket> obtenerTodos();
 
-    Page<EstadoTicket> buscarTodosPaginados(Pageable pageable);
+    Page<EstadoTicket> buscarTodosPaginados(
+            Pageable pageable
+    );
 
     EstadoTicket actualizar(EstadoTicket estado);
 

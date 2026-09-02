@@ -7,9 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IPrioridadTicketRepository extends JpaRepository<PrioridadTicket, Integer> {
+public interface IPrioridadTicketRepository
+        extends JpaRepository<PrioridadTicket, Integer> {
 
     Optional<PrioridadTicket> findByNombre(String nombre);
+
+    Page<PrioridadTicket> findByNombreContainingIgnoreCase(
+            String nombre,
+            Pageable pageable
+    );
 
     Page<PrioridadTicket> findAll(Pageable pageable);
 }

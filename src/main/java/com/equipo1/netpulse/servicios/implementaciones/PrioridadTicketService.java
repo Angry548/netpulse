@@ -21,23 +21,40 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     }
 
     @Override
-    public PrioridadTicket crear(PrioridadTicket prioridad) {
+    public PrioridadTicket crear(
+            PrioridadTicket prioridad) {
 
         return prioridadTicketRepository.save(prioridad);
     }
 
     @Override
-    public PrioridadTicket buscarPorId(Integer id) {
+    public PrioridadTicket buscarPorId(
+            Integer id) {
 
-        return prioridadTicketRepository.findById(id).orElse(null);
+        return prioridadTicketRepository
+                .findById(id)
+                .orElse(null);
     }
 
     @Override
-    public PrioridadTicket buscarPorNombre(String nombre) {
+    public PrioridadTicket buscarPorNombre(
+            String nombre) {
 
         return prioridadTicketRepository
                 .findByNombre(nombre)
                 .orElse(null);
+    }
+
+    @Override
+    public Page<PrioridadTicket> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable) {
+
+        return prioridadTicketRepository
+                .findByNombreContainingIgnoreCase(
+                        nombre,
+                        pageable
+                );
     }
 
     @Override
@@ -50,17 +67,20 @@ public class PrioridadTicketService implements IPrioridadTicketService {
     public Page<PrioridadTicket> buscarTodosPaginados(
             Pageable pageable) {
 
-        return prioridadTicketRepository.findAll(pageable);
+        return prioridadTicketRepository
+                .findAll(pageable);
     }
 
     @Override
-    public PrioridadTicket actualizar(PrioridadTicket prioridad) {
+    public PrioridadTicket actualizar(
+            PrioridadTicket prioridad) {
 
         return prioridadTicketRepository.save(prioridad);
     }
 
     @Override
-    public void eliminarPorId(Integer id) {
+    public void eliminarPorId(
+            Integer id) {
 
         prioridadTicketRepository.deleteById(id);
     }

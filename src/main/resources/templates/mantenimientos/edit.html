@@ -14,9 +14,11 @@
 
     <div class="container-fluid">
 
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
+
                 <h2 class="mb-1">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                     Editar Mantenimiento
@@ -25,10 +27,13 @@
                 <p class="text-muted mb-0">
                     Modifica la información del mantenimiento.
                 </p>
+
             </div>
 
         </div>
 
+
+        <!-- TARJETA -->
         <div class="card shadow-sm">
 
             <div class="card-header">
@@ -39,23 +44,30 @@
 
             </div>
 
+
             <div class="card-body">
 
                 <form th:action="@{/mantenimientos/save}"
                       th:object="${mantenimiento}"
                       method="post">
 
+
+                    <!-- ID -->
                     <input type="hidden"
                            th:field="*{id}">
 
+
                     <div class="row">
+
 
                         <!-- EQUIPO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEquipo"
                                    class="form-label">
+
                                 Equipo
+
                             </label>
 
                             <select id="idEquipo"
@@ -68,9 +80,9 @@
                                 </option>
 
                                 <option th:each="equipo : ${equipos}"
-                                        th:value="${equipo.id}"
+                                        th:value="${equipo.idEquipo}"
                                         th:text="${equipo.nombre}"
-                                        th:selected="${mantenimiento.equipo != null and mantenimiento.equipo.id == equipo.id}">
+                                        th:selected="${mantenimiento.equipo != null and mantenimiento.equipo.idEquipo == equipo.idEquipo}">
                                 </option>
 
                             </select>
@@ -88,7 +100,9 @@
 
                             <label for="idTecnico"
                                    class="form-label">
+
                                 Técnico
+
                             </label>
 
                             <select id="idTecnico"
@@ -121,7 +135,9 @@
 
                             <label for="idTicket"
                                    class="form-label">
+
                                 Ticket
+
                             </label>
 
                             <select id="idTicket"
@@ -133,9 +149,9 @@
                                 </option>
 
                                 <option th:each="ticket : ${tickets}"
-                                        th:value="${ticket.id}"
-                                        th:text="'Ticket #' + ${ticket.id}"
-                                        th:selected="${mantenimiento.ticket != null and mantenimiento.ticket.id == ticket.id}">
+                                        th:value="${ticket.idTicket}"
+                                        th:text="${'Ticket #' + ticket.idTicket}"
+                                        th:selected="${mantenimiento.ticket != null and mantenimiento.ticket.idTicket == ticket.idTicket}">
                                 </option>
 
                             </select>
@@ -148,7 +164,9 @@
 
                             <label for="tipo"
                                    class="form-label">
+
                                 Tipo de mantenimiento
+
                             </label>
 
                             <select id="tipo"
@@ -180,7 +198,9 @@
 
                             <label for="descripcion"
                                    class="form-label">
+
                                 Descripción
+
                             </label>
 
                             <textarea id="descripcion"
@@ -202,7 +222,9 @@
 
                             <label for="repuestos"
                                    class="form-label">
+
                                 Repuestos utilizados
+
                             </label>
 
                             <textarea id="repuestos"
@@ -219,7 +241,9 @@
 
                             <label for="fecha"
                                    class="form-label">
+
                                 Fecha
+
                             </label>
 
                             <input type="datetime-local"
@@ -231,8 +255,22 @@
 
                     </div>
 
+
+                    <!-- ERROR -->
+                    <div th:if="${error != null}"
+                         class="alert alert-danger">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        <span th:text="${error}"></span>
+
+                    </div>
+
+
                     <hr>
 
+
+                    <!-- BOTONES -->
                     <div class="d-flex justify-content-end gap-2">
 
                         <a th:href="@{/mantenimientos}"
@@ -246,6 +284,7 @@
                                 class="btn btn-primary">
 
                             <i class="fa-solid fa-save"></i>
+
                             Guardar Cambios
 
                         </button>

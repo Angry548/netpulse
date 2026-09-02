@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,50 +46,23 @@ public class PrioridadTicketController {
         int pageSize = size.orElse(5);
 
         Pageable pageable =
-                PageRequest.of(currentPage, pageSize);
+                PageRequest.of(
+                        currentPage,
+                        pageSize,
+                        Sort.by(Sort.Direction.ASC, "id")
+                );
 
         String filtroNombre =
                 nombre.orElse("").trim();
 
         Page<PrioridadTicket> prioridades;
 
-        /*
-         * ==========================================================
-         * BUSCAR POR ID
-         * ==========================================================
-         */
+
         if (id.isPresent()) {
 
             PrioridadTicket prioridad =
-                    prioridadTicketService.buscarPorId(id.get());
-
-            if (prioridad != null) {
-
-                prioridades = new PageImpl<>(
-                        List.of(prioridad),
-                        pageable,
-                        1
-                );
-
-            } else {
-
-                prioridades = new PageImpl<>(
-                        List.of(),
-                        pageable,
-                        0
-                );
-            }
-
-            /*
-             * ==========================================================
-             * BUSCAR POR NOMBRE
-             * ==========================================================
-             */
-        } else if (!filtroNombre.isEmpty()) {
-
-            PrioridadTicket prioridad =
-                    prioridadTicketService.buscarPorNombre(
-                            filtroNombre
+                    prioridadTicketService.buscarPorId(
+                            id.get()
                     );
 
             if (prioridad != null) {
@@ -108,11 +82,16 @@ public class PrioridadTicketController {
                 );
             }
 
-            /*
-             * ==========================================================
-             * MOSTRAR TODAS
-             * ==========================================================
-             */
+
+        } else if (!filtroNombre.isEmpty()) {
+
+            prioridades =
+                    prioridadTicketService.buscarPorNombrePaginado(
+                            filtroNombre,
+                            pageable
+                    );
+
+
         } else {
 
             prioridades =
@@ -145,7 +124,8 @@ public class PrioridadTicketController {
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(
+            Model model) {
 
         PrioridadTicket prioridad =
                 new PrioridadTicket();
@@ -168,11 +148,7 @@ public class PrioridadTicketController {
         boolean esEdicion =
                 prioridad.getId() != null;
 
-        /*
-         * ==========================================================
-         * VALIDACIÓN
-         * ==========================================================
-         */
+
         if (result.hasErrors()) {
 
             if (esEdicion) {
@@ -183,18 +159,15 @@ public class PrioridadTicketController {
             return "prioridades-ticket/create";
         }
 
-        /*
-         * ==========================================================
-         * VALIDAR NOMBRE DUPLICADO
-         * ==========================================================
-         */
+
         PrioridadTicket prioridadExistente =
                 prioridadTicketService.buscarPorNombre(
                         prioridad.getNombre()
                 );
 
         if (prioridadExistente != null
-                && !prioridadExistente.getId()
+                && !prioridadExistente
+                .getId()
                 .equals(prioridad.getId())) {
 
             model.addAttribute(
@@ -210,11 +183,7 @@ public class PrioridadTicketController {
             return "prioridades-ticket/create";
         }
 
-        /*
-         * ==========================================================
-         * EDITAR PRIORIDAD
-         * ==========================================================
-         */
+
         if (esEdicion) {
 
             PrioridadTicket prioridadActual =
@@ -248,11 +217,6 @@ public class PrioridadTicketController {
             return "redirect:/prioridades-ticket";
         }
 
-        /*
-         * ==========================================================
-         * CREAR PRIORIDAD
-         * ==========================================================
-         */
         prioridadTicketService.crear(
                 prioridad
         );

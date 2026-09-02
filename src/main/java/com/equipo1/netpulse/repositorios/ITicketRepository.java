@@ -1,31 +1,181 @@
 package com.equipo1.netpulse.repositorios;
 
+import com.equipo1.netpulse.modelos.CategoriaIncidencia;
+import com.equipo1.netpulse.modelos.Equipo;
+import com.equipo1.netpulse.modelos.EstadoTicket;
+import com.equipo1.netpulse.modelos.PrioridadTicket;
 import com.equipo1.netpulse.modelos.Ticket;
 import com.equipo1.netpulse.modelos.Usuario;
-import com.equipo1.netpulse.modelos.Equipo;
-import com.equipo1.netpulse.modelos.CategoriaIncidencia;
-import com.equipo1.netpulse.modelos.PrioridadTicket;
-import com.equipo1.netpulse.modelos.EstadoTicket;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ITicketRepository extends JpaRepository<Ticket, Integer> {
 
-    Page<Ticket> findAll(Pageable pageable);
+    @Query(
+            value = """
+                SELECT t
+                FROM Ticket t
+                JOIN FETCH t.equipo
+                JOIN FETCH t.usuarioReporta
+                LEFT JOIN FETCH t.tecnico
+                JOIN FETCH t.categoria
+                JOIN FETCH t.prioridad
+                JOIN FETCH t.estadoTicket
+                """,
+            countQuery = """
+                SELECT COUNT(t)
+                FROM Ticket t
+                """
+    )
+    Page<Ticket> findAllWithRelations(Pageable pageable);
 
-    List<Ticket> findByUsuarioReporta(Usuario usuario);
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        """)
+    List<Ticket> findAllWithRelations();
 
-    List<Ticket> findByTecnico(Usuario usuario);
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.idTicket = :id
+        """)
+    Optional<Ticket> findByIdWithRelations(
+            @Param("id") Integer id
+    );
 
-    List<Ticket> findByEquipo(Equipo equipo);
+    @Query(
+            value = """
+                SELECT t
+                FROM Ticket t
+                JOIN FETCH t.equipo
+                JOIN FETCH t.usuarioReporta
+                LEFT JOIN FETCH t.tecnico
+                JOIN FETCH t.categoria
+                JOIN FETCH t.prioridad
+                JOIN FETCH t.estadoTicket
+                WHERE t.idTicket = :id
+                """,
+            countQuery = """
+                SELECT COUNT(t)
+                FROM Ticket t
+                WHERE t.idTicket = :id
+                """
+    )
+    Page<Ticket> findByIdWithRelations(
+            @Param("id") Integer id,
+            Pageable pageable
+    );
 
-    List<Ticket> findByCategoria(CategoriaIncidencia categoria);
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.usuarioReporta = :usuario
+        """)
+    List<Ticket> findByUsuarioReportaWithRelations(
+            @Param("usuario") Usuario usuario
+    );
 
-    List<Ticket> findByPrioridad(PrioridadTicket prioridad);
 
-    List<Ticket> findByEstadoTicket(EstadoTicket estadoTicket);
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.tecnico = :usuario
+        """)
+    List<Ticket> findByTecnicoWithRelations(
+            @Param("usuario") Usuario usuario
+    );
+
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.equipo = :equipo
+        """)
+    List<Ticket> findByEquipoWithRelations(
+            @Param("equipo") Equipo equipo
+    );
+
+
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.categoria = :categoria
+        """)
+    List<Ticket> findByCategoriaWithRelations(
+            @Param("categoria") CategoriaIncidencia categoria
+    );
+
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.prioridad = :prioridad
+        """)
+    List<Ticket> findByPrioridadWithRelations(
+            @Param("prioridad") PrioridadTicket prioridad
+    );
+
+    @Query("""
+        SELECT t
+        FROM Ticket t
+        JOIN FETCH t.equipo
+        JOIN FETCH t.usuarioReporta
+        LEFT JOIN FETCH t.tecnico
+        JOIN FETCH t.categoria
+        JOIN FETCH t.prioridad
+        JOIN FETCH t.estadoTicket
+        WHERE t.estadoTicket = :estadoTicket
+        """)
+    List<Ticket> findByEstadoTicketWithRelations(
+            @Param("estadoTicket") EstadoTicket estadoTicket
+    );
+
 }

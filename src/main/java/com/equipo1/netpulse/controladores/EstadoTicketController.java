@@ -51,40 +51,12 @@ public class EstadoTicketController {
 
         Page<EstadoTicket> estados;
 
-        /*
-         * Si se busca por ID, obtenemos el registro por ID
-         * y lo convertimos a una página de un solo elemento.
-         */
+
         if (id.isPresent()) {
 
             EstadoTicket estado =
-                    estadoTicketService.buscarPorId(id.get());
-
-            if (estado != null) {
-
-                List<EstadoTicket> lista =
-                        List.of(estado);
-
-                estados = new org.springframework.data.domain.PageImpl<>(
-                        lista,
-                        pageable,
-                        1
-                );
-
-            } else {
-
-                estados = new org.springframework.data.domain.PageImpl<>(
-                        List.of(),
-                        pageable,
-                        0
-                );
-            }
-
-        } else if (!filtroNombre.isEmpty()) {
-
-            EstadoTicket estado =
-                    estadoTicketService.buscarPorNombre(
-                            filtroNombre
+                    estadoTicketService.buscarPorId(
+                            id.get()
                     );
 
             if (estado != null) {
@@ -92,20 +64,32 @@ public class EstadoTicketController {
                 List<EstadoTicket> lista =
                         List.of(estado);
 
-                estados = new org.springframework.data.domain.PageImpl<>(
-                        lista,
-                        pageable,
-                        1
-                );
+                estados =
+                        new org.springframework.data.domain.PageImpl<>(
+                                lista,
+                                pageable,
+                                1
+                        );
 
             } else {
 
-                estados = new org.springframework.data.domain.PageImpl<>(
-                        List.of(),
-                        pageable,
-                        0
-                );
+                estados =
+                        new org.springframework.data.domain.PageImpl<>(
+                                List.of(),
+                                pageable,
+                                0
+                        );
             }
+
+
+        } else if (!filtroNombre.isEmpty()) {
+
+            estados =
+                    estadoTicketService.buscarPorNombrePaginado(
+                            filtroNombre,
+                            pageable
+                    );
+
 
         } else {
 
@@ -139,7 +123,8 @@ public class EstadoTicketController {
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(
+            Model model) {
 
         EstadoTicket estado =
                 new EstadoTicket();
@@ -162,9 +147,8 @@ public class EstadoTicketController {
         boolean esEdicion =
                 estado.getId() != null;
 
-        /*
-         * Validación del formulario.
-         */
+
+
         if (result.hasErrors()) {
 
             if (esEdicion) {
@@ -175,17 +159,15 @@ public class EstadoTicketController {
             return "estados-ticket/create";
         }
 
-        /*
-         * Verificamos que no exista otro estado
-         * con el mismo nombre.
-         */
         EstadoTicket estadoExistente =
                 estadoTicketService.buscarPorNombre(
                         estado.getNombre()
                 );
 
         if (estadoExistente != null
-                && !estadoExistente.getId().equals(estado.getId())) {
+                && !estadoExistente
+                .getId()
+                .equals(estado.getId())) {
 
             model.addAttribute(
                     "error",
@@ -200,11 +182,7 @@ public class EstadoTicketController {
             return "estados-ticket/create";
         }
 
-        /*
-         * ==========================================================
-         * EDITAR
-         * ==========================================================
-         */
+
         if (esEdicion) {
 
             EstadoTicket estadoActual =
@@ -242,11 +220,6 @@ public class EstadoTicketController {
             return "redirect:/estados-ticket";
         }
 
-        /*
-         * ==========================================================
-         * CREAR
-         * ==========================================================
-         */
 
         estadoTicketService.crear(
                 estado

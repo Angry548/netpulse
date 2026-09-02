@@ -47,6 +47,18 @@ public class CategoriaIncidenciaService implements ICategoriaIncidenciaService {
     }
 
     @Override
+    public Page<CategoriaIncidencia> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable) {
+
+        return categoriaIncidenciaRepository
+                .findByNombreContainingIgnoreCase(
+                        nombre,
+                        pageable
+                );
+    }
+
+    @Override
     public List<CategoriaIncidencia> obtenerTodos() {
 
         return categoriaIncidenciaRepository.findAll();
@@ -56,7 +68,8 @@ public class CategoriaIncidenciaService implements ICategoriaIncidenciaService {
     public Page<CategoriaIncidencia> buscarTodosPaginados(
             Pageable pageable) {
 
-        return categoriaIncidenciaRepository.findAll(pageable);
+        return categoriaIncidenciaRepository
+                .findAll(pageable);
     }
 
     @Override

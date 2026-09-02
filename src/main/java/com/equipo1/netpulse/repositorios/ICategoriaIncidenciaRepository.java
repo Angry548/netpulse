@@ -11,5 +11,10 @@ public interface ICategoriaIncidenciaRepository extends JpaRepository<CategoriaI
 
     Optional<CategoriaIncidencia> findByNombre(String nombre);
 
+    Page<CategoriaIncidencia> findByNombreContainingIgnoreCase(
+            String nombre,
+            Pageable pageable
+    );
+
     Page<CategoriaIncidencia> findAll(Pageable pageable);
 }

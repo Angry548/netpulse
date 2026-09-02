@@ -14,17 +14,24 @@
 
     <div class="container-fluid">
 
+
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
 
                 <h2 class="mb-1 text-danger">
+
                     <i class="fa-solid fa-trash"></i>
+
                     Eliminar Mantenimiento
+
                 </h2>
 
                 <p class="text-muted mb-0">
+
                     Confirma la eliminación del mantenimiento.
+
                 </p>
 
             </div>
@@ -32,12 +39,15 @@
         </div>
 
 
+        <!-- TARJETA -->
         <div class="card shadow-sm border-danger">
 
             <div class="card-header bg-danger text-white">
 
                 <h5 class="mb-0">
+
                     Confirmación
+
                 </h5>
 
             </div>
@@ -46,6 +56,7 @@
             <div class="card-body">
 
 
+                <!-- ADVERTENCIA -->
                 <div class="alert alert-warning">
 
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -61,11 +72,14 @@
 
                 <div class="row">
 
+
                     <!-- ID -->
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             ID
+
                         </label>
 
                         <input type="text"
@@ -80,7 +94,9 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Equipo
+
                         </label>
 
                         <input type="text"
@@ -95,7 +111,9 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Técnico
+
                         </label>
 
                         <input type="text"
@@ -110,12 +128,14 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Ticket
+
                         </label>
 
                         <input type="text"
                                class="form-control"
-                               th:value="${mantenimiento.ticket != null ? 'Ticket #' + mantenimiento.ticket.id : 'Sin ticket asociado'}"
+                               th:value="${mantenimiento.ticket != null ? 'Ticket #' + mantenimiento.ticket.idTicket : 'Sin ticket asociado'}"
                                readonly>
 
                     </div>
@@ -125,12 +145,14 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Tipo de mantenimiento
+
                         </label>
 
                         <input type="text"
                                class="form-control"
-                               th:value="${mantenimiento.tipo}"
+                               th:value="${mantenimiento.tipo != null ? mantenimiento.tipo : 'Sin tipo'}"
                                readonly>
 
                     </div>
@@ -140,12 +162,16 @@
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Fecha
+
                         </label>
 
                         <input type="text"
                                class="form-control"
-                               th:value="${mantenimiento.fecha != null ? #temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               th:value="${mantenimiento.fecha != null
+                                          ? #temporals.format(mantenimiento.fecha, 'dd/MM/yyyy HH:mm')
+                                          : 'No registrada'}"
                                readonly>
 
                     </div>
@@ -155,13 +181,16 @@
                     <div class="col-md-12 mb-3">
 
                         <label class="form-label fw-bold">
+
                             Descripción
+
                         </label>
 
                         <textarea class="form-control"
                                   rows="4"
                                   readonly
                                   th:text="${mantenimiento.descripcion}">
+
                         </textarea>
 
                     </div>
@@ -172,6 +201,7 @@
                 <hr>
 
 
+                <!-- ELIMINAR -->
                 <form th:action="@{/mantenimientos/delete}"
                       method="post">
 

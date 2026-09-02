@@ -6,24 +6,29 @@ import com.equipo1.netpulse.modelos.EstadoTicket;
 import com.equipo1.netpulse.modelos.PrioridadTicket;
 import com.equipo1.netpulse.modelos.Ticket;
 import com.equipo1.netpulse.modelos.Usuario;
+
 import com.equipo1.netpulse.repositorios.ICategoriaIncidenciaRepository;
 import com.equipo1.netpulse.repositorios.IEstadoTicketRepository;
 import com.equipo1.netpulse.repositorios.IEquipoRepository;
 import com.equipo1.netpulse.repositorios.IPrioridadTicketRepository;
 import com.equipo1.netpulse.repositorios.IUsuarioRepository;
+
 import com.equipo1.netpulse.servicios.interfaces.ITicketService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collections;
@@ -35,8 +40,8 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {
-
     private final ITicketService ticketService;
+
     private final IUsuarioRepository usuarioRepository;
     private final IEquipoRepository equipoRepository;
     private final ICategoriaIncidenciaRepository categoriaRepository;
@@ -74,47 +79,44 @@ public class TicketController {
         }
 
         Pageable pageable =
-                PageRequest.of(currentPage, pageSize);
+                PageRequest.of(
+                        currentPage,
+                        pageSize
+                );
 
         Page<Ticket> tickets;
 
-        /*
-         * ==========================================================
-         * BUSQUEDA POR ID
-         * ==========================================================
-         */
         if (id.isPresent()) {
 
             Ticket ticket =
-                    ticketService.buscarPorId(id.get());
+                    ticketService.buscarPorId(
+                            id.get()
+                    );
 
             if (ticket != null) {
 
                 List<Ticket> resultado =
                         Collections.singletonList(ticket);
 
-                tickets = new PageImpl<>(
-                        resultado,
-                        pageable,
-                        1
-                );
+                tickets =
+                        new PageImpl<>(
+                                resultado,
+                                pageable,
+                                1
+                        );
 
             } else {
 
-                tickets = new PageImpl<>(
-                        Collections.emptyList(),
-                        pageable,
-                        0
-                );
+                tickets =
+                        new PageImpl<>(
+                                Collections.emptyList(),
+                                pageable,
+                                0
+                        );
             }
 
         } else {
 
-            /*
-             * ======================================================
-             * LISTADO NORMAL PAGINADO
-             * ======================================================
-             */
             tickets =
                     ticketService.buscarTodosPaginados(
                             pageable
@@ -139,9 +141,9 @@ public class TicketController {
         return "tickets/index";
     }
 
+
     @GetMapping("/create")
-    public String create(
-            Model model) {
+    public String create(Model model) {
 
         Ticket ticket = new Ticket();
 
@@ -155,11 +157,15 @@ public class TicketController {
         return "tickets/create";
     }
 
+
     @PostMapping("/save")
     public String save(
             @RequestParam("idEquipo") Integer idEquipo,
             @RequestParam("idUsuarioReporta") Integer idUsuarioReporta,
-            @RequestParam(value = "idTecnico", required = false) Integer idTecnico,
+            @RequestParam(
+                    value = "idTecnico",
+                    required = false
+            ) Integer idTecnico,
             @RequestParam("idCategoria") Integer idCategoria,
             @RequestParam("idPrioridad") Integer idPrioridad,
             @RequestParam("idEstadoTicket") Integer idEstadoTicket,
@@ -170,11 +176,7 @@ public class TicketController {
         boolean esEdicion =
                 ticket.getIdTicket() != null;
 
-        /*
-         * ==========================================================
-         * BUSCAR EQUIPO
-         * ==========================================================
-         */
+
         Optional<Equipo> equipo =
                 equipoRepository.findById(idEquipo);
 
@@ -194,11 +196,6 @@ public class TicketController {
             return "tickets/create";
         }
 
-        /*
-         * ==========================================================
-         * BUSCAR USUARIO QUE REPORTA
-         * ==========================================================
-         */
         Optional<Usuario> usuarioReporta =
                 usuarioRepository.findById(
                         idUsuarioReporta
@@ -220,11 +217,7 @@ public class TicketController {
             return "tickets/create";
         }
 
-        /*
-         * ==========================================================
-         * BUSCAR CATEGORÍA
-         * ==========================================================
-         */
+
         Optional<CategoriaIncidencia> categoria =
                 categoriaRepository.findById(
                         idCategoria
@@ -246,11 +239,7 @@ public class TicketController {
             return "tickets/create";
         }
 
-        /*
-         * ==========================================================
-         * BUSCAR PRIORIDAD
-         * ==========================================================
-         */
+
         Optional<PrioridadTicket> prioridad =
                 prioridadRepository.findById(
                         idPrioridad
@@ -272,11 +261,7 @@ public class TicketController {
             return "tickets/create";
         }
 
-        /*
-         * ==========================================================
-         * BUSCAR ESTADO
-         * ==========================================================
-         */
+
         Optional<EstadoTicket> estado =
                 estadoTicketRepository.findById(
                         idEstadoTicket
@@ -298,11 +283,7 @@ public class TicketController {
             return "tickets/create";
         }
 
-        /*
-         * ==========================================================
-         * ASIGNAR RELACIONES
-         * ==========================================================
-         */
+
         ticket.setEquipo(
                 equipo.get()
         );
@@ -323,11 +304,7 @@ public class TicketController {
                 estado.get()
         );
 
-        /*
-         * ==========================================================
-         * TÉCNICO
-         * ==========================================================
-         */
+
         if (idTecnico != null) {
 
             Optional<Usuario> tecnico =
@@ -360,11 +337,7 @@ public class TicketController {
             ticket.setTecnico(null);
         }
 
-        /*
-         * ==========================================================
-         * EDITAR TICKET
-         * ==========================================================
-         */
+
         if (esEdicion) {
 
             Ticket ticketExistente =
@@ -381,6 +354,7 @@ public class TicketController {
 
                 return "redirect:/tickets";
             }
+
 
             ticketExistente.setEquipo(
                     ticket.getEquipo()
@@ -410,11 +384,7 @@ public class TicketController {
                     ticket.getDescripcion()
             );
 
-            /*
-             * Si se asignó un técnico y todavía no existe
-             * fecha de asignación, utilizamos el método
-             * asignarTecnico() del servicio.
-             */
+
             if (ticketExistente.getTecnico() != null
                     && ticketExistente.getFechaAsignacion() == null) {
 
@@ -437,19 +407,15 @@ public class TicketController {
             return "redirect:/tickets";
         }
 
-        /*
-         * ==========================================================
-         * CREAR TICKET
-         * ==========================================================
-         */
         Ticket ticketGuardado =
                 ticketService.registrar(
                         ticket
                 );
 
+
         /*
-         * Si el ticket fue creado con técnico,
-         * registramos la fecha de asignación.
+         * Si se creó con técnico,
+         * registrar fecha de asignación.
          */
         if (ticketGuardado.getTecnico() != null) {
 
@@ -469,14 +435,15 @@ public class TicketController {
     @GetMapping("/details/{id}")
     public String details(
             @PathVariable Integer id,
-            Model model) {
+            Model model,
+            RedirectAttributes attributes) {
 
         Ticket ticket =
                 ticketService.buscarPorId(id);
 
         if (ticket == null) {
 
-            model.addAttribute(
+            attributes.addFlashAttribute(
                     "error",
                     "El ticket no existe."
             );
@@ -497,14 +464,15 @@ public class TicketController {
     @GetMapping("/edit/{id}")
     public String edit(
             @PathVariable Integer id,
-            Model model) {
+            Model model,
+            RedirectAttributes attributes) {
 
         Ticket ticket =
                 ticketService.buscarPorId(id);
 
         if (ticket == null) {
 
-            model.addAttribute(
+            attributes.addFlashAttribute(
                     "error",
                     "El ticket no existe."
             );
@@ -522,17 +490,19 @@ public class TicketController {
         return "tickets/edit";
     }
 
+
     @GetMapping("/remove/{id}")
     public String remove(
             @PathVariable Integer id,
-            Model model) {
+            Model model,
+            RedirectAttributes attributes) {
 
         Ticket ticket =
                 ticketService.buscarPorId(id);
 
         if (ticket == null) {
 
-            model.addAttribute(
+            attributes.addFlashAttribute(
                     "error",
                     "El ticket no existe."
             );
@@ -565,11 +535,6 @@ public class TicketController {
         return "redirect:/tickets";
     }
 
-    /*
-     * ==============================================================
-     * ASIGNAR TÉCNICO
-     * ==============================================================
-     */
     @PostMapping("/asignar-tecnico")
     public String asignarTecnico(
             @RequestParam("idTicket") Integer idTicket,
@@ -577,7 +542,9 @@ public class TicketController {
             RedirectAttributes attributes) {
 
         Ticket ticket =
-                ticketService.buscarPorId(idTicket);
+                ticketService.buscarPorId(
+                        idTicket
+                );
 
         if (ticket == null) {
 
@@ -590,7 +557,9 @@ public class TicketController {
         }
 
         Optional<Usuario> tecnico =
-                usuarioRepository.findById(idTecnico);
+                usuarioRepository.findById(
+                        idTecnico
+                );
 
         if (tecnico.isEmpty()) {
 
@@ -599,7 +568,8 @@ public class TicketController {
                     "El técnico seleccionado no existe."
             );
 
-            return "redirect:/tickets/details/" + idTicket;
+            return "redirect:/tickets/details/"
+                    + idTicket;
         }
 
         ticket.setTecnico(
@@ -615,14 +585,10 @@ public class TicketController {
                 "Técnico asignado correctamente"
         );
 
-        return "redirect:/tickets/details/" + idTicket;
+        return "redirect:/tickets/details/"
+                + idTicket;
     }
 
-    /*
-     * ==============================================================
-     * CAMBIAR ESTADO
-     * ==============================================================
-     */
     @PostMapping("/cambiar-estado")
     public String cambiarEstado(
             @RequestParam("idTicket") Integer idTicket,
@@ -630,7 +596,9 @@ public class TicketController {
             RedirectAttributes attributes) {
 
         Ticket ticket =
-                ticketService.buscarPorId(idTicket);
+                ticketService.buscarPorId(
+                        idTicket
+                );
 
         if (ticket == null) {
 
@@ -654,7 +622,8 @@ public class TicketController {
                     "El estado seleccionado no existe."
             );
 
-            return "redirect:/tickets/details/" + idTicket;
+            return "redirect:/tickets/details/"
+                    + idTicket;
         }
 
         ticket.setEstadoTicket(
@@ -670,14 +639,11 @@ public class TicketController {
                 "Estado del ticket actualizado correctamente"
         );
 
-        return "redirect:/tickets/details/" + idTicket;
+        return "redirect:/tickets/details/"
+                + idTicket;
     }
 
-    /*
-     * ==============================================================
-     * CAMBIAR PRIORIDAD
-     * ==============================================================
-     */
+
     @PostMapping("/cambiar-prioridad")
     public String cambiarPrioridad(
             @RequestParam("idTicket") Integer idTicket,
@@ -685,7 +651,9 @@ public class TicketController {
             RedirectAttributes attributes) {
 
         Ticket ticket =
-                ticketService.buscarPorId(idTicket);
+                ticketService.buscarPorId(
+                        idTicket
+                );
 
         if (ticket == null) {
 
@@ -709,7 +677,8 @@ public class TicketController {
                     "La prioridad seleccionada no existe."
             );
 
-            return "redirect:/tickets/details/" + idTicket;
+            return "redirect:/tickets/details/"
+                    + idTicket;
         }
 
         ticket.setPrioridad(
@@ -725,21 +694,20 @@ public class TicketController {
                 "Prioridad del ticket actualizada correctamente"
         );
 
-        return "redirect:/tickets/details/" + idTicket;
+        return "redirect:/tickets/details/"
+                + idTicket;
     }
 
-    /*
-     * ==============================================================
-     * RESOLVER TICKET
-     * ==============================================================
-     */
+
     @PostMapping("/resolver")
     public String resolver(
             @RequestParam("idTicket") Integer idTicket,
             RedirectAttributes attributes) {
 
         Ticket ticket =
-                ticketService.buscarPorId(idTicket);
+                ticketService.buscarPorId(
+                        idTicket
+                );
 
         if (ticket == null) {
 
@@ -760,16 +728,11 @@ public class TicketController {
                 "Ticket marcado como resuelto correctamente"
         );
 
-        return "redirect:/tickets/details/" + idTicket;
+        return "redirect:/tickets/details/"
+                + idTicket;
     }
 
-    /*
-     * ==============================================================
-     * CARGAR CATÁLOGOS
-     * ==============================================================
-     */
-    private void cargarCatalogos(
-            Model model) {
+    private void cargarCatalogos(Model model) {
 
         model.addAttribute(
                 "usuarios",
@@ -802,11 +765,7 @@ public class TicketController {
         );
     }
 
-    /*
-     * ==============================================================
-     * NÚMEROS DE PÁGINA
-     * ==============================================================
-     */
+
     private void agregarNumerosDePagina(
             Model model,
             Page<Ticket> tickets) {
@@ -827,4 +786,5 @@ public class TicketController {
             );
         }
     }
+
 }

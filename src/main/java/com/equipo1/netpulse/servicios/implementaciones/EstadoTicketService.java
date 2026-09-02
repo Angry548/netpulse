@@ -22,13 +22,15 @@ public class EstadoTicketService implements IEstadoTicketService {
     }
 
     @Override
-    public EstadoTicket crear(EstadoTicket estado) {
+    public EstadoTicket crear(
+            EstadoTicket estado) {
 
         return estadoTicketRepository.save(estado);
     }
 
     @Override
-    public EstadoTicket buscarPorId(Integer id) {
+    public EstadoTicket buscarPorId(
+            Integer id) {
 
         Optional<EstadoTicket> estado =
                 estadoTicketRepository.findById(id);
@@ -37,12 +39,25 @@ public class EstadoTicketService implements IEstadoTicketService {
     }
 
     @Override
-    public EstadoTicket buscarPorNombre(String nombre) {
+    public EstadoTicket buscarPorNombre(
+            String nombre) {
 
         Optional<EstadoTicket> estado =
                 estadoTicketRepository.findByNombre(nombre);
 
         return estado.orElse(null);
+    }
+
+    @Override
+    public Page<EstadoTicket> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable) {
+
+        return estadoTicketRepository
+                .findByNombreContainingIgnoreCase(
+                        nombre,
+                        pageable
+                );
     }
 
     @Override
@@ -59,13 +74,15 @@ public class EstadoTicketService implements IEstadoTicketService {
     }
 
     @Override
-    public EstadoTicket actualizar(EstadoTicket estado) {
+    public EstadoTicket actualizar(
+            EstadoTicket estado) {
 
         return estadoTicketRepository.save(estado);
     }
 
     @Override
-    public void eliminarPorId(Integer id) {
+    public void eliminarPorId(
+            Integer id) {
 
         estadoTicketRepository.deleteById(id);
     }

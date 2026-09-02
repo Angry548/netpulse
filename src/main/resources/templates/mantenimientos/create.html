@@ -14,30 +14,44 @@
 
     <div class="container-fluid">
 
+
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
+
                 <h2 class="mb-1">
+
                     <i class="fa-solid fa-screwdriver-wrench"></i>
+
                     Crear Mantenimiento
+
                 </h2>
 
                 <p class="text-muted mb-0">
+
                     Registra un nuevo mantenimiento en el sistema.
+
                 </p>
+
             </div>
 
         </div>
 
+
+        <!-- TARJETA -->
         <div class="card shadow-sm">
 
             <div class="card-header">
 
                 <h5 class="mb-0">
+
                     Información del mantenimiento
+
                 </h5>
 
             </div>
+
 
             <div class="card-body">
 
@@ -45,14 +59,18 @@
                       th:object="${mantenimiento}"
                       method="post">
 
+
                     <div class="row">
+
 
                         <!-- EQUIPO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEquipo"
                                    class="form-label">
+
                                 Equipo
+
                             </label>
 
                             <select id="idEquipo"
@@ -61,29 +79,37 @@
                                     required>
 
                                 <option value="">
+
                                     Seleccione un equipo
+
                                 </option>
 
                                 <option th:each="equipo : ${equipos}"
-                                        th:value="${equipo.id}"
+                                        th:value="${equipo.idEquipo}"
                                         th:text="${equipo.nombre}">
+
                                 </option>
 
                             </select>
 
+
                             <div class="text-danger"
                                  th:if="${#fields.hasErrors('equipo')}"
                                  th:errors="*{equipo}">
+
                             </div>
 
                         </div>
+
 
                         <!-- TÉCNICO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idTecnico"
                                    class="form-label">
+
                                 Técnico
+
                             </label>
 
                             <select id="idTecnico"
@@ -92,29 +118,37 @@
                                     required>
 
                                 <option value="">
+
                                     Seleccione un técnico
+
                                 </option>
 
-                                <option th:each="usuario : ${usuarios}"
-                                        th:value="${usuario.id}"
-                                        th:text="${usuario.nombre + ' - ' + usuario.correo}">
+                                <option th:each="tecnico : ${tecnicos}"
+                                        th:value="${tecnico.id}"
+                                        th:text="${tecnico.nombre + ' - ' + tecnico.correo}">
+
                                 </option>
 
                             </select>
 
+
                             <div class="text-danger"
                                  th:if="${#fields.hasErrors('tecnico')}"
                                  th:errors="*{tecnico}">
+
                             </div>
 
                         </div>
+
 
                         <!-- TICKET -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idTicket"
                                    class="form-label">
+
                                 Ticket
+
                             </label>
 
                             <select id="idTicket"
@@ -122,24 +156,30 @@
                                     class="form-select">
 
                                 <option value="">
+
                                     Sin ticket asociado
+
                                 </option>
 
                                 <option th:each="ticket : ${tickets}"
-                                        th:value="${ticket.id}"
-                                        th:text="${'Ticket #' + ticket.id}">
+                                        th:value="${ticket.idTicket}"
+                                        th:text="${'Ticket #' + ticket.idTicket}">
+
                                 </option>
 
                             </select>
 
                         </div>
 
+
                         <!-- TIPO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="tipo"
                                    class="form-label">
+
                                 Tipo de mantenimiento
+
                             </label>
 
                             <select id="tipo"
@@ -148,29 +188,37 @@
                                     required>
 
                                 <option value="">
+
                                     Seleccione un tipo
+
                                 </option>
 
-                                <option th:each="tipoMantenimiento : ${tipos}"
-                                        th:value="${tipoMantenimiento}"
-                                        th:text="${tipoMantenimiento}">
+                                <option th:each="tipo : ${tiposMantenimiento}"
+                                        th:value="${tipo}"
+                                        th:text="${tipo}">
+
                                 </option>
 
                             </select>
 
+
                             <div class="text-danger"
                                  th:if="${#fields.hasErrors('tipo')}"
                                  th:errors="*{tipo}">
+
                             </div>
 
                         </div>
+
 
                         <!-- DESCRIPCIÓN -->
                         <div class="col-md-12 mb-3">
 
                             <label for="descripcion"
                                    class="form-label">
+
                                 Descripción
+
                             </label>
 
                             <textarea id="descripcion"
@@ -179,19 +227,24 @@
                                       rows="4"
                                       required></textarea>
 
+
                             <div class="text-danger"
                                  th:if="${#fields.hasErrors('descripcion')}"
                                  th:errors="*{descripcion}">
+
                             </div>
 
                         </div>
+
 
                         <!-- REPUESTOS -->
                         <div class="col-md-12 mb-3">
 
                             <label for="repuestos"
                                    class="form-label">
+
                                 Repuestos utilizados
+
                             </label>
 
                             <textarea id="repuestos"
@@ -204,16 +257,22 @@
 
                     </div>
 
+
+                    <!-- ERROR -->
                     <div th:if="${error != null}"
                          class="alert alert-danger">
 
                         <i class="fa-solid fa-triangle-exclamation"></i>
+
                         <span th:text="${error}"></span>
 
                     </div>
 
+
                     <hr>
 
+
+                    <!-- BOTONES -->
                     <div class="d-flex justify-content-end gap-2">
 
                         <a th:href="@{/mantenimientos}"
@@ -223,10 +282,12 @@
 
                         </a>
 
+
                         <button type="submit"
                                 class="btn btn-primary">
 
                             <i class="fa-solid fa-save"></i>
+
                             Guardar Mantenimiento
 
                         </button>

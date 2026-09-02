@@ -14,9 +14,16 @@ public interface ICategoriaIncidenciaService {
 
     CategoriaIncidencia buscarPorNombre(String nombre);
 
+    Page<CategoriaIncidencia> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable
+    );
+
     List<CategoriaIncidencia> obtenerTodos();
 
-    Page<CategoriaIncidencia> buscarTodosPaginados(Pageable pageable);
+    Page<CategoriaIncidencia> buscarTodosPaginados(
+            Pageable pageable
+    );
 
     CategoriaIncidencia actualizar(CategoriaIncidencia categoria);
 

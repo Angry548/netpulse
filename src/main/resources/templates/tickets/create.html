@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -14,25 +15,24 @@
 
     <div class="container-fluid">
 
+        <!-- ENCABEZADO -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
-
                 <h2 class="mb-1">
-
                     <i class="fa-solid fa-ticket"></i>
                     Crear Ticket
-
                 </h2>
 
                 <p class="text-muted mb-0">
                     Registra un nuevo ticket en el sistema.
                 </p>
-
             </div>
 
         </div>
 
+
+        <!-- TARJETA -->
         <div class="card shadow-sm">
 
             <div class="card-header">
@@ -43,6 +43,7 @@
 
             </div>
 
+
             <div class="card-body">
 
                 <form th:action="@{/tickets/save}"
@@ -52,7 +53,6 @@
                     <div class="row">
 
                         <!-- DESCRIPCIÓN -->
-
                         <div class="col-md-12 mb-3">
 
                             <label for="descripcion"
@@ -66,6 +66,7 @@
                                       th:field="*{descripcion}"
                                       class="form-control"
                                       rows="4"
+                                      maxlength="1000"
                                       required></textarea>
 
                             <div class="text-danger"
@@ -75,8 +76,8 @@
 
                         </div>
 
-                        <!-- EQUIPO -->
 
+                        <!-- EQUIPO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEquipo"
@@ -96,7 +97,7 @@
                                 </option>
 
                                 <option th:each="equipo : ${equipos}"
-                                        th:value="${equipo.id}"
+                                        th:value="${equipo.idEquipo}"
                                         th:text="${equipo.nombre}">
                                 </option>
 
@@ -104,8 +105,8 @@
 
                         </div>
 
-                        <!-- USUARIO QUE REPORTA -->
 
+                        <!-- USUARIO QUE REPORTA -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idUsuarioReporta"
@@ -133,8 +134,8 @@
 
                         </div>
 
-                        <!-- TÉCNICO -->
 
+                        <!-- TÉCNICO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idTecnico"
@@ -161,8 +162,8 @@
 
                         </div>
 
-                        <!-- CATEGORÍA -->
 
+                        <!-- CATEGORÍA -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idCategoria"
@@ -190,8 +191,8 @@
 
                         </div>
 
-                        <!-- PRIORIDAD -->
 
+                        <!-- PRIORIDAD -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idPrioridad"
@@ -219,8 +220,8 @@
 
                         </div>
 
-                        <!-- ESTADO -->
 
+                        <!-- ESTADO -->
                         <div class="col-md-6 mb-3">
 
                             <label for="idEstadoTicket"
@@ -250,19 +251,18 @@
 
                     </div>
 
-                    <div th:if="${error != null}"
-                         class="alert alert-danger">
 
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                        <span th:text="${error}">
-                            Error
-                        </span>
-
+                    <!-- ERROR -->
+                    <div class="text-danger"
+                         th:if="${error}"
+                         th:text="${error}">
                     </div>
+
 
                     <hr>
 
+
+                    <!-- BOTONES -->
                     <div class="d-flex justify-content-end gap-2">
 
                         <a th:href="@{/tickets}"
@@ -276,6 +276,7 @@
                                 class="btn btn-primary">
 
                             <i class="fa-solid fa-save"></i>
+
                             Guardar Ticket
 
                         </button>

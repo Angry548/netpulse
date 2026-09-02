@@ -14,9 +14,16 @@ public interface IPrioridadTicketService {
 
     PrioridadTicket buscarPorNombre(String nombre);
 
+    Page<PrioridadTicket> buscarPorNombrePaginado(
+            String nombre,
+            Pageable pageable
+    );
+
     List<PrioridadTicket> obtenerTodos();
 
-    Page<PrioridadTicket> buscarTodosPaginados(Pageable pageable);
+    Page<PrioridadTicket> buscarTodosPaginados(
+            Pageable pageable
+    );
 
     PrioridadTicket actualizar(PrioridadTicket prioridad);
 

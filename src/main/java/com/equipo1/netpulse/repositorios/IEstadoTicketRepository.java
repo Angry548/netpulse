@@ -12,5 +12,10 @@ public interface IEstadoTicketRepository
 
     Optional<EstadoTicket> findByNombre(String nombre);
 
+    Page<EstadoTicket> findByNombreContainingIgnoreCase(
+            String nombre,
+            Pageable pageable
+    );
+
     Page<EstadoTicket> findAll(Pageable pageable);
 }

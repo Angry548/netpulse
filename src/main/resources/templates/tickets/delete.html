@@ -59,8 +59,6 @@
 
                 <div class="row">
 
-                    <!-- ID -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -74,8 +72,6 @@
 
                     </div>
 
-                    <!-- FECHA -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -88,8 +84,6 @@
                                readonly>
 
                     </div>
-
-                    <!-- DESCRIPCIÓN -->
 
                     <div class="col-md-12 mb-3">
 
@@ -105,8 +99,6 @@
 
                     </div>
 
-                    <!-- USUARIO -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -119,8 +111,6 @@
                                readonly>
 
                     </div>
-
-                    <!-- EQUIPO -->
 
                     <div class="col-md-6 mb-3">
 
@@ -135,8 +125,6 @@
 
                     </div>
 
-                    <!-- CATEGORÍA -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -149,8 +137,6 @@
                                readonly>
 
                     </div>
-
-                    <!-- PRIORIDAD -->
 
                     <div class="col-md-6 mb-3">
 
@@ -165,8 +151,6 @@
 
                     </div>
 
-                    <!-- ESTADO -->
-
                     <div class="col-md-6 mb-3">
 
                         <label class="form-label fw-bold">
@@ -176,6 +160,19 @@
                         <input type="text"
                                class="form-control"
                                th:value="${ticket.estadoTicket != null ? ticket.estadoTicket.nombre : 'Sin estado'}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Técnico
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.tecnico != null ? ticket.tecnico.nombre : 'Sin asignar'}"
                                readonly>
 
                     </div>
@@ -195,16 +192,13 @@
 
                         <a th:href="@{/tickets}"
                            class="btn btn-secondary">
-
                             Cancelar
-
                         </a>
 
                         <button type="submit"
                                 class="btn btn-danger">
 
                             <i class="fa-solid fa-trash"></i>
-
                             Sí, eliminar ticket
 
                         </button>

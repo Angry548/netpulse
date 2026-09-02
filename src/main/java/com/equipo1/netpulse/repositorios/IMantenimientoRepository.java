@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface IMantenimientoRepository
         extends JpaRepository<Mantenimiento, Integer> {
 
+
     List<Mantenimiento> findByEquipo(Equipo equipo);
 
     List<Mantenimiento> findByTecnico(Usuario tecnico);
@@ -36,7 +37,10 @@ public interface IMantenimientoRepository
                     FROM Mantenimiento m
                     """
     )
-    Page<Mantenimiento> findAllWithRelaciones(Pageable pageable);
+    Page<Mantenimiento> findAllWithRelaciones(
+            Pageable pageable
+    );
+
 
     @Query(
             value = """
@@ -53,7 +57,7 @@ public interface IMantenimientoRepository
                     WHERE m.id = :id
                     """
     )
-    Page<Mantenimiento> findByIdPaginado(
+    Page<Mantenimiento> findByIdWithRelaciones(
             @Param("id") Integer id,
             Pageable pageable
     );
