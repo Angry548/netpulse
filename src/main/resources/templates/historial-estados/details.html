@@ -1,10 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Detalles del Historial</title>
 </head>
+
 <body>
 
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Detalles del historial
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Información del cambio de estado seleccionado.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información del cambio
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="row">
+
+
+                    <!-- ID -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID del historial
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.id}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- EQUIPO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Equipo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.equipo != null
+                                   ? historialEstado.equipo.nombre
+                                   : 'Sin equipo'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO ANTERIOR -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado anterior
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.estadoAnterior != null
+                                   ? historialEstado.estadoAnterior.nombre
+                                   : 'Sin estado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO NUEVO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado nuevo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.estadoNuevo != null
+                                   ? historialEstado.estadoNuevo.nombre
+                                   : 'Sin estado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- USUARIO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Usuario que realizó el cambio
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.usuario != null
+                                   ? historialEstado.usuario.nombre
+                                   : 'Sin usuario'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- FECHA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Fecha del cambio
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${historialEstado.fechaCambio != null
+                                   ? #temporals.format(historialEstado.fechaCambio, 'dd/MM/yyyy HH:mm')
+                                   : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MOTIVO -->
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Motivo del cambio
+
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  readonly
+                                  th:text="${historialEstado.motivo != null && !historialEstado.motivo.isBlank()
+                                      ? historialEstado.motivo
+                                      : 'Sin motivo registrado'}">
+
+                            Sin motivo registrado
+
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/historial-estados}"
+                       class="btn btn-secondary">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
+
 </html>
