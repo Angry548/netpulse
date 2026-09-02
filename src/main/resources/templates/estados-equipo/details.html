@@ -1,10 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Detalles del Estado de Equipo</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-circle-check"></i>
+                    Detalles del Estado de Equipo
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Información del estado de equipo seleccionado.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información general
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${estadoEquipo.id}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Nombre
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${estadoEquipo.nombre}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Descripción
+
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  th:text="${estadoEquipo.descripcion != null
+                                            && !estadoEquipo.descripcion.isBlank()
+                                            ? estadoEquipo.descripcion
+                                            : 'Sin descripción'}"
+                                  readonly></textarea>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/estados-equipo/edit/{id}(id=${estadoEquipo.id})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/estados-equipo}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

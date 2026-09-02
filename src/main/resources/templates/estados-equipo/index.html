@@ -1,10 +1,258 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Confirmación",
+                text: /*[[${msg}]]*/ "",
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Error",
+                text: /*[[${error}]]*/ "",
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1 class="mt-4">
+        Listado de estados de equipo
+    </h1>
+
+    <div class="mb-3">
+
+        <a th:href="@{/estados-equipo/create}"
+           class="btn btn-outline-primary">
+
+            <i class="fas fa-plus"></i>
+            Nuevo estado de equipo
+
+        </a>
+
+    </div>
+
+    <form th:action="@{/estados-equipo}"
+          method="get"
+          class="row g-2 my-3">
+
+        <div class="col-md-2">
+
+            <label for="id"
+                   class="visually-hidden">
+                ID
+            </label>
+
+            <input type="number"
+                   class="form-control"
+                   id="id"
+                   name="id"
+                   th:value="${id}"
+                   placeholder="Buscar por ID">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label for="nombre"
+                   class="visually-hidden">
+                Nombre
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="nombre"
+                   name="nombre"
+                   th:value="${nombre}"
+                   placeholder="Buscar por nombre">
+
+        </div>
+
+        <div class="col-auto">
+
+            <button type="submit"
+                    class="btn btn-outline-secondary">
+
+                <i class="fas fa-search"></i>
+                Buscar
+
+            </button>
+
+        </div>
+
+        <div class="col-auto">
+
+            <a th:href="@{/estados-equipo}"
+               class="btn btn-outline-secondary">
+
+                <i class="fas fa-broom"></i>
+                Limpiar
+
+            </a>
+
+        </div>
+
+    </form>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped table-hover">
+
+            <thead class="table-dark">
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Nombre</th>
+
+                <th>Descripción</th>
+
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${estadosEquipo}">
+
+                <td th:text="${item.id}">
+                    1
+                </td>
+
+                <td th:text="${item.nombre}">
+                    Disponible
+                </td>
+
+                <td th:text="${item.descripcion != null && !item.descripcion.isBlank()
+                              ? item.descripcion
+                              : 'Sin descripción'}">
+
+                    Equipo disponible para uso
+
+                </td>
+
+                <td>
+
+                    <a th:href="@{/estados-equipo/details/{id}(id=${item.id})}"
+                       class="btn btn-outline-secondary btn-sm">
+
+                        <i class="fas fa-eye"></i>
+                        Detalles
+
+                    </a>
+
+                    <a th:href="@{/estados-equipo/edit/{id}(id=${item.id})}"
+                       class="btn btn-outline-info btn-sm">
+
+                        <i class="fas fa-edit"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/estados-equipo/remove/{id}(id=${item.id})}"
+                       class="btn btn-outline-danger btn-sm">
+
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            <tr th:if="${estadosEquipo.empty}">
+
+                <td colspan="4"
+                    class="text-center text-muted">
+
+                    No se encontraron estados de equipo.
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <nav th:if="${estadosEquipo.totalPages > 1}"
+         aria-label="Paginación de estados de equipo">
+
+        <ul class="pagination">
+
+            <li class="page-item"
+                th:classappend="${estadosEquipo.first} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/estados-equipo(
+                       page=${estadosEquipo.number},
+                       size=${estadosEquipo.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}">
+
+                    Anterior
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == estadosEquipo.number + 1} ? 'active'">
+
+                <a class="page-link"
+                   th:href="@{/estados-equipo(
+                       page=${pageNumber},
+                       size=${estadosEquipo.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}"
+                   th:text="${pageNumber}">
+
+                    1
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:classappend="${estadosEquipo.last} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/estados-equipo(
+                       page=${estadosEquipo.number + 2},
+                       size=${estadosEquipo.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}">
+
+                    Siguiente
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+</div>
+
 </html>
