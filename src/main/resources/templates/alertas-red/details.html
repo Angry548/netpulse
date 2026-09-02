@@ -1,135 +1,210 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Detalles de la Alerta de Red</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Detalles de la alerta de red</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <dl class="row">
+            <div>
 
-        <dt class="col-sm-3">
-            ID
-        </dt>
+                <h2 class="mb-1">
 
-        <dd class="col-sm-9"
-            th:text="${alerta.id}">
-        </dd>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
+                    Detalles de la Alerta de Red
 
-        <dt class="col-sm-3">
-            Equipo
-        </dt>
+                </h2>
 
-        <dd class="col-sm-9"
-            th:text="${alerta.equipo.nombre}">
-        </dd>
+                <p class="text-muted mb-0">
 
+                    Información de la alerta de red seleccionada.
 
-        <dt class="col-sm-3">
-            Tipo de evento
-        </dt>
+                </p>
 
-        <dd class="col-sm-9"
-            th:text="${alerta.tipoEvento}">
-        </dd>
+            </div>
 
+        </div>
 
-        <dt class="col-sm-3">
-            Mensaje
-        </dt>
+        <!-- TARJETA -->
+        <div class="card shadow-sm">
 
-        <dd class="col-sm-9"
-            th:text="${alerta.mensaje}">
-        </dd>
+            <div class="card-header">
 
+                <h5 class="mb-0">
 
-        <dt class="col-sm-3">
-            Notificación enviada
-        </dt>
+                    Información de la alerta
 
-        <dd class="col-sm-9">
+                </h5>
 
-            <span th:if="${alerta.notificacionEnviada}"
-                  class="badge bg-success">
-                Sí
-            </span>
+            </div>
 
-            <span th:unless="${alerta.notificacionEnviada}"
-                  class="badge bg-warning text-dark">
-                No
-            </span>
+            <div class="card-body">
 
-        </dd>
+                <div class="row">
 
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
 
-        <dt class="col-sm-3">
-            Medio de notificación
-        </dt>
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
 
-        <dd class="col-sm-9"
-            th:text="${alerta.medioNotificacion != null
-                      ? alerta.medioNotificacion
-                      : 'No especificado'}">
-        </dd>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${alerta.id}"
+                               readonly>
 
+                    </div>
 
-        <dt class="col-sm-3">
-            Fecha
-        </dt>
+                    <!-- EQUIPO -->
+                    <div class="col-md-6 mb-3">
 
-        <dd class="col-sm-9"
-            th:text="${alerta.fecha != null
-                      ? #temporals.format(alerta.fecha, 'dd/MM/yyyy HH:mm')
-                      : 'Sin fecha'}">
-        </dd>
+                        <label class="form-label fw-bold">
+                            Equipo
+                        </label>
 
-    </dl>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${alerta.equipo != null
+                                          ? alerta.equipo.nombre
+                                          : 'Sin equipo'}"
+                               readonly>
 
+                    </div>
 
-    <div class="mt-3">
+                    <!-- TIPO DE EVENTO -->
+                    <div class="col-md-6 mb-3">
 
-        <form th:if="${!alerta.notificacionEnviada}"
-              th:action="@{/alertas/notificar/{id}(id=${alerta.id})}"
-              method="post"
-              class="d-inline">
+                        <label class="form-label fw-bold">
+                            Tipo de evento
+                        </label>
 
-            <button type="submit"
-                    class="btn btn-primary">
-                Enviar notificación
-            </button>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${alerta.tipoEvento}"
+                               readonly>
 
-        </form>
+                    </div>
 
+                    <!-- MEDIO DE NOTIFICACIÓN -->
+                    <div class="col-md-6 mb-3">
 
-        <form th:if="${!alerta.notificacionEnviada}"
-              th:action="@{/alertas/marcar-notificada/{id}(id=${alerta.id})}"
-              method="post"
-              class="d-inline">
+                        <label class="form-label fw-bold">
+                            Medio de notificación
+                        </label>
 
-            <button type="submit"
-                    class="btn btn-outline-success">
-                Marcar como notificada
-            </button>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${alerta.medioNotificacion != null
+                                          && !alerta.medioNotificacion.isBlank()
+                                          ? alerta.medioNotificacion
+                                          : 'No definido'}"
+                               readonly>
 
-        </form>
+                    </div>
 
+                    <!-- MENSAJE -->
+                    <div class="col-md-12 mb-3">
 
-        <a th:href="@{/alertas/remove/{id}(id=${alerta.id})}"
-           class="btn btn-outline-danger">
-            Eliminar
-        </a>
+                        <label class="form-label fw-bold">
+                            Mensaje
+                        </label>
 
-        <a th:href="@{/alertas}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
+                        <textarea class="form-control"
+                                  rows="4"
+                                  th:text="${alerta.mensaje}"
+                                  readonly></textarea>
+
+                    </div>
+
+                    <!-- NOTIFICACIÓN -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Estado de notificación
+                        </label>
+
+                        <div>
+
+                            <span th:if="${alerta.notificacionEnviada}"
+                                  class="badge bg-success">
+
+                                Notificación enviada
+
+                            </span>
+
+                            <span th:unless="${alerta.notificacionEnviada}"
+                                  class="badge bg-warning text-dark">
+
+                                Notificación pendiente
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FECHA -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${alerta.fecha != null
+                                          ? #temporals.format(alerta.fecha, 'dd/MM/yyyy HH:mm')
+                                          : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <!-- BOTONES -->
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/alertas-red/remove/{id}(id=${alerta.id})}"
+                       class="btn btn-danger">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Eliminar
+
+                    </a>
+
+                    <a th:href="@{/alertas-red}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
+
+</body>
 
 </html>
