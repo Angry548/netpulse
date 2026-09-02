@@ -1,10 +1,407 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Editar Equipo</title>
 </head>
+
 <body>
 
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-desktop"></i>
+                    Editar Equipo
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Modifica la información del equipo.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información del equipo
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div th:if="${error != null}"
+                     class="alert alert-danger">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <span th:text="${error}">
+                        Error
+                    </span>
+
+                </div>
+
+                <form th:action="@{/equipos/save}"
+                      th:object="${equipo}"
+                      method="post">
+
+                    <input type="hidden"
+                           th:field="*{idEquipo}">
+
+                    <div class="row">
+
+                        <!-- NOMBRE -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+
+                                Nombre
+
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- TIPO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idTipo"
+                                   class="form-label">
+
+                                Tipo de equipo
+
+                            </label>
+
+                            <select id="idTipo"
+                                    name="idTipo"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un tipo
+                                </option>
+
+                                <option th:each="tipo : ${tipos}"
+                                        th:value="${tipo.id}"
+                                        th:text="${tipo.nombre}"
+                                        th:selected="${equipo.tipo != null and equipo.tipo.id == tipo.id}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- MARCA -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="marca"
+                                   class="form-label">
+
+                                Marca
+
+                            </label>
+
+                            <input type="text"
+                                   id="marca"
+                                   th:field="*{marca}"
+                                   class="form-control"
+                                   maxlength="50"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('marca')}"
+                                 th:errors="*{marca}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- MODELO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="modelo"
+                                   class="form-label">
+
+                                Modelo
+
+                            </label>
+
+                            <input type="text"
+                                   id="modelo"
+                                   th:field="*{modelo}"
+                                   class="form-control"
+                                   maxlength="50"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('modelo')}"
+                                 th:errors="*{modelo}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- NUMERO DE SERIE -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="numeroSerie"
+                                   class="form-label">
+
+                                Número de serie
+
+                            </label>
+
+                            <input type="text"
+                                   id="numeroSerie"
+                                   th:field="*{numeroSerie}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('numeroSerie')}"
+                                 th:errors="*{numeroSerie}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- UBICACION -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="ubicacion"
+                                   class="form-label">
+
+                                Ubicación
+
+                            </label>
+
+                            <input type="text"
+                                   id="ubicacion"
+                                   th:field="*{ubicacion}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('ubicacion')}"
+                                 th:errors="*{ubicacion}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idEstado"
+                                   class="form-label">
+
+                                Estado del equipo
+
+                            </label>
+
+                            <select id="idEstado"
+                                    name="idEstado"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un estado
+                                </option>
+
+                                <option th:each="estado : ${estados}"
+                                        th:value="${estado.id}"
+                                        th:text="${estado.nombre}"
+                                        th:selected="${equipo.estado != null and equipo.estado.id == estado.id}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- RESPONSABLE -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idResponsable"
+                                   class="form-label">
+
+                                Responsable
+
+                            </label>
+
+                            <select id="idResponsable"
+                                    name="idResponsable"
+                                    class="form-select">
+
+                                <option value="">
+                                    Sin responsable
+                                </option>
+
+                                <option th:each="usuario : ${usuarios}"
+                                        th:value="${usuario.id}"
+                                        th:text="${usuario.nombre}"
+                                        th:selected="${equipo.responsable != null and equipo.responsable.id == usuario.id}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- IP -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="ipAddress"
+                                   class="form-label">
+
+                                Dirección IP
+
+                            </label>
+
+                            <input type="text"
+                                   id="ipAddress"
+                                   th:field="*{ipAddress}"
+                                   class="form-control"
+                                   maxlength="45"
+                                   placeholder="Ej. 192.168.1.10">
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('ipAddress')}"
+                                 th:errors="*{ipAddress}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- MAC -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="macAddress"
+                                   class="form-label">
+
+                                Dirección MAC
+
+                            </label>
+
+                            <input type="text"
+                                   id="macAddress"
+                                   th:field="*{macAddress}"
+                                   class="form-control"
+                                   maxlength="17"
+                                   placeholder="Ej. AA:BB:CC:DD:EE:FF">
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('macAddress')}"
+                                 th:errors="*{macAddress}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO CONEXION -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="estadoConexion"
+                                   class="form-label">
+
+                                Estado de conexión
+
+                            </label>
+
+                            <select id="estadoConexion"
+                                    th:field="*{estadoConexion}"
+                                    class="form-select"
+                                    required>
+
+                                <option th:each="estadoConexion : ${estadosConexion}"
+                                        th:value="${estadoConexion}"
+                                        th:text="${estadoConexion.name() == 'ONLINE' ? 'Online' : 'Offline'}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/equipos}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+
+                            Guardar Cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
+
 </html>

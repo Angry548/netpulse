@@ -1,10 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Detalles del Equipo</title>
 </head>
+
 <body>
 
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-desktop"></i>
+                    Detalles del Equipo
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Información del equipo seleccionado.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información general
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <!-- ID -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.idEquipo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- NOMBRE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Nombre
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.nombre}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TIPO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Tipo de equipo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.tipo != null ? equipo.tipo.nombre : 'Sin tipo'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado del equipo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.estado != null ? equipo.estado.nombre : 'Sin estado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Marca
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.marca}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MODELO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Modelo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.modelo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- NUMERO DE SERIE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Número de serie
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.numeroSerie}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- UBICACION -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Ubicación
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.ubicacion}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- IP -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Dirección IP
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.ipAddress != null and !equipo.ipAddress.isBlank() ? equipo.ipAddress : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MAC -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Dirección MAC
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.macAddress != null and !equipo.macAddress.isBlank() ? equipo.macAddress : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- RESPONSABLE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Responsable
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.responsable != null ? equipo.responsable.nombre : 'Sin responsable'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO CONEXION -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado de conexión
+
+                        </label>
+
+                        <div>
+
+                            <span th:if="${equipo.estadoConexion != null and equipo.estadoConexion.name() == 'ONLINE'}"
+                                  class="badge bg-success">
+
+                                Online
+
+                            </span>
+
+                            <span th:if="${equipo.estadoConexion != null and equipo.estadoConexion.name() == 'OFFLINE'}"
+                                  class="badge bg-danger">
+
+                                Offline
+
+                            </span>
+
+                            <span th:if="${equipo.estadoConexion == null}"
+                                  class="badge bg-secondary">
+
+                                Sin conexión
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FECHA REGISTRO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Fecha de registro
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.fechaRegistro != null ? #temporals.format(equipo.fechaRegistro, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/equipos/edit/{id}(id=${equipo.idEquipo})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/equipos}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
+
 </html>

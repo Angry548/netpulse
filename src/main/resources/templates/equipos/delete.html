@@ -1,10 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Eliminar Equipo</title>
 </head>
+
 <body>
 
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1 text-danger">
+
+                    <i class="fa-solid fa-desktop"></i>
+                    Eliminar Equipo
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Confirma la eliminación del equipo.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm border-danger">
+
+            <div class="card-header bg-danger text-white">
+
+                <h5 class="mb-0">
+
+                    Confirmación
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="alert alert-warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <strong>¡Atención!</strong>
+
+                    ¿Está seguro de que desea eliminar este equipo?
+
+                    Esta acción no se puede deshacer.
+
+                </div>
+
+                <div class="row">
+
+                    <!-- ID -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.idEquipo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- NOMBRE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Nombre
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.nombre}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TIPO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Tipo de equipo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.tipo != null ? equipo.tipo.nombre : 'Sin tipo'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Marca
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.marca}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- MODELO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Modelo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.modelo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- NUMERO DE SERIE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Número de serie
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.numeroSerie}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- UBICACION -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Ubicación
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.ubicacion}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- RESPONSABLE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Responsable
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${equipo.responsable != null ? equipo.responsable.nombre : 'Sin responsable'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <form th:action="@{/equipos/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="idEquipo"
+                           th:value="${equipo.idEquipo}">
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/equipos}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar equipo
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
+
 </html>

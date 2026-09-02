@@ -1,10 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Confirmación",
+                text: /*[[${msg}]]*/ "",
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Error",
+                text: /*[[${error}]]*/ "",
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1 class="mt-4">Listado de equipos</h1>
+
+    <div class="mb-3">
+
+        <a th:href="@{/equipos/create}"
+           class="btn btn-outline-primary">
+
+            <i class="fas fa-plus"></i>
+            Nuevo equipo
+
+        </a>
+
+    </div>
+
+    <form th:action="@{/equipos}"
+          method="get"
+          class="row g-2 my-3">
+
+        <div class="col-md-2">
+
+            <label for="id"
+                   class="visually-hidden">
+                ID
+            </label>
+
+            <input type="number"
+                   class="form-control"
+                   id="id"
+                   name="id"
+                   th:value="${id}"
+                   placeholder="Buscar por ID">
+
+        </div>
+
+        <div class="col-md-3">
+
+            <label for="numeroSerie"
+                   class="visually-hidden">
+                Número de serie
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="numeroSerie"
+                   name="numeroSerie"
+                   th:value="${numeroSerie}"
+                   placeholder="Buscar por número de serie">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label for="nombre"
+                   class="visually-hidden">
+                Nombre
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="nombre"
+                   name="nombre"
+                   th:value="${nombre}"
+                   placeholder="Buscar por nombre">
+
+        </div>
+
+        <div class="col-auto">
+
+            <button type="submit"
+                    class="btn btn-outline-secondary">
+
+                <i class="fas fa-search"></i>
+                Buscar
+
+            </button>
+
+        </div>
+
+        <div class="col-auto">
+
+            <a th:href="@{/equipos}"
+               class="btn btn-outline-secondary">
+
+                <i class="fas fa-broom"></i>
+                Limpiar
+
+            </a>
+
+        </div>
+
+    </form>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped table-hover">
+
+            <thead class="table-dark">
+
+            <tr>
+
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Número de serie</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Estado</th>
+                <th>Conexión</th>
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${equipos}">
+
+                <td th:text="${item.idEquipo}">
+                    1
+                </td>
+
+                <td th:text="${item.nombre}">
+                    Equipo principal
+                </td>
+
+                <td th:text="${item.tipo != null ? item.tipo.nombre : 'Sin tipo'}">
+                    Computadora
+                </td>
+
+                <td th:text="${item.marca}">
+                    Dell
+                </td>
+
+                <td th:text="${item.modelo}">
+                    OptiPlex
+                </td>
+
+                <td th:text="${item.numeroSerie}">
+                    SN-001
+                </td>
+
+                <td th:text="${item.ubicacion}">
+                    Oficina 1
+                </td>
+
+                <td>
+
+                    <span th:if="${item.responsable != null}"
+                          th:text="${item.responsable.nombre}">
+                        Juan Pérez
+                    </span>
+
+                    <span th:unless="${item.responsable != null}"
+                          class="text-muted">
+                        Sin responsable
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span th:if="${item.estado != null}"
+                          class="badge bg-primary"
+                          th:text="${item.estado.nombre}">
+                        Disponible
+                    </span>
+
+                    <span th:unless="${item.estado != null}"
+                          class="badge bg-secondary">
+                        Sin estado
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span th:if="${item.estadoConexion != null
+                                  and item.estadoConexion.name() == 'ONLINE'}"
+                          class="badge bg-success">
+
+                        Online
+
+                    </span>
+
+                    <span th:if="${item.estadoConexion != null
+                                  and item.estadoConexion.name() == 'OFFLINE'}"
+                          class="badge bg-danger">
+
+                        Offline
+
+                    </span>
+
+                    <span th:if="${item.estadoConexion == null}"
+                          class="badge bg-secondary">
+
+                        Sin conexión
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a th:href="@{/equipos/details/{id}(id=${item.idEquipo})}"
+                       class="btn btn-outline-secondary btn-sm">
+
+                        <i class="fas fa-eye"></i>
+                        Detalles
+
+                    </a>
+
+                    <a th:href="@{/equipos/edit/{id}(id=${item.idEquipo})}"
+                       class="btn btn-outline-info btn-sm">
+
+                        <i class="fas fa-edit"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/equipos/remove/{id}(id=${item.idEquipo})}"
+                       class="btn btn-outline-danger btn-sm">
+
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            <tr th:if="${equipos.empty}">
+
+                <td colspan="11"
+                    class="text-center text-muted">
+
+                    No se encontraron equipos.
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <nav th:if="${equipos.totalPages > 1}"
+         aria-label="Paginación de equipos">
+
+        <ul class="pagination">
+
+            <li class="page-item"
+                th:classappend="${equipos.first} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/equipos(
+                       page=${equipos.number},
+                       size=${equipos.size},
+                       id=${id},
+                       numeroSerie=${numeroSerie},
+                       nombre=${nombre}
+                   )}">
+
+                    Anterior
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == equipos.number + 1} ? 'active'">
+
+                <a class="page-link"
+                   th:href="@{/equipos(
+                       page=${pageNumber},
+                       size=${equipos.size},
+                       id=${id},
+                       numeroSerie=${numeroSerie},
+                       nombre=${nombre}
+                   )}"
+                   th:text="${pageNumber}">
+
+                    1
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:classappend="${equipos.last} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/equipos(
+                       page=${equipos.number + 2},
+                       size=${equipos.size},
+                       id=${id},
+                       numeroSerie=${numeroSerie},
+                       nombre=${nombre}
+                   )}">
+
+                    Siguiente
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+</div>
+
 </html>
