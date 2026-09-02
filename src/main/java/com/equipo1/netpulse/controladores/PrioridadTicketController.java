@@ -3,6 +3,7 @@ package com.equipo1.netpulse.controladores;
 import com.equipo1.netpulse.modelos.PrioridadTicket;
 import com.equipo1.netpulse.servicios.interfaces.IPrioridadTicketService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -26,155 +27,375 @@ public class PrioridadTicketController {
 
     private final IPrioridadTicketService prioridadTicketService;
 
-    public PrioridadTicketController(IPrioridadTicketService prioridadTicketService) {
+    public PrioridadTicketController(
+            IPrioridadTicketService prioridadTicketService) {
+
         this.prioridadTicketService = prioridadTicketService;
     }
 
     @GetMapping
-    public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size,
-                        @RequestParam("nombre") Optional<String> nombre) {
+    public String index(
+            Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size,
+            @RequestParam("id") Optional<Integer> id,
+            @RequestParam("nombre") Optional<String> nombre) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Pageable pageable =
+                PageRequest.of(currentPage, pageSize);
 
-        String filtroNombre = nombre.orElse("").trim();
+        String filtroNombre =
+                nombre.orElse("").trim();
 
         Page<PrioridadTicket> prioridades;
 
-        if (filtroNombre.isEmpty()) {
-            prioridades = prioridadTicketService.buscarTodosPaginados(pageable);
+        /*
+         * ==========================================================
+         * BUSCAR POR ID
+         * ==========================================================
+         */
+        if (id.isPresent()) {
+
+            PrioridadTicket prioridad =
+                    prioridadTicketService.buscarPorId(id.get());
+
+            if (prioridad != null) {
+
+                prioridades = new PageImpl<>(
+                        List.of(prioridad),
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                prioridades = new PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
+            /*
+             * ==========================================================
+             * BUSCAR POR NOMBRE
+             * ==========================================================
+             */
+        } else if (!filtroNombre.isEmpty()) {
+
+            PrioridadTicket prioridad =
+                    prioridadTicketService.buscarPorNombre(
+                            filtroNombre
+                    );
+
+            if (prioridad != null) {
+
+                prioridades = new PageImpl<>(
+                        List.of(prioridad),
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                prioridades = new PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
+            /*
+             * ==========================================================
+             * MOSTRAR TODAS
+             * ==========================================================
+             */
         } else {
-            prioridades = prioridadTicketService.buscarPorNombre(filtroNombre, pageable);
+
+            prioridades =
+                    prioridadTicketService.buscarTodosPaginados(
+                            pageable
+                    );
         }
 
-        model.addAttribute("prioridades", prioridades);
-        model.addAttribute("nombre", filtroNombre);
+        model.addAttribute(
+                "prioridades",
+                prioridades
+        );
 
-        agregarNumerosDePagina(model, prioridades);
+        model.addAttribute(
+                "id",
+                id.orElse(null)
+        );
 
-        return "prioridad-ticket/index";
-    }
+        model.addAttribute(
+                "nombre",
+                filtroNombre
+        );
 
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam("nombre") String nombre,
-                         @RequestParam("size") Optional<Integer> size,
-                         Model model) {
+        agregarNumerosDePagina(
+                model,
+                prioridades
+        );
 
-        Pageable pageable = PageRequest.of(0, size.orElse(5));
-
-        String filtroNombre = nombre.trim();
-
-        Page<PrioridadTicket> prioridades =
-                prioridadTicketService.buscarPorNombre(filtroNombre, pageable);
-
-        model.addAttribute("prioridades", prioridades);
-        model.addAttribute("nombre", filtroNombre);
-
-        agregarNumerosDePagina(model, prioridades);
-
-        return "prioridad-ticket/index :: tablaPrioridades";
+        return "prioridades-ticket/index";
     }
 
     @GetMapping("/create")
-    public String create(PrioridadTicket prioridadTicket) {
-        return "prioridad-ticket/create";
+    public String create(Model model) {
+
+        PrioridadTicket prioridad =
+                new PrioridadTicket();
+
+        model.addAttribute(
+                "prioridad",
+                prioridad
+        );
+
+        return "prioridades-ticket/create";
     }
 
     @PostMapping("/save")
-    public String save(PrioridadTicket prioridadTicket,
-                       BindingResult result,
-                       Model model,
-                       RedirectAttributes attributes) {
+    public String save(
+            PrioridadTicket prioridad,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes) {
 
+        boolean esEdicion =
+                prioridad.getId() != null;
+
+        /*
+         * ==========================================================
+         * VALIDACIÓN
+         * ==========================================================
+         */
         if (result.hasErrors()) {
-            model.addAttribute("prioridadTicket", prioridadTicket);
-            attributes.addFlashAttribute(
+
+            if (esEdicion) {
+
+                return "prioridades-ticket/edit";
+            }
+
+            return "prioridades-ticket/create";
+        }
+
+        /*
+         * ==========================================================
+         * VALIDAR NOMBRE DUPLICADO
+         * ==========================================================
+         */
+        PrioridadTicket prioridadExistente =
+                prioridadTicketService.buscarPorNombre(
+                        prioridad.getNombre()
+                );
+
+        if (prioridadExistente != null
+                && !prioridadExistente.getId()
+                .equals(prioridad.getId())) {
+
+            model.addAttribute(
                     "error",
-                    "No se pudo guardar debido a un error."
+                    "Ya existe una prioridad con ese nombre."
             );
 
-            return "prioridad-ticket/create";
+            if (esEdicion) {
+
+                return "prioridades-ticket/edit";
+            }
+
+            return "prioridades-ticket/create";
         }
 
-        if (prioridadTicket.getId() == null) {
-            prioridadTicketService.crear(prioridadTicket);
+        /*
+         * ==========================================================
+         * EDITAR PRIORIDAD
+         * ==========================================================
+         */
+        if (esEdicion) {
+
+            PrioridadTicket prioridadActual =
+                    prioridadTicketService.buscarPorId(
+                            prioridad.getId()
+                    );
+
+            if (prioridadActual == null) {
+
+                attributes.addFlashAttribute(
+                        "error",
+                        "La prioridad que intenta editar no existe."
+                );
+
+                return "redirect:/prioridades-ticket";
+            }
+
+            prioridadActual.setNombre(
+                    prioridad.getNombre()
+            );
+
+            prioridadTicketService.actualizar(
+                    prioridadActual
+            );
+
             attributes.addFlashAttribute(
                     "msg",
-                    "Prioridad de ticket creada correctamente"
+                    "Prioridad actualizada correctamente"
             );
-        } else {
-            prioridadTicketService.actualizar(prioridadTicket);
-            attributes.addFlashAttribute(
-                    "msg",
-                    "Prioridad de ticket actualizada correctamente"
-            );
+
+            return "redirect:/prioridades-ticket";
         }
 
-        return "redirect:/prioridades-ticket";
-    }
-
-    @GetMapping("/details/{id}")
-    public String details(@PathVariable Integer id, Model model) {
-
-        PrioridadTicket prioridadTicket =
-                prioridadTicketService.buscarPorId(id).orElseThrow();
-
-        model.addAttribute("prioridadTicket", prioridadTicket);
-
-        return "prioridad-ticket/details";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model) {
-
-        PrioridadTicket prioridadTicket =
-                prioridadTicketService.buscarPorId(id).orElseThrow();
-
-        model.addAttribute("prioridadTicket", prioridadTicket);
-
-        return "prioridad-ticket/edit";
-    }
-
-    @GetMapping("/remove/{id}")
-    public String remove(@PathVariable Integer id, Model model) {
-
-        PrioridadTicket prioridadTicket =
-                prioridadTicketService.buscarPorId(id).orElseThrow();
-
-        model.addAttribute("prioridadTicket", prioridadTicket);
-
-        return "prioridad-ticket/delete";
-    }
-
-    @PostMapping("/delete")
-    public String delete(PrioridadTicket prioridadTicket,
-                         RedirectAttributes attributes) {
-
-        prioridadTicketService.eliminarPorId(prioridadTicket.getId());
+        /*
+         * ==========================================================
+         * CREAR PRIORIDAD
+         * ==========================================================
+         */
+        prioridadTicketService.crear(
+                prioridad
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Prioridad de ticket eliminada correctamente"
+                "Prioridad guardada correctamente"
         );
 
         return "redirect:/prioridades-ticket";
     }
 
-    private void agregarNumerosDePagina(Model model,
-                                        Page<PrioridadTicket> prioridades) {
+    @GetMapping("/details/{id}")
+    public String details(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        PrioridadTicket prioridad =
+                prioridadTicketService.buscarPorId(id);
+
+        if (prioridad == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La prioridad no existe."
+            );
+
+            return "redirect:/prioridades-ticket";
+        }
+
+        model.addAttribute(
+                "prioridad",
+                prioridad
+        );
+
+        return "prioridades-ticket/details";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        PrioridadTicket prioridad =
+                prioridadTicketService.buscarPorId(id);
+
+        if (prioridad == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La prioridad no existe."
+            );
+
+            return "redirect:/prioridades-ticket";
+        }
+
+        model.addAttribute(
+                "prioridad",
+                prioridad
+        );
+
+        return "prioridades-ticket/edit";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        PrioridadTicket prioridad =
+                prioridadTicketService.buscarPorId(id);
+
+        if (prioridad == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La prioridad no existe."
+            );
+
+            return "redirect:/prioridades-ticket";
+        }
+
+        model.addAttribute(
+                "prioridad",
+                prioridad
+        );
+
+        return "prioridades-ticket/delete";
+    }
+
+    @PostMapping("/delete")
+    public String delete(
+            PrioridadTicket prioridad,
+            RedirectAttributes attributes) {
+
+        PrioridadTicket prioridadExistente =
+                prioridadTicketService.buscarPorId(
+                        prioridad.getId()
+                );
+
+        if (prioridadExistente == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La prioridad no existe."
+            );
+
+            return "redirect:/prioridades-ticket";
+        }
+
+        prioridadTicketService.eliminarPorId(
+                prioridad.getId()
+        );
+
+        attributes.addFlashAttribute(
+                "msg",
+                "Prioridad eliminada correctamente"
+        );
+
+        return "redirect:/prioridades-ticket";
+    }
+
+    private void agregarNumerosDePagina(
+            Model model,
+            Page<PrioridadTicket> prioridades) {
 
         if (prioridades.getTotalPages() > 0) {
 
-            List<Integer> pageNumbers = IntStream
-                    .rangeClosed(1, prioridades.getTotalPages())
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers =
+                    IntStream.rangeClosed(
+                                    1,
+                                    prioridades.getTotalPages()
+                            )
+                            .boxed()
+                            .collect(Collectors.toList());
 
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute(
+                    "pageNumbers",
+                    pageNumbers
+            );
         }
     }
 }
