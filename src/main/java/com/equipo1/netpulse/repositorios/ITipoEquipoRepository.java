@@ -1,11 +1,24 @@
 package com.equipo1.netpulse.repositorios;
 
 import com.equipo1.netpulse.modelos.TipoEquipo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ITipoEquipoRepository extends JpaRepository<TipoEquipo, Integer> {
+public interface ITipoEquipoRepository
+        extends JpaRepository<TipoEquipo, Integer> {
 
     Optional<TipoEquipo> findByNombre(String nombre);
+
+    Page<TipoEquipo> findByNombreContainingIgnoreCase(
+            String nombre,
+            Pageable pageable
+    );
+
+    Page<TipoEquipo> findById(
+            Integer id,
+            Pageable pageable
+    );
 }
