@@ -21,6 +21,12 @@ public interface IUsuarioService {
 
     List<Usuario> obtenerPorRol(Rol rol);
 
+    Page<Usuario> buscarPorNombre(String nombre, Pageable pageable);
+
+    Page<Usuario> buscarPorCorreoPaginado(String correo, Pageable pageable);
+
+    Page<Usuario> buscarPorIdPaginado(Integer id, Pageable pageable);
+
     Usuario actualizar(Usuario usuario);
 
     Usuario cambiarContrasena(Usuario usuario);
