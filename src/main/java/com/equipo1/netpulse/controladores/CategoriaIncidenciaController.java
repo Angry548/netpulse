@@ -2,8 +2,8 @@ package com.equipo1.netpulse.controladores;
 
 import com.equipo1.netpulse.modelos.CategoriaIncidencia;
 import com.equipo1.netpulse.servicios.interfaces.ICategoriaIncidenciaService;
-
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -25,163 +25,412 @@ import java.util.stream.IntStream;
 @RequestMapping("/categorias-incidencia")
 public class CategoriaIncidenciaController {
 
-    private final ICategoriaIncidenciaService categoriaService;
+    private final ICategoriaIncidenciaService categoriaIncidenciaService;
 
-    public CategoriaIncidenciaController(ICategoriaIncidenciaService categoriaService) {
-        this.categoriaService = categoriaService;
+    public CategoriaIncidenciaController(
+            ICategoriaIncidenciaService categoriaIncidenciaService) {
+
+        this.categoriaIncidenciaService =
+                categoriaIncidenciaService;
     }
 
     @GetMapping
-    public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+    public String index(
+            Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size,
+            @RequestParam("id") Optional<Integer> id,
+            @RequestParam("nombre") Optional<String> nombre) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Pageable pageable =
+                PageRequest.of(currentPage, pageSize);
 
-        Page<CategoriaIncidencia> categorias =
-                categoriaService.buscarTodosPaginados(pageable);
+        String filtroNombre =
+                nombre.orElse("").trim();
 
-        model.addAttribute("categorias", categorias);
+        Page<CategoriaIncidencia> categorias;
 
-        agregarNumerosDePagina(model, categorias);
+        if (id.isPresent()) {
 
-        return "categoriaIncidencia/index";
-    }
+            CategoriaIncidencia categoria =
+                    categoriaIncidenciaService.buscarPorId(
+                            id.get()
+                    );
 
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam("nombre") String nombre,
-                         @RequestParam("size") Optional<Integer> size,
-                         Model model) {
+            if (categoria != null) {
 
-        Pageable pageable = PageRequest.of(0, size.orElse(10));
+                categorias = new PageImpl<>(
+                        List.of(categoria),
+                        pageable,
+                        1
+                );
 
-        Page<CategoriaIncidencia> categorias =
-                categoriaService.buscarPorNombre(nombre.trim(), pageable);
+            } else {
 
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("nombre", nombre.trim());
+                categorias = new PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
 
-        agregarNumerosDePagina(model, categorias);
+        } else if (!filtroNombre.isEmpty()) {
 
-        return "categoriaIncidencia/index :: tablaCategorias";
+            CategoriaIncidencia categoria =
+                    categoriaIncidenciaService.buscarPorNombre(
+                            filtroNombre
+                    );
+
+            if (categoria != null) {
+
+                categorias = new PageImpl<>(
+                        List.of(categoria),
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                categorias = new PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
+        } else {
+
+            categorias =
+                    categoriaIncidenciaService
+                            .buscarTodosPaginados(
+                                    pageable
+                            );
+        }
+
+        model.addAttribute(
+                "categorias",
+                categorias
+        );
+
+        model.addAttribute(
+                "id",
+                id.orElse(null)
+        );
+
+        model.addAttribute(
+                "nombre",
+                filtroNombre
+        );
+
+        agregarNumerosDePagina(
+                model,
+                categorias
+        );
+
+        return "categorias-incidencia/index";
     }
 
     @GetMapping("/create")
-    public String create(CategoriaIncidencia categoria) {
+    public String create(
+            Model model) {
 
-        return "categoriaIncidencia/create";
+        CategoriaIncidencia categoria =
+                new CategoriaIncidencia();
+
+        model.addAttribute(
+                "categoria",
+                categoria
+        );
+
+        return "categorias-incidencia/create";
     }
 
     @PostMapping("/save")
-    public String save(CategoriaIncidencia categoria,
-                       BindingResult result,
-                       Model model,
-                       RedirectAttributes attributes) {
+    public String save(
+            CategoriaIncidencia categoria,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes) {
+
+        boolean esEdicion =
+                categoria.getId() != null;
 
         if (result.hasErrors()) {
 
-            model.addAttribute("categoria", categoria);
+            if (esEdicion) {
 
-            attributes.addFlashAttribute(
-                    "error",
-                    "No se pudo guardar debido a un error."
-            );
+                return "categorias-incidencia/edit";
+            }
 
-            return "categoriaIncidencia/create";
+            return "categorias-incidencia/create";
         }
 
-        categoriaService.crear(categoria);
+        CategoriaIncidencia categoriaExistente =
+                categoriaIncidenciaService.buscarPorNombre(
+                        categoria.getNombre()
+                );
+
+        if (categoriaExistente != null
+                && !categoriaExistente.getId()
+                .equals(categoria.getId())) {
+
+            model.addAttribute(
+                    "error",
+                    "Ya existe una categoría con ese nombre."
+            );
+
+            if (esEdicion) {
+
+                return "categorias-incidencia/edit";
+            }
+
+            return "categorias-incidencia/create";
+        }
+
+        /*
+         * ==========================================================
+         * EDITAR CATEGORÍA
+         * ==========================================================
+         */
+
+        if (esEdicion) {
+
+            CategoriaIncidencia categoriaActual =
+                    categoriaIncidenciaService.buscarPorId(
+                            categoria.getId()
+                    );
+
+            if (categoriaActual == null) {
+
+                attributes.addFlashAttribute(
+                        "error",
+                        "La categoría que intenta editar no existe."
+                );
+
+                return "redirect:/categorias-incidencia";
+            }
+
+            categoriaActual.setNombre(
+                    categoria.getNombre()
+            );
+
+            categoriaActual.setDescripcion(
+                    categoria.getDescripcion()
+            );
+
+            if (categoria.getActivo() != null) {
+
+                categoriaActual.setActivo(
+                        categoria.getActivo()
+                );
+            }
+
+            categoriaIncidenciaService.actualizar(
+                    categoriaActual
+            );
+
+            attributes.addFlashAttribute(
+                    "msg",
+                    "Categoría actualizada correctamente"
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
+
+        /*
+         * ==========================================================
+         * CREAR CATEGORÍA
+         * ==========================================================
+         */
+
+        if (categoria.getActivo() == null) {
+
+            categoria.setActivo(true);
+        }
+
+        categoriaIncidenciaService.crear(
+                categoria
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Categoría de incidencia guardada correctamente"
+                "Categoría guardada correctamente"
         );
 
         return "redirect:/categorias-incidencia";
     }
 
     @GetMapping("/details/{id}")
-    public String details(@PathVariable Integer id,
-                          Model model) {
+    public String details(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        CategoriaIncidencia categoria =
+                categoriaIncidenciaService.buscarPorId(id);
+
+        if (categoria == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
 
         model.addAttribute(
                 "categoria",
-                categoriaService.buscarPorId(id).orElseThrow()
+                categoria
         );
 
-        return "categoriaIncidencia/details";
+        return "categorias-incidencia/details";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id,
-                       Model model) {
+    public String edit(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        CategoriaIncidencia categoria =
+                categoriaIncidenciaService.buscarPorId(id);
+
+        if (categoria == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
 
         model.addAttribute(
                 "categoria",
-                categoriaService.buscarPorId(id).orElseThrow()
+                categoria
         );
 
-        return "categoriaIncidencia/edit";
+        return "categorias-incidencia/edit";
     }
 
     @GetMapping("/remove/{id}")
-    public String remove(@PathVariable Integer id,
-                         Model model) {
+    public String remove(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        CategoriaIncidencia categoria =
+                categoriaIncidenciaService.buscarPorId(id);
+
+        if (categoria == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
 
         model.addAttribute(
                 "categoria",
-                categoriaService.buscarPorId(id).orElseThrow()
+                categoria
         );
 
-        return "categoriaIncidencia/delete";
+        return "categorias-incidencia/delete";
     }
 
     @PostMapping("/delete")
-    public String delete(CategoriaIncidencia categoria,
-                         RedirectAttributes attributes) {
+    public String delete(
+            CategoriaIncidencia categoria,
+            RedirectAttributes attributes) {
 
-        categoriaService.eliminarPorId(categoria.getId());
+        CategoriaIncidencia categoriaExistente =
+                categoriaIncidenciaService.buscarPorId(
+                        categoria.getId()
+                );
+
+        if (categoriaExistente == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
+
+        categoriaIncidenciaService.eliminarPorId(
+                categoria.getId()
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Categoría de incidencia eliminada correctamente"
+                "Categoría eliminada correctamente"
         );
 
         return "redirect:/categorias-incidencia";
     }
 
-    @PostMapping("/activar/{id}")
-    public String activar(@PathVariable Integer id,
-                          RedirectAttributes attributes) {
+    @PostMapping("/activar")
+    public String activar(
+            @RequestParam("id") Integer id,
+            RedirectAttributes attributes) {
 
         CategoriaIncidencia categoria =
-                categoriaService.buscarPorId(id).orElseThrow();
+                categoriaIncidenciaService.buscarPorId(id);
 
-        categoriaService.activar(categoria);
+        if (categoria == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
+
+        categoriaIncidenciaService.activar(
+                categoria
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Categoría de incidencia activada correctamente"
+                "Categoría activada correctamente"
         );
 
         return "redirect:/categorias-incidencia";
     }
 
-    @PostMapping("/desactivar/{id}")
-    public String desactivar(@PathVariable Integer id,
-                             RedirectAttributes attributes) {
+    @PostMapping("/desactivar")
+    public String desactivar(
+            @RequestParam("id") Integer id,
+            RedirectAttributes attributes) {
 
         CategoriaIncidencia categoria =
-                categoriaService.buscarPorId(id).orElseThrow();
+                categoriaIncidenciaService.buscarPorId(id);
 
-        categoriaService.desactivar(categoria);
+        if (categoria == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "La categoría no existe."
+            );
+
+            return "redirect:/categorias-incidencia";
+        }
+
+        categoriaIncidenciaService.desactivar(
+                categoria
+        );
 
         attributes.addFlashAttribute(
                 "msg",
-                "Categoría de incidencia desactivada correctamente"
+                "Categoría desactivada correctamente"
         );
 
         return "redirect:/categorias-incidencia";
@@ -201,7 +450,10 @@ public class CategoriaIncidenciaController {
                             .boxed()
                             .collect(Collectors.toList());
 
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute(
+                    "pageNumbers",
+                    pageNumbers
+            );
         }
     }
 }
