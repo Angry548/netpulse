@@ -1,104 +1,225 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Eliminar Ticket</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Eliminar Ticket</h1>
+    <div class="container-fluid">
 
-    <h3>
-        ¿Está seguro que desea eliminar este registro?
-    </h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <hr>
+            <div>
 
-    <dl class="row">
+                <h2 class="mb-1 text-danger">
 
-        <dt class="col-sm-3">
-            ID
-        </dt>
+                    <i class="fa-solid fa-ticket-slash"></i>
+                    Eliminar Ticket
 
-        <dd class="col-sm-9"
-            th:text="${ticket.idTicket}">
-        </dd>
+                </h2>
 
-        <dt class="col-sm-3">
-            Equipo
-        </dt>
+                <p class="text-muted mb-0">
+                    Confirma la eliminación del ticket.
+                </p>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.equipo.nombre}">
-        </dd>
+            </div>
 
-        <dt class="col-sm-3">
-            Usuario que reporta
-        </dt>
+        </div>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.usuarioReporta.nombre}">
-        </dd>
+        <div class="card shadow-sm border-danger">
 
-        <dt class="col-sm-3">
-            Técnico
-        </dt>
+            <div class="card-header bg-danger text-white">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.tecnico != null ? ticket.tecnico.nombre : 'Sin asignar'}">
-        </dd>
+                <h5 class="mb-0">
+                    Confirmación
+                </h5>
 
-        <dt class="col-sm-3">
-            Categoría
-        </dt>
+            </div>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.categoria.nombre}">
-        </dd>
+            <div class="card-body">
 
-        <dt class="col-sm-3">
-            Prioridad
-        </dt>
+                <div class="alert alert-warning">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.prioridad.nombre}">
-        </dd>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
-        <dt class="col-sm-3">
-            Estado
-        </dt>
+                    <strong>¡Atención!</strong>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.estadoTicket.nombre}">
-        </dd>
+                    ¿Está seguro de que desea eliminar este ticket?
 
-        <dt class="col-sm-3">
-            Descripción
-        </dt>
+                    Esta acción no se puede deshacer.
 
-        <dd class="col-sm-9"
-            th:text="${ticket.descripcion}">
-        </dd>
+                </div>
 
-    </dl>
+                <div class="row">
 
-    <form th:action="@{/tickets/delete}"
-          method="post">
+                    <!-- ID -->
 
-        <input type="hidden"
-               name="idTicket"
-               th:value="${ticket.idTicket}">
+                    <div class="col-md-6 mb-3">
 
-        <input type="submit"
-               value="Eliminar"
-               class="btn btn-danger">
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
 
-        <a th:href="@{/tickets}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.idTicket}"
+                               readonly>
 
-    </form>
+                    </div>
+
+                    <!-- FECHA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha de creación
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="3"
+                                  readonly
+                                  th:text="${ticket.descripcion}">
+                        </textarea>
+
+                    </div>
+
+                    <!-- USUARIO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Usuario que reporta
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.usuarioReporta != null ? ticket.usuarioReporta.nombre : 'Sin usuario'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- EQUIPO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Equipo
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.equipo != null ? ticket.equipo.nombre : 'Sin equipo'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- CATEGORÍA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Categoría
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.categoria != null ? ticket.categoria.nombre : 'Sin categoría'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- PRIORIDAD -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Prioridad
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.prioridad != null ? ticket.prioridad.nombre : 'Sin prioridad'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- ESTADO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Estado
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.estadoTicket != null ? ticket.estadoTicket.nombre : 'Sin estado'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <form th:action="@{/tickets/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="idTicket"
+                           th:value="${ticket.idTicket}">
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/tickets}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar ticket
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>

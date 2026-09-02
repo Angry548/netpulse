@@ -1,214 +1,296 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Crear Ticket</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Crear nuevo Ticket</h1>
+    <div class="container-fluid">
 
-    <form th:action="@{/tickets/save}"
-          th:object="${ticket}"
-          method="post">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="form-group mb-3">
+            <div>
 
-            <label for="equipo">Equipo</label>
+                <h2 class="mb-1">
 
-            <select class="form-control"
-                    th:field="*{equipo}"
-                    id="equipo"
-                    required>
+                    <i class="fa-solid fa-ticket"></i>
+                    Crear Ticket
 
-                <option value="">
-                    Seleccione un equipo
-                </option>
+                </h2>
 
-                <option th:each="item : ${equipos}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
+                <p class="text-muted mb-0">
+                    Registra un nuevo ticket en el sistema.
+                </p>
 
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('equipo')}"
-                 th:errors="*{equipo}">
             </div>
 
         </div>
 
-        <div class="form-group mb-3">
+        <div class="card shadow-sm">
 
-            <label for="usuarioReporta">
-                Usuario que reporta
-            </label>
+            <div class="card-header">
 
-            <select class="form-control"
-                    th:field="*{usuarioReporta}"
-                    id="usuarioReporta"
-                    required>
+                <h5 class="mb-0">
+                    Información del ticket
+                </h5>
 
-                <option value="">
-                    Seleccione un usuario
-                </option>
+            </div>
 
-                <option th:each="item : ${usuarios}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
+            <div class="card-body">
 
-            </select>
+                <form th:action="@{/tickets/save}"
+                      th:object="${ticket}"
+                      method="post">
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('usuarioReporta')}"
-                 th:errors="*{usuarioReporta}">
+                    <div class="row">
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <div class="col-md-12 mb-3">
+
+                            <label for="descripcion"
+                                   class="form-label">
+
+                                Descripción
+
+                            </label>
+
+                            <textarea id="descripcion"
+                                      th:field="*{descripcion}"
+                                      class="form-control"
+                                      rows="4"
+                                      required></textarea>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+                            </div>
+
+                        </div>
+
+                        <!-- EQUIPO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idEquipo"
+                                   class="form-label">
+
+                                Equipo
+
+                            </label>
+
+                            <select id="idEquipo"
+                                    name="idEquipo"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un equipo
+                                </option>
+
+                                <option th:each="equipo : ${equipos}"
+                                        th:value="${equipo.id}"
+                                        th:text="${equipo.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- USUARIO QUE REPORTA -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idUsuarioReporta"
+                                   class="form-label">
+
+                                Usuario que reporta
+
+                            </label>
+
+                            <select id="idUsuarioReporta"
+                                    name="idUsuarioReporta"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un usuario
+                                </option>
+
+                                <option th:each="usuario : ${usuarios}"
+                                        th:value="${usuario.id}"
+                                        th:text="${usuario.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- TÉCNICO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idTecnico"
+                                   class="form-label">
+
+                                Técnico
+
+                            </label>
+
+                            <select id="idTecnico"
+                                    name="idTecnico"
+                                    class="form-select">
+
+                                <option value="">
+                                    Sin asignar
+                                </option>
+
+                                <option th:each="tecnico : ${tecnicos}"
+                                        th:value="${tecnico.id}"
+                                        th:text="${tecnico.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- CATEGORÍA -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idCategoria"
+                                   class="form-label">
+
+                                Categoría
+
+                            </label>
+
+                            <select id="idCategoria"
+                                    name="idCategoria"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="categoria : ${categorias}"
+                                        th:value="${categoria.id}"
+                                        th:text="${categoria.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- PRIORIDAD -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idPrioridad"
+                                   class="form-label">
+
+                                Prioridad
+
+                            </label>
+
+                            <select id="idPrioridad"
+                                    name="idPrioridad"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione una prioridad
+                                </option>
+
+                                <option th:each="prioridad : ${prioridades}"
+                                        th:value="${prioridad.id}"
+                                        th:text="${prioridad.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- ESTADO -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idEstadoTicket"
+                                   class="form-label">
+
+                                Estado
+
+                            </label>
+
+                            <select id="idEstadoTicket"
+                                    name="idEstadoTicket"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un estado
+                                </option>
+
+                                <option th:each="estado : ${estados}"
+                                        th:value="${estado.id}"
+                                        th:text="${estado.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div th:if="${error != null}"
+                         class="alert alert-danger">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        <span th:text="${error}">
+                            Error
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/tickets}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Ticket
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
 
-        <div class="form-group mb-3">
-
-            <label for="tecnico">
-                Técnico
-            </label>
-
-            <select class="form-control"
-                    th:field="*{tecnico}"
-                    id="tecnico">
-
-                <option value="">
-                    Sin asignar
-                </option>
-
-                <option th:each="item : ${usuarios}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
-
-            </select>
-
-        </div>
-
-        <div class="form-group mb-3">
-
-            <label for="categoria">
-                Categoría
-            </label>
-
-            <select class="form-control"
-                    th:field="*{categoria}"
-                    id="categoria"
-                    required>
-
-                <option value="">
-                    Seleccione una categoría
-                </option>
-
-                <option th:each="item : ${categorias}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
-
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('categoria')}"
-                 th:errors="*{categoria}">
-            </div>
-
-        </div>
-
-        <div class="form-group mb-3">
-
-            <label for="prioridad">
-                Prioridad
-            </label>
-
-            <select class="form-control"
-                    th:field="*{prioridad}"
-                    id="prioridad"
-                    required>
-
-                <option value="">
-                    Seleccione una prioridad
-                </option>
-
-                <option th:each="item : ${prioridades}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
-
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('prioridad')}"
-                 th:errors="*{prioridad}">
-            </div>
-
-        </div>
-
-        <div class="form-group mb-3">
-
-            <label for="estadoTicket">
-                Estado
-            </label>
-
-            <select class="form-control"
-                    th:field="*{estadoTicket}"
-                    id="estadoTicket"
-                    required>
-
-                <option value="">
-                    Seleccione un estado
-                </option>
-
-                <option th:each="item : ${estados}"
-                        th:value="${item.id}"
-                        th:text="${item.nombre}">
-                </option>
-
-            </select>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('estadoTicket')}"
-                 th:errors="*{estadoTicket}">
-            </div>
-
-        </div>
-
-        <div class="form-group mb-3">
-
-            <label for="descripcion">
-                Descripción
-            </label>
-
-            <textarea class="form-control"
-                      th:field="*{descripcion}"
-                      id="descripcion"
-                      rows="5"
-                      required>
-            </textarea>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('descripcion')}"
-                 th:errors="*{descripcion}">
-            </div>
-
-        </div>
-
-        <button type="submit"
-                class="btn btn-primary">
-            Guardar
-        </button>
-
-        <a th:href="@{/tickets}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
+</body>
 </html>

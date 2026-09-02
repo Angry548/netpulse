@@ -1,116 +1,460 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Detalles del Ticket</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Detalles del Ticket</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <dl class="row">
+            <div>
 
-        <dt class="col-sm-3">
-            ID
-        </dt>
+                <h2 class="mb-1">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.idTicket}">
-        </dd>
+                    <i class="fa-solid fa-ticket"></i>
+                    Detalles del Ticket
 
-        <dt class="col-sm-3">
-            Equipo
-        </dt>
+                </h2>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.equipo.nombre}">
-        </dd>
+                <p class="text-muted mb-0">
+                    Información del ticket seleccionado.
+                </p>
 
-        <dt class="col-sm-3">
-            Usuario que reporta
-        </dt>
+            </div>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.usuarioReporta.nombre}">
-        </dd>
+        </div>
 
-        <dt class="col-sm-3">
-            Técnico
-        </dt>
+        <div th:if="${msg != null}">
+            <script th:inline="javascript">
+                Swal.fire({
+                    title: "Confirmación",
+                    text: /*[[${msg}]]*/ "",
+                    icon: "success"
+                });
+            </script>
+        </div>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.tecnico != null ? ticket.tecnico.nombre : 'Sin asignar'}">
-        </dd>
+        <div th:if="${error != null}">
+            <script th:inline="javascript">
+                Swal.fire({
+                    title: "Error",
+                    text: /*[[${error}]]*/ "",
+                    icon: "error"
+                });
+            </script>
+        </div>
 
-        <dt class="col-sm-3">
-            Categoría
-        </dt>
+        <div class="card shadow-sm">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.categoria.nombre}">
-        </dd>
+            <div class="card-header">
 
-        <dt class="col-sm-3">
-            Prioridad
-        </dt>
+                <h5 class="mb-0">
+                    Información general
+                </h5>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.prioridad.nombre}">
-        </dd>
+            </div>
 
-        <dt class="col-sm-3">
-            Estado
-        </dt>
+            <div class="card-body">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.estadoTicket.nombre}">
-        </dd>
+                <div class="row">
 
-        <dt class="col-sm-3">
-            Descripción
-        </dt>
+                    <!-- ID -->
 
-        <dd class="col-sm-9"
-            th:text="${ticket.descripcion}">
-        </dd>
+                    <div class="col-md-6 mb-3">
 
-        <dt class="col-sm-3">
-            Fecha de creación
-        </dt>
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.fechaCreacion}">
-        </dd>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.idTicket}"
+                               readonly>
 
-        <dt class="col-sm-3">
-            Fecha de asignación
-        </dt>
+                    </div>
 
-        <dd class="col-sm-9"
-            th:text="${ticket.fechaAsignacion != null ? ticket.fechaAsignacion : 'No asignado'}">
-        </dd>
+                    <!-- FECHA CREACIÓN -->
 
-        <dt class="col-sm-3">
-            Fecha de resolución
-        </dt>
+                    <div class="col-md-6 mb-3">
 
-        <dd class="col-sm-9"
-            th:text="${ticket.fechaResolucion != null ? ticket.fechaResolucion : 'No resuelto'}">
-        </dd>
+                        <label class="form-label fw-bold">
+                            Fecha de creación
+                        </label>
 
-    </dl>
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
 
-    <a th:href="@{/tickets/edit/{id}(id=${ticket.idTicket})}"
-       class="btn btn-outline-info">
-        Editar
-    </a>
+                    </div>
 
-    <a th:href="@{/tickets}"
-       class="btn btn-secondary">
-        Regresar
-    </a>
+                    <!-- DESCRIPCIÓN -->
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  readonly
+                                  th:text="${ticket.descripcion}">
+                        </textarea>
+
+                    </div>
+
+                    <!-- USUARIO REPORTA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Usuario que reporta
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.usuarioReporta != null ? ticket.usuarioReporta.nombre : 'Sin usuario'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- TÉCNICO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Técnico
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.tecnico != null ? ticket.tecnico.nombre : 'Sin asignar'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- EQUIPO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Equipo
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.equipo != null ? ticket.equipo.nombre : 'Sin equipo'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- CATEGORÍA -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Categoría
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.categoria != null ? ticket.categoria.nombre : 'Sin categoría'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- PRIORIDAD -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Prioridad
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.prioridad != null ? ticket.prioridad.nombre : 'Sin prioridad'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- ESTADO -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Estado
+                        </label>
+
+                        <div>
+
+                            <span th:if="${ticket.estadoTicket != null}"
+                                  class="badge bg-primary"
+                                  th:text="${ticket.estadoTicket.nombre}">
+                                Abierto
+                            </span>
+
+                            <span th:unless="${ticket.estadoTicket != null}"
+                                  class="badge bg-secondary">
+                                Sin estado
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FECHA ASIGNACIÓN -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha de asignación
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.fechaAsignacion != null ? #temporals.format(ticket.fechaAsignacion, 'dd/MM/yyyy HH:mm') : 'No asignado'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- FECHA RESOLUCIÓN -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha de resolución
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <!-- ==================================================
+                     ASIGNAR TÉCNICO
+                     ================================================== -->
+
+                <h5 class="mb-3">
+                    <i class="fa-solid fa-user-gear"></i>
+                    Asignar técnico
+                </h5>
+
+                <form th:action="@{/tickets/asignar-tecnico}"
+                      method="post"
+                      class="row g-2 mb-4">
+
+                    <input type="hidden"
+                           name="idTicket"
+                           th:value="${ticket.idTicket}">
+
+                    <div class="col-md-8">
+
+                        <select name="idTecnico"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Seleccione un técnico
+                            </option>
+
+                            <option th:each="tecnico : ${tecnicos}"
+                                    th:value="${tecnico.id}"
+                                    th:text="${tecnico.nombre}"
+                                    th:selected="${ticket.tecnico != null and ticket.tecnico.id == tecnico.id}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-user-check"></i>
+                            Asignar técnico
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- ==================================================
+                     CAMBIAR ESTADO
+                     ================================================== -->
+
+                <h5 class="mb-3">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    Cambiar estado
+                </h5>
+
+                <form th:action="@{/tickets/cambiar-estado}"
+                      method="post"
+                      class="row g-2 mb-4">
+
+                    <input type="hidden"
+                           name="idTicket"
+                           th:value="${ticket.idTicket}">
+
+                    <div class="col-md-8">
+
+                        <select name="idEstadoTicket"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Seleccione un estado
+                            </option>
+
+                            <option th:each="estado : ${estados}"
+                                    th:value="${estado.id}"
+                                    th:text="${estado.nombre}"
+                                    th:selected="${ticket.estadoTicket != null and ticket.estadoTicket.id == estado.id}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-check"></i>
+                            Cambiar estado
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- ==================================================
+                     CAMBIAR PRIORIDAD
+                     ================================================== -->
+
+                <h5 class="mb-3">
+                    <i class="fa-solid fa-flag"></i>
+                    Cambiar prioridad
+                </h5>
+
+                <form th:action="@{/tickets/cambiar-prioridad}"
+                      method="post"
+                      class="row g-2 mb-4">
+
+                    <input type="hidden"
+                           name="idTicket"
+                           th:value="${ticket.idTicket}">
+
+                    <div class="col-md-8">
+
+                        <select name="idPrioridad"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Seleccione una prioridad
+                            </option>
+
+                            <option th:each="prioridad : ${prioridades}"
+                                    th:value="${prioridad.id}"
+                                    th:text="${prioridad.nombre}"
+                                    th:selected="${ticket.prioridad != null and ticket.prioridad.id == prioridad.id}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-warning">
+
+                            <i class="fa-solid fa-flag"></i>
+                            Cambiar prioridad
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- ==================================================
+                     RESOLVER
+                     ================================================== -->
+
+                <h5 class="mb-3">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Resolver ticket
+                </h5>
+
+                <form th:action="@{/tickets/resolver}"
+                      method="post"
+                      class="mb-4">
+
+                    <input type="hidden"
+                           name="idTicket"
+                           th:value="${ticket.idTicket}">
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        <i class="fa-solid fa-check-double"></i>
+                        Marcar como resuelto
+
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/tickets/edit/{id}(id=${ticket.idTicket})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/tickets}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>
