@@ -1,76 +1,147 @@
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout">
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="/layouts/_mainLayout">
+
+<head> <title>Eliminar Rol</title> </head>
+
+<body>
 
 <div layout:fragment="content">
 
-    <h1>Eliminar rol</h1>
+    <div class="container-fluid">
 
-    <h3>
-        ¿Está seguro que desea eliminar este registro?
-    </h3>
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <hr>
+            <div>
+                <h2 class="mb-1 text-danger">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    Eliminar Rol
+                </h2>
 
-    <dl class="row">
+                <p class="text-muted mb-0">
+                    Confirma la eliminación del rol.
+                </p>
+            </div>
 
-        <dt class="col-sm-2">
-            ID
-        </dt>
-
-        <dd class="col-sm-10"
-            th:text="${rol.idRol}">
-
-        </dd>
-
-
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
-
-        <dd class="col-sm-10"
-            th:text="${rol.nombre}">
-
-        </dd>
+        </div>
 
 
-        <dt class="col-sm-2">
-            Descripción
-        </dt>
+        <!-- TARJETA -->
+        <div class="card shadow-sm border-danger">
 
-        <dd class="col-sm-10"
-            th:text="${rol.descripcion}">
+            <div class="card-header bg-danger text-white">
 
-        </dd>
+                <h5 class="mb-0">
+                    Confirmación
+                </h5>
 
-    </dl>
+            </div>
 
 
-    <form th:action="@{/roles/delete}"
-          method="post">
+            <div class="card-body">
 
-        <input type="hidden"
-               name="idRol"
-               th:value="${rol.idRol}">
+                <div class="alert alert-warning">
 
-        <button type="submit"
-                class="btn btn-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
-            <i class="fas fa-trash"></i>
-            Eliminar
+                    <strong>¡Atención!</strong>
 
-        </button>
+                    ¿Está seguro de que desea eliminar este rol?
 
-        <a th:href="@{/roles}"
-           class="btn btn-secondary">
+                    Esta acción no se puede deshacer.
 
-            Cancelar
+                </div>
 
-        </a>
 
-    </form>
+                <div class="row">
+
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${rol.idRol}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- NOMBRE -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${rol.nombre}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  th:text="${rol.descripcion}"
+                                  readonly></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- FORMULARIO ELIMINAR -->
+                <form th:action="@{/roles/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="idRol"
+                           th:value="${rol.idRol}">
+
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/roles}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+                            Sí, eliminar rol
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</html>
+</body> </html>

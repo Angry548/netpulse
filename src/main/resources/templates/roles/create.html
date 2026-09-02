@@ -1,86 +1,136 @@
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout">
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="/layouts/_mainLayout">
+
+<head> <title>Crear Rol</title> </head>
+
+<body>
 
 <div layout:fragment="content">
 
-    <h1>Crear nuevo rol</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <form th:action="@{/roles/save}"
-          th:object="${rol}"
-          method="post">
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Crear Rol
+                </h2>
 
-        <!-- NOMBRE -->
-
-        <div class="form-group mb-3">
-
-            <label for="nombre">
-                Nombre
-            </label>
-
-            <input type="text"
-                   class="form-control"
-                   th:field="*{nombre}"
-                   id="nombre"
-                   maxlength="50"
-                   required>
-
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('nombre')}"
-                 th:errors="*{nombre}">
-
+                <p class="text-muted mb-0">
+                    Registra un nuevo rol en el sistema.
+                </p>
             </div>
 
         </div>
 
 
-        <!-- DESCRIPCIÓN -->
+        <!-- TARJETA -->
+        <div class="card shadow-sm">
 
-        <div class="form-group mb-3">
+            <div class="card-header">
 
-            <label for="descripcion">
-                Descripción
-            </label>
+                <h5 class="mb-0">
+                    Información del rol
+                </h5>
 
-            <textarea class="form-control"
-                      th:field="*{descripcion}"
-                      id="descripcion"
-                      maxlength="255"
-                      rows="4">
+            </div>
 
-            </textarea>
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('descripcion')}"
-                 th:errors="*{descripcion}">
+            <div class="card-body">
+
+                <form th:action="@{/roles/save}"
+                      th:object="${rol}"
+                      method="post">
+
+                    <div class="row">
+
+                        <!-- NOMBRE -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+
+                                Nombre
+
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="50"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="descripcion"
+                                   class="form-label">
+
+                                Descripción
+
+                            </label>
+
+                            <textarea id="descripcion"
+                                      th:field="*{descripcion}"
+                                      class="form-control"
+                                      maxlength="255"
+                                      rows="4"></textarea>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <!-- BOTONES -->
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/roles}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Rol
+
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
         </div>
 
-
-        <!-- BOTONES -->
-
-        <button type="submit"
-                class="btn btn-primary">
-
-            <i class="fas fa-save"></i>
-            Guardar
-
-        </button>
-
-        <a th:href="@{/roles}"
-           class="btn btn-secondary">
-
-            Regresar
-
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
-</html>
+</body> </html>
