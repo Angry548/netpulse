@@ -1,10 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Detalles del Usuario</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-user"></i>
+                    Detalles del Usuario
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Información del usuario seleccionado.
+                </p>
+            </div>
+
+            <a th:href="@{/usuarios}"
+               class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Regresar
+            </a>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Información general
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.id}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.nombre}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Correo
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.correo}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Rol
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.rol != null ? usuario.rol.nombre : 'Sin rol'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Estado
+                        </label>
+
+                        <div>
+
+                            <span th:if="${usuario.activo}"
+                                  class="badge bg-success">
+                                Activo
+                            </span>
+
+                            <span th:unless="${usuario.activo}"
+                                  class="badge bg-danger">
+                                Inactivo
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Fecha creación -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Fecha de creación
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.fechaCreacion != null ? #temporals.format(usuario.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Último acceso -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Último acceso
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.ultimoAcceso != null ? #temporals.format(usuario.ultimoAcceso, 'dd/MM/yyyy HH:mm') : 'Nunca ha ingresado'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/usuarios/edit/{id}(id=${usuario.id})}"
+                       class="btn btn-warning">
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+                    </a>
+
+                    <a th:href="@{/usuarios}"
+                       class="btn btn-secondary">
+                        Regresar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
