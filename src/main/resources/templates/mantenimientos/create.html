@@ -1,10 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Registrar mantenimiento</h1>
+
+    <form th:action="@{/mantenimientos/save}"
+          th:object="${mantenimiento}"
+          method="post">
+
+        <!-- EQUIPO -->
+
+        <div class="form-group mb-3">
+
+            <label for="equipo">Equipo</label>
+
+            <select class="form-control"
+                    th:field="*{equipo}"
+                    id="equipo"
+                    required>
+
+                <option value="">
+                    Seleccione un equipo
+                </option>
+
+                <option th:each="item : ${equipos}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('equipo')}"
+                 th:errors="*{equipo}">
+            </div>
+
+        </div>
+
+
+        <!-- TECNICO -->
+
+        <div class="form-group mb-3">
+
+            <label for="tecnico">Técnico responsable</label>
+
+            <select class="form-control"
+                    th:field="*{tecnico}"
+                    id="tecnico"
+                    required>
+
+                <option value="">
+                    Seleccione un técnico
+                </option>
+
+                <option th:each="item : ${usuarios}"
+                        th:value="${item.id}"
+                        th:text="${item.nombre}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('tecnico')}"
+                 th:errors="*{tecnico}">
+            </div>
+
+        </div>
+
+
+        <!-- TICKET -->
+
+        <div class="form-group mb-3">
+
+            <label for="ticket">
+                Ticket relacionado
+            </label>
+
+            <select class="form-control"
+                    th:field="*{ticket}"
+                    id="ticket">
+
+                <option value="">
+                    Sin ticket relacionado
+                </option>
+
+                <option th:each="item : ${tickets}"
+                        th:value="${item.id}"
+                        th:text="${'Ticket #' + item.id}">
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- TIPO -->
+
+        <div class="form-group mb-3">
+
+            <label for="tipo">
+                Tipo de mantenimiento
+            </label>
+
+            <select class="form-control"
+                    th:field="*{tipo}"
+                    id="tipo"
+                    required>
+
+                <option value="">
+                    Seleccione un tipo
+                </option>
+
+                <option th:each="item : ${tipos}"
+                        th:value="${item}"
+                        th:text="${item}">
+                </option>
+
+            </select>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('tipo')}"
+                 th:errors="*{tipo}">
+            </div>
+
+        </div>
+
+
+        <!-- DESCRIPCIÓN -->
+
+        <div class="form-group mb-3">
+
+            <label for="descripcion">
+                Descripción del mantenimiento
+            </label>
+
+            <textarea class="form-control"
+                      th:field="*{descripcion}"
+                      id="descripcion"
+                      rows="4"
+                      required>
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('descripcion')}"
+                 th:errors="*{descripcion}">
+            </div>
+
+        </div>
+
+
+        <!-- REPUESTOS -->
+
+        <div class="form-group mb-3">
+
+            <label for="repuestos">
+                Repuestos utilizados
+            </label>
+
+            <textarea class="form-control"
+                      th:field="*{repuestos}"
+                      id="repuestos"
+                      rows="3">
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('repuestos')}"
+                 th:errors="*{repuestos}">
+            </div>
+
+        </div>
+
+
+        <button type="submit"
+                class="btn btn-primary">
+            Guardar
+        </button>
+
+        <a th:href="@{/mantenimientos}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>
+
+
+
+
