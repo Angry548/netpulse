@@ -1,10 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
+                text: '[[${msg}]]',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1>Listado de Tickets</h1>
+
+    <a th:href="@{/tickets/create}"
+       class="btn btn-outline-primary mb-3">
+        Nuevo Ticket
+    </a>
+
+    <table class="table table-striped">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Equipo</th>
+            <th>Usuario</th>
+            <th>Técnico</th>
+            <th>Categoría</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Fecha creación</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="item : ${tickets}">
+
+            <td th:text="${item.idTicket}"></td>
+
+            <td th:text="${item.equipo.nombre}"></td>
+
+            <td th:text="${item.usuarioReporta.nombre}"></td>
+
+            <td th:text="${item.tecnico != null ? item.tecnico.nombre : 'Sin asignar'}"></td>
+
+            <td th:text="${item.categoria.nombre}"></td>
+
+            <td th:text="${item.prioridad.nombre}"></td>
+
+            <td th:text="${item.estadoTicket.nombre}"></td>
+
+            <td th:text="${item.descripcion}"></td>
+
+            <td th:text="${item.fechaCreacion}"></td>
+
+            <td>
+                <a th:href="@{/tickets/details/{id}(id=${item.idTicket})}"
+                   class="btn btn-outline-secondary btn-sm">
+                    Detalles
+                </a>
+
+                <a th:href="@{/tickets/edit/{id}(id=${item.idTicket})}"
+                   class="btn btn-outline-info btn-sm">
+                    Editar
+                </a>
+
+                <a th:href="@{/tickets/remove/{id}(id=${item.idTicket})}"
+                   class="btn btn-outline-danger btn-sm">
+                    Eliminar
+                </a>
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <nav aria-label="Paginación">
+
+        <ul class="pagination">
+
+            <li class="page-item"
+                th:each="pageNumber : ${pageNumbers}">
+
+                <a class="page-link"
+                   th:href="@{|/tickets?page=${pageNumber}|}"
+                   th:text="${pageNumber}">
+                </a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+</div>
+
 </html>

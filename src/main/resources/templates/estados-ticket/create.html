@@ -1,10 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Crear nuevo estado de ticket</h1>
+
+    <form th:action="@{/estados-ticket/save}"
+          th:object="${estadoTicket}"
+          method="post">
+
+        <div class="form-group mb-3">
+
+            <label for="nombre">Nombre</label>
+
+            <input type="text"
+                   class="form-control"
+                   th:field="*{nombre}"
+                   id="nombre"
+                   maxlength="30"
+                   required>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('nombre')}"
+                 th:errors="*{nombre}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="descripcion">Descripción</label>
+
+            <textarea class="form-control"
+                      th:field="*{descripcion}"
+                      id="descripcion"
+                      maxlength="255"
+                      rows="4">
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('descripcion')}"
+                 th:errors="*{descripcion}">
+            </div>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Guardar
+        </button>
+
+        <a th:href="@{/estados-ticket}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>

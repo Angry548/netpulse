@@ -1,10 +1,202 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
+                text: '[[${msg}]]',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1>Listado de categorías de incidencia</h1>
+
+    <a th:href="@{/categorias-incidencia/create}"
+       class="btn btn-outline-primary">
+        Nueva categoría
+    </a>
+
+    <form th:action="@{/categorias-incidencia}"
+          method="get"
+          class="row g-2 my-3"
+          th:hx-get="@{/categorias-incidencia/buscar}"
+          hx-target="#tabla-categorias"
+          hx-trigger="input changed delay:300ms"
+          hx-swap="outerHTML">
+
+        <div class="col-md-6">
+
+            <label for="nombre"
+                   class="visually-hidden">
+                Nombre
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="nombre"
+                   name="nombre"
+                   th:value="${nombre}"
+                   placeholder="Buscar por nombre">
+
+        </div>
+
+        <div class="col-auto">
+
+            <button type="submit"
+                    class="btn btn-outline-secondary">
+                Buscar
+            </button>
+
+        </div>
+
+        <div class="col-auto">
+
+            <a th:href="@{/categorias-incidencia}"
+               class="btn btn-outline-secondary">
+                Limpiar
+            </a>
+
+        </div>
+
+    </form>
+
+    <div id="tabla-categorias"
+         th:fragment="tablaCategorias">
+
+        <table class="table table-striped">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Nombre</th>
+
+                <th>Descripción</th>
+
+                <th>Estado</th>
+
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="item : ${categorias}">
+
+                <td th:text="${item.id}">
+                </td>
+
+                <td th:text="${item.nombre}">
+                </td>
+
+                <td th:text="${item.descripcion}">
+                </td>
+
+                <td>
+
+                    <span th:if="${item.activo}"
+                          class="badge bg-success">
+                        Activo
+                    </span>
+
+                    <span th:unless="${item.activo}"
+                          class="badge bg-danger">
+                        Inactivo
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a th:href="@{/categorias-incidencia/details/{id}(id=${item.id})}"
+                       class="btn btn-outline-secondary btn-sm">
+                        Detalles
+                    </a>
+
+                    <a th:href="@{/categorias-incidencia/edit/{id}(id=${item.id})}"
+                       class="btn btn-outline-info btn-sm">
+                        Editar
+                    </a>
+
+                    <a th:href="@{/categorias-incidencia/remove/{id}(id=${item.id})}"
+                       class="btn btn-outline-danger btn-sm">
+                        Eliminar
+                    </a>
+
+                    <form th:if="${item.activo}"
+                          th:action="@{/categorias-incidencia/desactivar/{id}(id=${item.id})}"
+                          method="post"
+                          style="display:inline;">
+
+                        <button type="submit"
+                                class="btn btn-outline-warning btn-sm">
+                            Desactivar
+                        </button>
+
+                    </form>
+
+                    <form th:unless="${item.activo}"
+                          th:action="@{/categorias-incidencia/activar/{id}(id=${item.id})}"
+                          method="post"
+                          style="display:inline;">
+
+                        <button type="submit"
+                                class="btn btn-outline-success btn-sm">
+                            Activar
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+        <nav aria-label="Paginación">
+
+            <ul class="pagination">
+
+                <li class="page-item"
+                    th:each="pageNumber : ${pageNumbers}">
+
+                    <a class="page-link"
+                       th:href="@{|/categorias-incidencia?page=${pageNumber}&nombre=${nombre}|}"
+                       th:text="${pageNumber}">
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+</div>
+
 </html>

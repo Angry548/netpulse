@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <h1>Editar categoría de incidencia</h1>
+
+    <form th:action="@{/categorias-incidencia/save}"
+          th:object="${categoria}"
+          method="post">
+
+        <input type="hidden"
+               th:field="*{id}">
+
+        <div class="form-group mb-3">
+
+            <label for="nombre">Nombre</label>
+
+            <input type="text"
+                   class="form-control"
+                   th:field="*{nombre}"
+                   id="nombre"
+                   maxlength="100"
+                   required>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('nombre')}"
+                 th:errors="*{nombre}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="descripcion">Descripción</label>
+
+            <textarea class="form-control"
+                      th:field="*{descripcion}"
+                      id="descripcion"
+                      maxlength="255"
+                      rows="4">
+            </textarea>
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('descripcion')}"
+                 th:errors="*{descripcion}">
+            </div>
+
+        </div>
+
+        <div class="form-group mb-3">
+
+            <label for="activo">Estado</label>
+
+            <select class="form-control"
+                    th:field="*{activo}"
+                    id="activo">
+
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+
+            </select>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Guardar cambios
+        </button>
+
+        <a th:href="@{/categorias-incidencia}"
+           class="btn btn-secondary">
+            Regresar
+        </a>
+
+    </form>
+
+</div>
+
 </html>

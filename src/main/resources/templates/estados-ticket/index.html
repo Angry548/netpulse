@@ -1,10 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
 
-</body>
+<div layout:fragment="content">
+
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
+                text: '[[${msg}]]',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+
+    <h1>Listado de estados de ticket</h1>
+
+
+    <a th:href="@{/estados-ticket/create}"
+       class="btn btn-outline-primary">
+        Nuevo estado
+    </a>
+
+
+    <form th:action="@{/estados-ticket}"
+          method="get"
+          class="row g-2 my-3"
+          th:hx-get="@{/estados-ticket/buscar}"
+          hx-target="#tabla-estados-ticket"
+          hx-trigger="input changed delay:300ms"
+          hx-swap="outerHTML">
+
+        <div class="col-md-6">
+
+            <label for="nombre"
+                   class="visually-hidden">
+                Nombre
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   id="nombre"
+                   name="nombre"
+                   th:value="${nombre}"
+                   placeholder="Buscar por nombre">
+
+        </div>
+
+
+        <div class="col-auto">
+
+            <button type="submit"
+                    class="btn btn-outline-secondary">
+                Buscar
+            </button>
+
+        </div>
+
+
+        <div class="col-auto">
+
+            <a th:href="@{/estados-ticket}"
+               class="btn btn-outline-secondary">
+                Limpiar
+            </a>
+
+        </div>
+
+    </form>
+
+
+    <div id="tabla-estados-ticket"
+         th:fragment="tablaEstadosTicket">
+
+        <table class="table table-striped">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Nombre</th>
+
+                <th>Descripción</th>
+
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            <tr th:each="item : ${estadosTicket}">
+
+                <td th:text="${item.id}">
+                </td>
+
+                <td th:text="${item.nombre}">
+                </td>
+
+                <td th:text="${item.descripcion}">
+                </td>
+
+                <td>
+
+                    <a th:href="@{/estados-ticket/details/{id}(id=${item.id})}"
+                       class="btn btn-outline-secondary">
+                        Detalles
+                    </a>
+
+                    <a th:href="@{/estados-ticket/edit/{id}(id=${item.id})}"
+                       class="btn btn-outline-info">
+                        Editar
+                    </a>
+
+                    <a th:href="@{/estados-ticket/remove/{id}(id=${item.id})}"
+                       class="btn btn-outline-danger">
+                        Eliminar
+                    </a>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <nav aria-label="Paginación">
+
+            <ul class="pagination">
+
+                <li class="page-item"
+                    th:each="pageNumber : ${pageNumbers}">
+
+                    <a class="page-link"
+                       th:href="@{|/estados-ticket?page=${pageNumber}&nombre=${nombre}|}"
+                       th:text="${pageNumber}">
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+</div>
+
 </html>
