@@ -1,10 +1,258 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Eliminar Empleado</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1 text-danger">
+
+                    <i class="fa-solid fa-user-xmark"></i>
+                    Eliminar Empleado
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Confirma la eliminación del empleado.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TARJETA -->
+        <div class="card shadow-sm border-danger">
+
+            <div class="card-header bg-danger text-white">
+
+                <h5 class="mb-0">
+
+                    Confirmación
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                <!-- ALERTA -->
+                <div class="alert alert-warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <strong>¡Atención!</strong>
+
+                    ¿Está seguro de que desea eliminar este empleado?
+
+                    Esta acción no se puede deshacer.
+
+                </div>
+
+
+                <div class="row">
+
+
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.idEmpleado}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- USUARIO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Usuario
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.usuario != null
+                                          ? empleado.usuario.nombre
+                                          : 'Sin usuario'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CORREO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Correo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.usuario != null
+                                          ? empleado.usuario.correo
+                                          : 'No registrado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CÓDIGO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Código del empleado
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.codigoEmpleado}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- DEPARTAMENTO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Departamento
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.departamento}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CARGO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Cargo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.cargo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado laboral
+
+                        </label>
+
+                        <div>
+
+                            <span th:if="${empleado.estadoLaboral != null
+                                          and empleado.estadoLaboral.name() == 'ACTIVO'}"
+                                  class="badge bg-success">
+
+                                Activo
+
+                            </span>
+
+                            <span th:if="${empleado.estadoLaboral != null
+                                          and empleado.estadoLaboral.name() == 'INACTIVO'}"
+                                  class="badge bg-danger">
+
+                                Inactivo
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- FORMULARIO ELIMINAR -->
+                <form th:action="@{/empleados/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="idEmpleado"
+                           th:value="${empleado.idEmpleado}">
+
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/empleados}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar empleado
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
