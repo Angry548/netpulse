@@ -18,12 +18,12 @@ public class PrioridadTicket {
     @Column(name = "nombre", nullable = false, unique = true, length = 20)
     private String nombre;
 
-    public Integer getIdPrioridad() {
+    public Integer getId() {
         return id;
     }
 
-    public void setIdPrioridad(Integer idPrioridad) {
-        this.id = idPrioridad;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {

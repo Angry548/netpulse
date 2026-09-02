@@ -1,6 +1,8 @@
 package com.equipo1.netpulse.servicios.implementaciones;
 
+import com.equipo1.netpulse.modelos.Equipo;
 import com.equipo1.netpulse.modelos.HistorialEstado;
+import com.equipo1.netpulse.modelos.Usuario;
 import com.equipo1.netpulse.repositorios.IHistorialEstadoRepository;
 import com.equipo1.netpulse.servicios.interfaces.IHistorialEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,16 @@ public class HistorialEstadoService implements IHistorialEstadoService {
     @Override
     public List<HistorialEstado> obtenerTodos() {
         return historialEstadoRepository.findAll();
+    }
+
+    @Override
+    public List<HistorialEstado> obtenerPorEquipo(Equipo equipo) {
+        return historialEstadoRepository.findByEquipo(equipo);
+    }
+
+    @Override
+    public List<HistorialEstado> obtenerPorUsuario(Usuario usuario) {
+        return historialEstadoRepository.findByUsuario(usuario);
     }
 
     @Override
