@@ -2,7 +2,6 @@ package com.equipo1.netpulse.controladores;
 
 import com.equipo1.netpulse.modelos.EstadoTicket;
 import com.equipo1.netpulse.servicios.interfaces.IEstadoTicketService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,78 +26,231 @@ public class EstadoTicketController {
 
     private final IEstadoTicketService estadoTicketService;
 
-    public EstadoTicketController(IEstadoTicketService estadoTicketService) {
+    public EstadoTicketController(
+            IEstadoTicketService estadoTicketService) {
+
         this.estadoTicketService = estadoTicketService;
     }
 
     @GetMapping
-    public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size,
-                        @RequestParam("nombre") Optional<String> nombre) {
+    public String index(
+            Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size,
+            @RequestParam("id") Optional<Integer> id,
+            @RequestParam("nombre") Optional<String> nombre) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
 
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Pageable pageable =
+                PageRequest.of(currentPage, pageSize);
 
-        String filtroNombre = nombre.orElse("").trim();
+        String filtroNombre =
+                nombre.orElse("").trim();
 
-        Page<EstadoTicket> estadosTicket;
+        Page<EstadoTicket> estados;
 
-        if (filtroNombre.isEmpty()) {
-            estadosTicket = estadoTicketService.buscarTodosPaginados(pageable);
+        /*
+         * Si se busca por ID, obtenemos el registro por ID
+         * y lo convertimos a una página de un solo elemento.
+         */
+        if (id.isPresent()) {
+
+            EstadoTicket estado =
+                    estadoTicketService.buscarPorId(id.get());
+
+            if (estado != null) {
+
+                List<EstadoTicket> lista =
+                        List.of(estado);
+
+                estados = new org.springframework.data.domain.PageImpl<>(
+                        lista,
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                estados = new org.springframework.data.domain.PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
+        } else if (!filtroNombre.isEmpty()) {
+
+            EstadoTicket estado =
+                    estadoTicketService.buscarPorNombre(
+                            filtroNombre
+                    );
+
+            if (estado != null) {
+
+                List<EstadoTicket> lista =
+                        List.of(estado);
+
+                estados = new org.springframework.data.domain.PageImpl<>(
+                        lista,
+                        pageable,
+                        1
+                );
+
+            } else {
+
+                estados = new org.springframework.data.domain.PageImpl<>(
+                        List.of(),
+                        pageable,
+                        0
+                );
+            }
+
         } else {
-            estadosTicket = estadoTicketService.buscarPorNombre(filtroNombre, pageable);
+
+            estados =
+                    estadoTicketService.buscarTodosPaginados(
+                            pageable
+                    );
         }
 
-        model.addAttribute("estadosTicket", estadosTicket);
-        model.addAttribute("nombre", filtroNombre);
+        model.addAttribute(
+                "estados",
+                estados
+        );
 
-        agregarNumerosDePagina(model, estadosTicket);
+        model.addAttribute(
+                "id",
+                id.orElse(null)
+        );
 
-        return "estado-ticket/index";
-    }
+        model.addAttribute(
+                "nombre",
+                filtroNombre
+        );
 
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam("nombre") String nombre,
-                         @RequestParam("size") Optional<Integer> size,
-                         Model model) {
+        agregarNumerosDePagina(
+                model,
+                estados
+        );
 
-        Pageable pageable = PageRequest.of(0, size.orElse(10));
-
-        Page<EstadoTicket> estadosTicket =
-                estadoTicketService.buscarPorNombre(nombre.trim(), pageable);
-
-        model.addAttribute("estadosTicket", estadosTicket);
-        model.addAttribute("nombre", nombre.trim());
-
-        agregarNumerosDePagina(model, estadosTicket);
-
-        return "estado-ticket/index :: tablaEstadosTicket";
+        return "estados-ticket/index";
     }
 
     @GetMapping("/create")
-    public String create(EstadoTicket estadoTicket, Model model) {
-        return "estado-ticket/create";
+    public String create(Model model) {
+
+        EstadoTicket estado =
+                new EstadoTicket();
+
+        model.addAttribute(
+                "estado",
+                estado
+        );
+
+        return "estados-ticket/create";
     }
 
     @PostMapping("/save")
-    public String save(@Valid EstadoTicket estadoTicket,
-                       BindingResult result,
-                       Model model,
-                       RedirectAttributes attributes) {
+    public String save(
+            EstadoTicket estado,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes) {
 
+        boolean esEdicion =
+                estado.getId() != null;
+
+        /*
+         * Validación del formulario.
+         */
         if (result.hasErrors()) {
-            model.addAttribute("estadoTicket", estadoTicket);
-            attributes.addFlashAttribute(
-                    "error",
-                    "No se pudo guardar debido a un error."
-            );
-            return "estado-ticket/create";
+
+            if (esEdicion) {
+
+                return "estados-ticket/edit";
+            }
+
+            return "estados-ticket/create";
         }
 
-        estadoTicketService.crear(estadoTicket);
+        /*
+         * Verificamos que no exista otro estado
+         * con el mismo nombre.
+         */
+        EstadoTicket estadoExistente =
+                estadoTicketService.buscarPorNombre(
+                        estado.getNombre()
+                );
+
+        if (estadoExistente != null
+                && !estadoExistente.getId().equals(estado.getId())) {
+
+            model.addAttribute(
+                    "error",
+                    "Ya existe un estado de ticket con ese nombre."
+            );
+
+            if (esEdicion) {
+
+                return "estados-ticket/edit";
+            }
+
+            return "estados-ticket/create";
+        }
+
+        /*
+         * ==========================================================
+         * EDITAR
+         * ==========================================================
+         */
+        if (esEdicion) {
+
+            EstadoTicket estadoActual =
+                    estadoTicketService.buscarPorId(
+                            estado.getId()
+                    );
+
+            if (estadoActual == null) {
+
+                attributes.addFlashAttribute(
+                        "error",
+                        "El estado de ticket que intenta editar no existe."
+                );
+
+                return "redirect:/estados-ticket";
+            }
+
+            estadoActual.setNombre(
+                    estado.getNombre()
+            );
+
+            estadoActual.setDescripcion(
+                    estado.getDescripcion()
+            );
+
+            estadoTicketService.actualizar(
+                    estadoActual
+            );
+
+            attributes.addFlashAttribute(
+                    "msg",
+                    "Estado de ticket actualizado correctamente"
+            );
+
+            return "redirect:/estados-ticket";
+        }
+
+        /*
+         * ==========================================================
+         * CREAR
+         * ==========================================================
+         */
+
+        estadoTicketService.crear(
+                estado
+        );
 
         attributes.addFlashAttribute(
                 "msg",
@@ -109,43 +261,109 @@ public class EstadoTicketController {
     }
 
     @GetMapping("/details/{id}")
-    public String details(@PathVariable Integer id, Model model) {
+    public String details(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        EstadoTicket estado =
+                estadoTicketService.buscarPorId(id);
+
+        if (estado == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "El estado de ticket no existe."
+            );
+
+            return "redirect:/estados-ticket";
+        }
 
         model.addAttribute(
-                "estadoTicket",
-                estadoTicketService.buscarPorId(id).orElseThrow()
+                "estado",
+                estado
         );
 
-        return "estado-ticket/details";
+        return "estados-ticket/details";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model) {
+    public String edit(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        EstadoTicket estado =
+                estadoTicketService.buscarPorId(id);
+
+        if (estado == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "El estado de ticket no existe."
+            );
+
+            return "redirect:/estados-ticket";
+        }
 
         model.addAttribute(
-                "estadoTicket",
-                estadoTicketService.buscarPorId(id).orElseThrow()
+                "estado",
+                estado
         );
 
-        return "estado-ticket/edit";
+        return "estados-ticket/edit";
     }
 
     @GetMapping("/remove/{id}")
-    public String remove(@PathVariable Integer id, Model model) {
+    public String remove(
+            @PathVariable Integer id,
+            Model model,
+            RedirectAttributes attributes) {
+
+        EstadoTicket estado =
+                estadoTicketService.buscarPorId(id);
+
+        if (estado == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "El estado de ticket no existe."
+            );
+
+            return "redirect:/estados-ticket";
+        }
 
         model.addAttribute(
-                "estadoTicket",
-                estadoTicketService.buscarPorId(id).orElseThrow()
+                "estado",
+                estado
         );
 
-        return "estado-ticket/delete";
+        return "estados-ticket/delete";
     }
 
     @PostMapping("/delete")
-    public String delete(EstadoTicket estadoTicket,
-                         RedirectAttributes attributes) {
+    public String delete(
+            EstadoTicket estado,
+            RedirectAttributes attributes) {
 
-        estadoTicketService.eliminarPorId(estadoTicket.getId());
+        EstadoTicket estadoExistente =
+                estadoTicketService.buscarPorId(
+                        estado.getId()
+                );
+
+        if (estadoExistente == null) {
+
+            attributes.addFlashAttribute(
+                    "error",
+                    "El estado de ticket no existe."
+            );
+
+            return "redirect:/estados-ticket";
+        }
+
+        estadoTicketService.eliminarPorId(
+                estado.getId()
+        );
 
         attributes.addFlashAttribute(
                 "msg",
@@ -155,17 +373,24 @@ public class EstadoTicketController {
         return "redirect:/estados-ticket";
     }
 
-    private void agregarNumerosDePagina(Model model,
-                                        Page<EstadoTicket> estadosTicket) {
+    private void agregarNumerosDePagina(
+            Model model,
+            Page<EstadoTicket> estados) {
 
-        if (estadosTicket.getTotalPages() > 0) {
+        if (estados.getTotalPages() > 0) {
 
-            List<Integer> pageNumbers = IntStream
-                    .rangeClosed(1, estadosTicket.getTotalPages())
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers =
+                    IntStream.rangeClosed(
+                                    1,
+                                    estados.getTotalPages()
+                            )
+                            .boxed()
+                            .collect(Collectors.toList());
 
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute(
+                    "pageNumbers",
+                    pageNumbers
+            );
         }
     }
 }
