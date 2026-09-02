@@ -17,11 +17,23 @@ public interface IAlertaRedService {
 
     Page<AlertaRed> buscarTodosPaginados(Pageable pageable);
 
+    Page<AlertaRed> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable
+    );
+
+    Page<AlertaRed> buscarPorTipoEvento(
+            String tipoEvento,
+            Pageable pageable
+    );
+
     List<AlertaRed> obtenerPorEquipo(Equipo equipo);
 
     List<AlertaRed> obtenerNoNotificadas();
 
-    List<AlertaRed> obtenerPorTipoEvento(String tipoEvento);
+    List<AlertaRed> obtenerPorTipoEvento(
+            String tipoEvento
+    );
 
     AlertaRed enviarNotificacion(AlertaRed alerta);
 
