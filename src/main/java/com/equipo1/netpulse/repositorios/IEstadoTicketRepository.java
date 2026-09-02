@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IEstadoTicketRepository extends JpaRepository<EstadoTicket, Integer> {
+public interface IEstadoTicketRepository
+        extends JpaRepository<EstadoTicket, Integer> {
 
     Optional<EstadoTicket> findByNombre(String nombre);
 
