@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -6,39 +7,58 @@
 <div layout:fragment="content">
 
     <div th:if="${msg != null}">
-        <script>
+        <script th:inline="javascript">
             Swal.fire({
                 title: "Confirmación",
-                text: '[[${msg}]]',
+                text: /*[[${msg}]]*/ "",
                 icon: "success"
             });
         </script>
     </div>
 
     <div th:if="${error != null}">
-        <script>
+        <script th:inline="javascript">
             Swal.fire({
                 title: "Error",
-                text: '[[${error}]]',
+                text: /*[[${error}]]*/ "",
                 icon: "error"
             });
         </script>
     </div>
 
-    <h1>Listado de categorías de incidencia</h1>
+    <h1 class="mt-4">Listado de categorías de incidencia</h1>
 
-    <a th:href="@{/categorias-incidencia/create}"
-       class="btn btn-outline-primary">
-        Nueva categoría
-    </a>
+    <div class="mb-3">
+
+        <a th:href="@{/categorias-incidencia/create}"
+           class="btn btn-outline-primary">
+
+            <i class="fas fa-plus"></i>
+            Nueva categoría
+
+        </a>
+
+    </div>
 
     <form th:action="@{/categorias-incidencia}"
           method="get"
-          class="row g-2 my-3"
-          th:hx-get="@{/categorias-incidencia/buscar}"
-          hx-target="#tabla-categorias"
-          hx-trigger="input changed delay:300ms"
-          hx-swap="outerHTML">
+          class="row g-2 my-3">
+
+        <div class="col-md-2">
+
+            <label for="id"
+                   class="visually-hidden">
+                ID
+            </label>
+
+            <input type="number"
+                   class="form-control"
+                   id="id"
+                   name="id"
+                   th:value="${id}"
+                   placeholder="Buscar por ID">
+
+        </div>
 
         <div class="col-md-6">
 
@@ -60,7 +80,10 @@
 
             <button type="submit"
                     class="btn btn-outline-secondary">
+
+                <i class="fas fa-search"></i>
                 Buscar
+
             </button>
 
         </div>
@@ -69,19 +92,21 @@
 
             <a th:href="@{/categorias-incidencia}"
                class="btn btn-outline-secondary">
+
+                <i class="fas fa-broom"></i>
                 Limpiar
+
             </a>
 
         </div>
 
     </form>
 
-    <div id="tabla-categorias"
-         th:fragment="tablaCategorias">
+    <div class="table-responsive">
 
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
 
-            <thead>
+            <thead class="table-dark">
 
             <tr>
 
@@ -104,24 +129,31 @@
             <tr th:each="item : ${categorias}">
 
                 <td th:text="${item.id}">
+                    1
                 </td>
 
                 <td th:text="${item.nombre}">
+                    Hardware
                 </td>
 
-                <td th:text="${item.descripcion}">
+                <td th:text="${item.descripcion != null ? item.descripcion : 'Sin descripción'}">
+                    Problemas relacionados con hardware.
                 </td>
 
                 <td>
 
                     <span th:if="${item.activo}"
                           class="badge bg-success">
+
                         Activo
+
                     </span>
 
                     <span th:unless="${item.activo}"
                           class="badge bg-danger">
+
                         Inactivo
+
                     </span>
 
                 </td>
@@ -130,42 +162,76 @@
 
                     <a th:href="@{/categorias-incidencia/details/{id}(id=${item.id})}"
                        class="btn btn-outline-secondary btn-sm">
+
+                        <i class="fas fa-eye"></i>
                         Detalles
+
                     </a>
 
                     <a th:href="@{/categorias-incidencia/edit/{id}(id=${item.id})}"
                        class="btn btn-outline-info btn-sm">
-                        Editar
-                    </a>
 
-                    <a th:href="@{/categorias-incidencia/remove/{id}(id=${item.id})}"
-                       class="btn btn-outline-danger btn-sm">
-                        Eliminar
+                        <i class="fas fa-edit"></i>
+                        Editar
+
                     </a>
 
                     <form th:if="${item.activo}"
-                          th:action="@{/categorias-incidencia/desactivar/{id}(id=${item.id})}"
+                          th:action="@{/categorias-incidencia/desactivar}"
                           method="post"
-                          style="display:inline;">
+                          class="d-inline">
+
+                        <input type="hidden"
+                               name="id"
+                               th:value="${item.id}">
 
                         <button type="submit"
                                 class="btn btn-outline-warning btn-sm">
+
+                            <i class="fas fa-toggle-off"></i>
                             Desactivar
+
                         </button>
 
                     </form>
 
                     <form th:unless="${item.activo}"
-                          th:action="@{/categorias-incidencia/activar/{id}(id=${item.id})}"
+                          th:action="@{/categorias-incidencia/activar}"
                           method="post"
-                          style="display:inline;">
+                          class="d-inline">
+
+                        <input type="hidden"
+                               name="id"
+                               th:value="${item.id}">
 
                         <button type="submit"
                                 class="btn btn-outline-success btn-sm">
+
+                            <i class="fas fa-toggle-on"></i>
                             Activar
+
                         </button>
 
                     </form>
+
+                    <a th:href="@{/categorias-incidencia/remove/{id}(id=${item.id})}"
+                       class="btn btn-outline-danger btn-sm">
+
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            <tr th:if="${categorias.empty}">
+
+                <td colspan="5"
+                    class="text-center text-muted">
+
+                    No se encontraron categorías de incidencia.
 
                 </td>
 
@@ -175,27 +241,69 @@
 
         </table>
 
-        <nav aria-label="Paginación">
-
-            <ul class="pagination">
-
-                <li class="page-item"
-                    th:each="pageNumber : ${pageNumbers}">
-
-                    <a class="page-link"
-                       th:href="@{|/categorias-incidencia?page=${pageNumber}&nombre=${nombre}|}"
-                       th:text="${pageNumber}">
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </nav>
-
     </div>
 
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <nav th:if="${categorias.totalPages > 1}"
+         aria-label="Paginación de categorías">
+
+        <ul class="pagination">
+
+            <li class="page-item"
+                th:classappend="${categorias.first} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/categorias-incidencia(
+                       page=${categorias.number},
+                       size=${categorias.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}">
+
+                    Anterior
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == categorias.number + 1} ? 'active'">
+
+                <a class="page-link"
+                   th:href="@{/categorias-incidencia(
+                       page=${pageNumber},
+                       size=${categorias.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}"
+                   th:text="${pageNumber}">
+
+                    1
+
+                </a>
+
+            </li>
+
+            <li class="page-item"
+                th:classappend="${categorias.last} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/categorias-incidencia(
+                       page=${categorias.number + 2},
+                       size=${categorias.size},
+                       id=${id},
+                       nombre=${nombre}
+                   )}">
+
+                    Siguiente
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </nav>
 
 </div>
 

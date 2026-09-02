@@ -1,79 +1,170 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Crear Categoría de Incidencia</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Crear categoría de incidencia</h1>
+    <div class="container-fluid">
 
-    <form th:action="@{/categorias-incidencia/save}"
-          th:object="${categoria}"
-          method="post">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="form-group mb-3">
+            <div>
 
-            <label for="nombre">Nombre</label>
+                <h2 class="mb-1">
 
-            <input type="text"
-                   class="form-control"
-                   th:field="*{nombre}"
-                   id="nombre"
-                   maxlength="100"
-                   required>
+                    <i class="fa-solid fa-tags"></i>
+                    Crear Categoría de Incidencia
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('nombre')}"
-                 th:errors="*{nombre}">
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Registra una nueva categoría de incidencia en el sistema.
+                </p>
+
             </div>
 
         </div>
 
-        <div class="form-group mb-3">
+        <div class="card shadow-sm">
 
-            <label for="descripcion">Descripción</label>
+            <div class="card-header">
 
-            <textarea class="form-control"
-                      th:field="*{descripcion}"
-                      id="descripcion"
-                      maxlength="255"
-                      rows="4">
-            </textarea>
+                <h5 class="mb-0">
+                    Información de la categoría
+                </h5>
 
-            <div class="text-danger"
-                 th:if="${#fields.hasErrors('descripcion')}"
-                 th:errors="*{descripcion}">
+            </div>
+
+            <div class="card-body">
+
+                <form th:action="@{/categorias-incidencia/save}"
+                      th:object="${categoria}"
+                      method="post">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+
+                                Nombre
+
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="activo"
+                                   class="form-label">
+
+                                Estado
+
+                            </label>
+
+                            <select id="activo"
+                                    th:field="*{activo}"
+                                    class="form-select">
+
+                                <option th:value="true">
+                                    Activo
+                                </option>
+
+                                <option th:value="false">
+                                    Inactivo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+
+                            <label for="descripcion"
+                                   class="form-label">
+
+                                Descripción
+
+                            </label>
+
+                            <textarea id="descripcion"
+                                      th:field="*{descripcion}"
+                                      class="form-control"
+                                      maxlength="255"
+                                      rows="4"
+                                      placeholder="Ingrese una descripción de la categoría">
+                            </textarea>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div th:if="${error != null}"
+                         class="alert alert-danger">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span th:text="${error}"></span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/categorias-incidencia}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Categoría
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
 
-        <div class="form-group mb-3">
-
-            <label for="activo">Estado</label>
-
-            <select class="form-control"
-                    th:field="*{activo}"
-                    id="activo">
-
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option>
-
-            </select>
-
-        </div>
-
-        <button type="submit"
-                class="btn btn-primary">
-            Guardar
-        </button>
-
-        <a th:href="@{/categorias-incidencia}"
-           class="btn btn-secondary">
-            Regresar
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
+</body>
 </html>

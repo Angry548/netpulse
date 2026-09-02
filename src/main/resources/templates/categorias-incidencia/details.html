@@ -1,70 +1,148 @@
+<!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <title>Detalles de la Categoría</title>
+</head>
+
+<body>
+
 <div layout:fragment="content">
 
-    <h1>Detalles de la categoría de incidencia</h1>
+    <div class="container-fluid">
 
-    <hr>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <dl class="row">
+            <div>
 
-        <dt class="col-sm-2">
-            ID
-        </dt>
+                <h2 class="mb-1">
 
-        <dd class="col-sm-10"
-            th:text="${categoria.id}">
-        </dd>
+                    <i class="fa-solid fa-tag"></i>
+                    Detalles de la Categoría
 
-        <dt class="col-sm-2">
-            Nombre
-        </dt>
+                </h2>
 
-        <dd class="col-sm-10"
-            th:text="${categoria.nombre}">
-        </dd>
+                <p class="text-muted mb-0">
+                    Información de la categoría seleccionada.
+                </p>
 
-        <dt class="col-sm-2">
-            Descripción
-        </dt>
+            </div>
 
-        <dd class="col-sm-10"
-            th:text="${categoria.descripcion}">
-        </dd>
+        </div>
 
-        <dt class="col-sm-2">
-            Estado
-        </dt>
+        <div class="card shadow-sm">
 
-        <dd class="col-sm-10">
+            <div class="card-header">
 
-            <span th:if="${categoria.activo}"
-                  class="badge bg-success">
-                Activo
-            </span>
+                <h5 class="mb-0">
+                    Información general
+                </h5>
 
-            <span th:unless="${categoria.activo}"
-                  class="badge bg-danger">
-                Inactivo
-            </span>
+            </div>
 
-        </dd>
+            <div class="card-body">
 
-    </dl>
+                <div class="row">
 
-    <a th:href="@{/categorias-incidencia/edit/{id}(id=${categoria.id})}"
-       class="btn btn-outline-info">
-        Editar
-    </a>
+                    <div class="col-md-6 mb-3">
 
-    <a th:href="@{/categorias-incidencia}"
-       class="btn btn-secondary">
-        Regresar
-    </a>
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${categoria.id}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${categoria.nombre}"
+                               readonly>
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  th:text="${categoria.descripcion != null ? categoria.descripcion : 'Sin descripción'}"
+                                  readonly>
+                        </textarea>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Estado
+                        </label>
+
+                        <div>
+
+                            <span th:if="${categoria.activo}"
+                                  class="badge bg-success">
+
+                                Activo
+
+                            </span>
+
+                            <span th:unless="${categoria.activo}"
+                                  class="badge bg-danger">
+
+                                Inactivo
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/categorias-incidencia/edit/{id}(id=${categoria.id})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+                        Editar
+
+                    </a>
+
+                    <a th:href="@{/categorias-incidencia}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
+</body>
 </html>
