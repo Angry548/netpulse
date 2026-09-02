@@ -18,6 +18,16 @@ public interface IEstadoEquipoService {
 
     Page<EstadoEquipo> buscarTodosPaginados(Pageable pageable);
 
+    Page<EstadoEquipo> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable
+    );
+
+    Page<EstadoEquipo> buscarPorNombre(
+            String nombre,
+            Pageable pageable
+    );
+
     EstadoEquipo actualizar(EstadoEquipo estadoEquipo);
 
     void eliminarPorId(Integer id);
