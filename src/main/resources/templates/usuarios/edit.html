@@ -1,10 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Editar Usuario</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-user-pen"></i>
+                    Editar Usuario
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Modifica la información del usuario.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Información del usuario
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <form th:action="@{/usuarios/save}"
+                      th:object="${usuario}"
+                      method="post">
+
+                    <!-- ID oculto -->
+                    <input type="hidden"
+                           th:field="*{id}">
+
+                    <div class="row">
+
+                        <!-- Nombre -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+                                Nombre
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+                            </div>
+
+                        </div>
+
+                        <!-- Correo -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="correo"
+                                   class="form-label">
+                                Correo
+                            </label>
+
+                            <input type="email"
+                                   id="correo"
+                                   th:field="*{correo}"
+                                   class="form-control"
+                                   maxlength="150"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('correo')}"
+                                 th:errors="*{correo}">
+                            </div>
+
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="contrasena"
+                                   class="form-label">
+                                Nueva contraseña
+                            </label>
+
+                            <input type="password"
+                                   id="contrasena"
+                                   th:field="*{contrasena}"
+                                   class="form-control"
+                                   maxlength="255"
+                                   placeholder="Dejar vacío para conservar la actual">
+
+                            <small class="text-muted">
+                                Solo completa este campo si deseas cambiar la contraseña.
+                            </small>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('contrasena')}"
+                                 th:errors="*{contrasena}">
+                            </div>
+
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idRol"
+                                   class="form-label">
+                                Rol
+                            </label>
+
+                            <select id="idRol"
+                                    name="idRol"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un rol
+                                </option>
+
+                                <option th:each="rol : ${roles}"
+                                        th:value="${rol.idRol}"
+                                        th:text="${rol.nombre}"
+                                        th:selected="${usuario.rol != null and usuario.rol.idRol == rol.idRol}">
+                                </option>
+
+                            </select>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('rol')}"
+                                 th:errors="*{rol}">
+                            </div>
+
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="activo"
+                                   class="form-label">
+                                Estado
+                            </label>
+
+                            <select id="activo"
+                                    th:field="*{activo}"
+                                    class="form-select">
+
+                                <option th:value="true">
+                                    Activo
+                                </option>
+
+                                <option th:value="false">
+                                    Inactivo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/usuarios}"
+                           class="btn btn-secondary">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Cambios
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

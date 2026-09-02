@@ -1,10 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Eliminar Usuario</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="mb-1 text-danger">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    Eliminar Usuario
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Confirma la eliminación del usuario.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm border-danger">
+
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    Confirmación
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="alert alert-warning">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <strong>¡Atención!</strong>
+
+                    ¿Está seguro de que desea eliminar este usuario?
+
+                    Esta acción no se puede deshacer.
+
+                </div>
+
+                <div class="row">
+
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            ID
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.id}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.nombre}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Correo
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.correo}"
+                               readonly>
+
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Rol
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${usuario.rol != null ? usuario.rol.nombre : 'Sin rol'}"
+                               readonly>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <form th:action="@{/usuarios/delete}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="id"
+                           th:value="${usuario.id}">
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/usuarios}"
+                           class="btn btn-secondary">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Sí, eliminar usuario
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

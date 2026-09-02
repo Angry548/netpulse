@@ -1,10 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Crear Usuario</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Crear Usuario
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Registra un nuevo usuario en el sistema.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- TARJETA -->
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+                    Información del usuario
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <form th:action="@{/usuarios/save}"
+                      th:object="${usuario}"
+                      method="post">
+
+                    <div class="row">
+
+                        <!-- NOMBRE -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="nombre"
+                                   class="form-label">
+
+                                Nombre
+
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CORREO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="correo"
+                                   class="form-label">
+
+                                Correo
+
+                            </label>
+
+                            <input type="email"
+                                   id="correo"
+                                   th:field="*{correo}"
+                                   class="form-control"
+                                   maxlength="150"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('correo')}"
+                                 th:errors="*{correo}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CONTRASEÑA -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="contrasena"
+                                   class="form-label">
+
+                                Contraseña
+
+                            </label>
+
+                            <input type="password"
+                                   id="contrasena"
+                                   th:field="*{contrasena}"
+                                   class="form-control"
+                                   maxlength="255"
+                                   required>
+
+                            <small class="text-muted">
+                                La contraseña es obligatoria para crear el usuario.
+                            </small>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('contrasena')}"
+                                 th:errors="*{contrasena}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ROL -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idRol"
+                                   class="form-label">
+
+                                Rol
+
+                            </label>
+
+                            <select id="idRol"
+                                    name="idRol"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un rol
+                                </option>
+
+                                <option th:each="rol : ${roles}"
+                                        th:value="${rol.idRol}"
+                                        th:text="${rol.nombre}">
+                                </option>
+
+                            </select>
+
+                            <!-- Error enviado desde el controlador -->
+                            <div class="text-danger"
+                                 th:if="${error}"
+                                 th:text="${error}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="activo"
+                                   class="form-label">
+
+                                Estado
+
+                            </label>
+
+                            <select id="activo"
+                                    th:field="*{activo}"
+                                    class="form-select">
+
+                                <option th:value="true">
+                                    Activo
+                                </option>
+
+                                <option th:value="false">
+                                    Inactivo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <!-- BOTONES -->
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/usuarios}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+                            Guardar Usuario
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

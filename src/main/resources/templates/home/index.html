@@ -1,19 +1,132 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/_mainLayout}">
+
 <head>
     <title>Inicio</title>
 </head>
+
 <body>
 
 <div layout:fragment="content">
-    <h1 class="mt-4 text-center">¡Bienvenidos a NetPulse!</h1>
-    <p class="text-center text-muted">
-        Sistema de gestión y monitoreo de infraestructura tecnológica.
-    </p>
+
+    <div class="container-fluid">
+
+        <h1 class="mt-4">
+            Bienvenido a NetPulse
+        </h1>
+
+        <p class="lead">
+            Sistema de gestión y monitoreo de infraestructura tecnológica.
+        </p>
+
+        <div class="row">
+
+            <!-- EQUIPOS -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-primary text-white mb-4">
+
+                    <div class="card-body">
+                        Equipos
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+
+                        <a class="small text-white stretched-link"
+                           th:href="@{/equipos}">
+                            Ver equipos
+                        </a>
+
+                        <div class="small text-white">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TICKETS -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+
+                    <div class="card-body">
+                        Tickets
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+
+                        <a class="small text-white stretched-link"
+                           th:href="@{/tickets}">
+                            Ver tickets
+                        </a>
+
+                        <div class="small text-white">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MANTENIMIENTOS -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+
+                    <div class="card-body">
+                        Mantenimientos
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+
+                        <a class="small text-white stretched-link"
+                           th:href="@{/mantenimientos}">
+                            Ver mantenimientos
+                        </a>
+
+                        <div class="small text-white">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ALERTAS -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+
+                    <div class="card-body">
+                        Alertas
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+
+                        <a class="small text-white stretched-link"
+                           th:href="@{/alertas}">
+                            Ver alertas
+                        </a>
+
+                        <div class="small text-white">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 </body>
+
 </html>

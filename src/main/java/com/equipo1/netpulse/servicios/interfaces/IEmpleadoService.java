@@ -19,6 +19,21 @@ public interface IEmpleadoService {
 
     Page<Empleado> buscarTodosPaginados(Pageable pageable);
 
+    Page<Empleado> buscarPorIdPaginado(
+            Integer id,
+            Pageable pageable
+    );
+
+    Page<Empleado> buscarPorCodigoEmpleado(
+            String codigoEmpleado,
+            Pageable pageable
+    );
+
+    Page<Empleado> buscarPorDepartamento(
+            String departamento,
+            Pageable pageable
+    );
+
     Empleado obtenerPorUsuario(Usuario usuario);
 
     Empleado actualizar(Empleado empleado);

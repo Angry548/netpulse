@@ -1,10 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Detalles del Empleado</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-user-tie"></i>
+                    Detalles del Empleado
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Información del empleado seleccionado.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TARJETA -->
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información general
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="row">
+
+
+                    <!-- ID -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            ID
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.idEmpleado}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- USUARIO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Usuario
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.usuario != null
+                                          ? empleado.usuario.nombre
+                                          : 'Sin usuario'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CORREO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Correo del usuario
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.usuario != null
+                                          ? empleado.usuario.correo
+                                          : 'No registrado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CÓDIGO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Código del empleado
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.codigoEmpleado}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- DEPARTAMENTO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Departamento
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.departamento}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- CARGO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Cargo
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.cargo}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- TELÉFONO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Teléfono
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.telefono != null
+                                          and !empleado.telefono.isBlank()
+                                          ? empleado.telefono
+                                          : 'No registrado'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- FECHA INGRESO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Fecha de ingreso
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               th:value="${empleado.fechaIngreso != null
+                                          ? #temporals.format(empleado.fechaIngreso, 'dd/MM/yyyy')
+                                          : 'No registrada'}"
+                               readonly>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Estado laboral
+
+                        </label>
+
+                        <div>
+
+                            <span th:if="${empleado.estadoLaboral != null
+                                          and empleado.estadoLaboral.name() == 'ACTIVO'}"
+                                  class="badge bg-success">
+
+                                Activo
+
+                            </span>
+
+                            <span th:if="${empleado.estadoLaboral != null
+                                          and empleado.estadoLaboral.name() == 'INACTIVO'}"
+                                  class="badge bg-danger">
+
+                                Inactivo
+
+                            </span>
+
+                            <span th:if="${empleado.estadoLaboral == null}"
+                                  class="badge bg-secondary">
+
+                                Sin estado
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- BOTONES -->
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/empleados/edit/{id}(id=${empleado.idEmpleado})}"
+                       class="btn btn-warning">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                        Editar
+
+                    </a>
+
+
+                    <a th:href="@{/empleados}"
+                       class="btn btn-secondary">
+
+                        Regresar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

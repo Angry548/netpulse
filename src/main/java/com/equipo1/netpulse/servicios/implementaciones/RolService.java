@@ -42,6 +42,11 @@ public class RolService implements IRolService {
     }
 
     @Override
+    public Page<Rol> buscarPorNombre(String nombre, Pageable pageable) {
+        return rolRepository.findByNombreContainingIgnoreCase(nombre, pageable);
+    }
+
+    @Override
     public Rol actualizar(Rol rol) {
         return rolRepository.save(rol);
     }

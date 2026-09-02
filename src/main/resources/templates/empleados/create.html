@@ -1,10 +1,317 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Crear Empleado</title>
 </head>
+
 <body>
+
+<div layout:fragment="content">
+
+    <div class="container-fluid">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="mb-1">
+
+                    <i class="fa-solid fa-user-tie"></i>
+                    Crear Empleado
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Registra un nuevo empleado en el sistema.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TARJETA -->
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Información del empleado
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <form th:action="@{/empleados/save}"
+                      th:object="${empleado}"
+                      method="post">
+
+                    <div class="row">
+
+
+                        <!-- USUARIO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="idUsuario"
+                                   class="form-label">
+
+                                Usuario
+
+                            </label>
+
+                            <select id="idUsuario"
+                                    name="idUsuario"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+
+                                    Seleccione un usuario
+
+                                </option>
+
+                                <option th:each="usuario : ${usuarios}"
+                                        th:value="${usuario.id}"
+                                        th:text="${usuario.nombre + ' - ' + usuario.correo}">
+
+                                </option>
+
+                            </select>
+
+                            <small class="text-muted">
+
+                                El usuario seleccionado quedará asociado a este empleado.
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- CÓDIGO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="codigoEmpleado"
+                                   class="form-label">
+
+                                Código del empleado
+
+                            </label>
+
+                            <input type="text"
+                                   id="codigoEmpleado"
+                                   th:field="*{codigoEmpleado}"
+                                   class="form-control"
+                                   maxlength="30"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('codigoEmpleado')}"
+                                 th:errors="*{codigoEmpleado}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DEPARTAMENTO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="departamento"
+                                   class="form-label">
+
+                                Departamento
+
+                            </label>
+
+                            <input type="text"
+                                   id="departamento"
+                                   th:field="*{departamento}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('departamento')}"
+                                 th:errors="*{departamento}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CARGO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="cargo"
+                                   class="form-label">
+
+                                Cargo
+
+                            </label>
+
+                            <input type="text"
+                                   id="cargo"
+                                   th:field="*{cargo}"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('cargo')}"
+                                 th:errors="*{cargo}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TELÉFONO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="telefono"
+                                   class="form-label">
+
+                                Teléfono
+
+                            </label>
+
+                            <input type="text"
+                                   id="telefono"
+                                   th:field="*{telefono}"
+                                   class="form-control"
+                                   maxlength="20"
+                                   placeholder="Opcional">
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('telefono')}"
+                                 th:errors="*{telefono}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FECHA INGRESO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="fechaIngreso"
+                                   class="form-label">
+
+                                Fecha de ingreso
+
+                            </label>
+
+                            <input type="date"
+                                   id="fechaIngreso"
+                                   th:field="*{fechaIngreso}"
+                                   class="form-control">
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('fechaIngreso')}"
+                                 th:errors="*{fechaIngreso}">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+                        <div class="col-md-6 mb-3">
+
+                            <label for="estadoLaboral"
+                                   class="form-label">
+
+                                Estado laboral
+
+                            </label>
+
+                            <select id="estadoLaboral"
+                                    th:field="*{estadoLaboral}"
+                                    class="form-select"
+                                    required>
+
+                                <option th:value="ACTIVO">
+
+                                    Activo
+
+                                </option>
+
+                                <option th:value="INACTIVO">
+
+                                    Inactivo
+
+                                </option>
+
+                            </select>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('estadoLaboral')}"
+                                 th:errors="*{estadoLaboral}">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ERROR DEL CONTROLADOR -->
+                    <div th:if="${error != null}"
+                         class="alert alert-danger mt-2">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span th:text="${error}">
+                            Error
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <!-- BOTONES -->
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a th:href="@{/empleados}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-save"></i>
+
+                            Guardar Empleado
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
