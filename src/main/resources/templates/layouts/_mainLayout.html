@@ -1,217 +1,825 @@
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">NetPulse</title>
+    <meta charset="utf-8"/>
 
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge"/>
 
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">
+        NetPulse
+    </title>
+
+    <link th:href="@{/css/styles.css}"
+          rel="stylesheet"/>
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+            crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    </script>
 
     <th:block layout:fragment="page-css"></th:block>
+
 </head>
+
 
 <body class="sb-nav-fixed">
 
+
 <!-- =========================================================
-     BARRA SUPERIOR (NAVBAR)
+     BARRA SUPERIOR
      ========================================================= -->
+
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 
-    <a class="navbar-brand ps-3" th:href="@{/index}">
+    <a class="navbar-brand ps-3"
+       th:href="@{/index}">
         NetPulse
     </a>
+
 
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
             id="sidebarToggle"
             type="button">
+
         <i class="fas fa-bars"></i>
+
     </button>
 
+
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+
         <li class="nav-item dropdown">
+
             <a class="nav-link dropdown-toggle"
                id="navbarDropdown"
                href="#"
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
+
                 <i class="fas fa-user fa-fw"></i>
+
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/perfil}">Perfil</a></li>
-                <li><a class="dropdown-item" th:href="@{/configuracion}">Configuración</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item text-danger" th:href="@{/}">Cerrar sesión</a></li>
+
+
+            <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown">
+
+
+                <!-- Perfil: todos los usuarios -->
+
+                <li>
+                    <a class="dropdown-item"
+                       th:href="@{/perfil}">
+                        Perfil
+                    </a>
+                </li>
+
+
+                <!-- Configuración: solo Administrador -->
+
+                <li sec:authorize="hasAuthority('Administrador')">
+
+                    <a class="dropdown-item"
+                       th:href="@{/configuracion}">
+                        Configuración
+                    </a>
+
+                </li>
+
+
+                <li>
+                    <hr class="dropdown-divider"/>
+                </li>
+
+
+                <!-- Logout -->
+
+                <li>
+
+                    <form th:action="@{/logout}"
+                          method="post"
+                          class="m-0">
+
+                        <button type="submit"
+                                class="dropdown-item text-danger">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </li>
+
             </ul>
+
         </li>
+
     </ul>
 
 </nav>
 
 
+
 <!-- =========================================================
      ESTRUCTURA PRINCIPAL
      ========================================================= -->
+
 <div id="layoutSidenav">
 
+
     <!-- =====================================================
-         MENÚ LATERAL (SIDEBAR)
+         MENÚ LATERAL
          ===================================================== -->
+
     <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+
+        <nav class="sb-sidenav accordion sb-sidenav-dark"
+             id="sidenavAccordion">
+
+
             <div class="sb-sidenav-menu">
+
                 <div class="nav">
 
-                    <div class="sb-sidenav-menu-heading">Principal</div>
-                    <a class="nav-link" th:href="@{/index}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+
+                    <!-- =================================================
+                         PRINCIPAL
+                         ================================================= -->
+
+                    <div class="sb-sidenav-menu-heading">
+                        Principal
+                    </div>
+
+
+                    <a class="nav-link"
+                       th:href="@{/index}">
+
+                        <div class="sb-nav-link-icon">
+
+                            <i class="fas fa-home"></i>
+
+                        </div>
+
                         Inicio
+
                     </a>
 
-                    <div class="sb-sidenav-menu-heading">Administración</div>
-                    <a class="nav-link collapsed"
-                       href="#"
-                       data-bs-toggle="collapse"
-                       data-bs-target="#collapseUsuarios"
-                       aria-expanded="false"
-                       aria-controls="collapseUsuarios">
-                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                        Usuarios
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
-                            <a class="nav-link" th:href="@{/roles}">Roles</a>
-                            <a class="nav-link" th:href="@{/empleados}">Empleados</a>
-                        </nav>
+
+
+                    <!-- =================================================
+                         ADMINISTRACIÓN
+                         SOLO ADMINISTRADOR
+                         ================================================= -->
+
+                    <div sec:authorize="hasAuthority('Administrador')">
+
+
+                        <div class="sb-sidenav-menu-heading">
+                            Administración
+                        </div>
+
+
+                        <!-- USUARIOS -->
+
+                        <a class="nav-link collapsed"
+                           href="#"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#collapseUsuarios"
+                           aria-expanded="false"
+                           aria-controls="collapseUsuarios">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-users"></i>
+
+                            </div>
+
+                            Usuarios
+
+
+                            <div class="sb-sidenav-collapse-arrow">
+
+                                <i class="fas fa-angle-down"></i>
+
+                            </div>
+
+                        </a>
+
+
+                        <div class="collapse"
+                             id="collapseUsuarios"
+                             aria-labelledby="headingUsuarios"
+                             data-bs-parent="#sidenavAccordion">
+
+
+                            <nav class="sb-sidenav-menu-nested nav">
+
+
+                                <a class="nav-link"
+                                   th:href="@{/usuarios}">
+
+                                    Usuarios
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/roles}">
+
+                                    Roles
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/empleados}">
+
+                                    Empleados
+
+                                </a>
+
+
+                            </nav>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             CATÁLOGOS DE EQUIPOS
+                             ================================================= -->
+
+                        <a class="nav-link collapsed"
+                           href="#"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#collapseEquiposAdmin"
+                           aria-expanded="false"
+                           aria-controls="collapseEquiposAdmin">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-desktop"></i>
+
+                            </div>
+
+                            Administración de equipos
+
+
+                            <div class="sb-sidenav-collapse-arrow">
+
+                                <i class="fas fa-angle-down"></i>
+
+                            </div>
+
+                        </a>
+
+
+                        <div class="collapse"
+                             id="collapseEquiposAdmin"
+                             data-bs-parent="#sidenavAccordion">
+
+
+                            <nav class="sb-sidenav-menu-nested nav">
+
+
+                                <a class="nav-link"
+                                   th:href="@{/tipos-equipo}">
+
+                                    Tipos de equipo
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/estados-equipo}">
+
+                                    Estados de equipo
+
+                                </a>
+
+
+                            </nav>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             CATÁLOGOS DE TICKETS
+                             ================================================= -->
+
+                        <a class="nav-link collapsed"
+                           href="#"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#collapseCatalogosTickets"
+                           aria-expanded="false"
+                           aria-controls="collapseCatalogosTickets">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-list"></i>
+
+                            </div>
+
+                            Catálogos de tickets
+
+
+                            <div class="sb-sidenav-collapse-arrow">
+
+                                <i class="fas fa-angle-down"></i>
+
+                            </div>
+
+                        </a>
+
+
+                        <div class="collapse"
+                             id="collapseCatalogosTickets"
+                             data-bs-parent="#sidenavAccordion">
+
+
+                            <nav class="sb-sidenav-menu-nested nav">
+
+
+                                <a class="nav-link"
+                                   th:href="@{/categorias-incidencia}">
+
+                                    Categorías de incidencia
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/prioridades-ticket}">
+
+                                    Prioridades
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/estados-ticket}">
+
+                                    Estados de ticket
+
+                                </a>
+
+
+                            </nav>
+
+                        </div>
+
+
                     </div>
 
-                    <a class="nav-link collapsed"
-                       href="#"
-                       data-bs-toggle="collapse"
-                       data-bs-target="#collapseEquipos"
-                       aria-expanded="false"
-                       aria-controls="collapseEquipos">
-                        <div class="sb-nav-link-icon"><i class="fas fa-desktop"></i></div>
-                        Equipos
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseEquipos" aria-labelledby="headingEquipos" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/equipos}">Equipos</a>
-                            <a class="nav-link" th:href="@{/tipos-equipo}">Tipos de equipo</a>
-                            <a class="nav-link" th:href="@{/estados-equipo}">Estados de equipo</a>
-                        </nav>
+
+
+                    <!-- =================================================
+                         EQUIPOS
+                         ADMINISTRADOR + TÉCNICO
+                         ================================================= -->
+
+                    <div sec:authorize="
+                            hasAnyAuthority(
+                                'Administrador',
+                                'Técnico'
+                            )">
+
+
+                        <div class="sb-sidenav-menu-heading">
+
+                            Equipos
+
+                        </div>
+
+
+                        <a class="nav-link"
+                           th:href="@{/equipos}">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-desktop"></i>
+
+                            </div>
+
+                            Equipos
+
+                        </a>
+
+
                     </div>
 
-                    <div class="sb-sidenav-menu-heading">Soporte</div>
-                    <a class="nav-link collapsed"
-                       href="#"
-                       data-bs-toggle="collapse"
-                       data-bs-target="#collapseTickets"
-                       aria-expanded="false"
-                       aria-controls="collapseTickets">
-                        <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>
-                        Incidencias y tickets
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseTickets" aria-labelledby="headingTickets" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/tickets}">Tickets</a>
-                            <a class="nav-link" th:href="@{/categorias-incidencia}">Categorías de incidencia</a>
-                            <a class="nav-link" th:href="@{/prioridades-ticket}">Prioridades</a>
-                            <a class="nav-link" th:href="@{/estados-ticket}">Estados de ticket</a>
-                        </nav>
+
+
+                    <!-- =================================================
+                         SOPORTE
+                         ================================================= -->
+
+                    <div class="sb-sidenav-menu-heading">
+
+                        Soporte
+
                     </div>
 
-                    <a class="nav-link" th:href="@{/mantenimientos}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
-                        Mantenimientos
-                    </a>
 
-                    <a class="nav-link" th:href="@{/dashboard}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div>
-                        Dashboard
-                    </a>
+                    <!-- =================================================
+                         TICKETS
+                         TODOS LOS ROLES
+                         ================================================= -->
 
-                    <div class="sb-sidenav-menu-heading">Monitoreo</div>
-                    <a class="nav-link collapsed"
-                       href="#"
-                       data-bs-toggle="collapse"
-                       data-bs-target="#collapseMonitoreo"
-                       aria-expanded="false"
-                       aria-controls="collapseMonitoreo">
-                        <div class="sb-nav-link-icon"><i class="fas fa-network-wired"></i></div>
-                        Monitoreo
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseMonitoreo" aria-labelledby="headingMonitoreo" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/alertas-red}">Alertas de red</a>
-                            <a class="nav-link" th:href="@{/historial-estados}">Historial de estados</a>
-                            <a class="nav-link" th:href="@{/reportes}">Reportes</a>
-                        </nav>
+                    <div sec:authorize="
+                            hasAnyAuthority(
+                                'Administrador',
+                                'Técnico',
+                                'Usuario'
+                            )">
+
+
+                        <a class="nav-link collapsed"
+                           href="#"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#collapseTickets"
+                           aria-expanded="false"
+                           aria-controls="collapseTickets">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-ticket-alt"></i>
+
+                            </div>
+
+                            Incidencias y tickets
+
+
+                            <div class="sb-sidenav-collapse-arrow">
+
+                                <i class="fas fa-angle-down"></i>
+
+                            </div>
+
+                        </a>
+
+
+                        <div class="collapse"
+                             id="collapseTickets"
+                             data-bs-parent="#sidenavAccordion">
+
+
+                            <nav class="sb-sidenav-menu-nested nav">
+
+
+                                <a class="nav-link"
+                                   th:href="@{/tickets}">
+
+                                    Tickets
+
+                                </a>
+
+
+                                <!-- Catálogos solamente Administrador -->
+
+                                <div sec:authorize="
+                                        hasAuthority('Administrador')
+                                ">
+
+
+                                    <a class="nav-link"
+                                       th:href="@{/categorias-incidencia}">
+
+                                        Categorías de incidencia
+
+                                    </a>
+
+
+                                    <a class="nav-link"
+                                       th:href="@{/prioridades-ticket}">
+
+                                        Prioridades
+
+                                    </a>
+
+
+                                    <a class="nav-link"
+                                       th:href="@{/estados-ticket}">
+
+                                        Estados de ticket
+
+                                    </a>
+
+
+                                </div>
+
+
+                            </nav>
+
+                        </div>
+
+
                     </div>
+
+
+
+                    <!-- =================================================
+                         MANTENIMIENTOS
+                         ADMINISTRADOR + TÉCNICO
+                         ================================================= -->
+
+                    <div sec:authorize="
+                            hasAnyAuthority(
+                                'Administrador',
+                                'Técnico'
+                            )">
+
+
+                        <a class="nav-link"
+                           th:href="@{/mantenimientos}">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-tools"></i>
+
+                            </div>
+
+                            Mantenimientos
+
+                        </a>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         DASHBOARD
+                         SOLO ADMINISTRADOR
+                         ================================================= -->
+
+                    <div sec:authorize="
+                            hasAuthority('Administrador')
+                    ">
+
+
+                        <div class="sb-sidenav-menu-heading">
+
+                            Gestión
+
+                        </div>
+
+
+                        <a class="nav-link"
+                           th:href="@{/dashboard}">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-chart-line"></i>
+
+                            </div>
+
+                            Dashboard
+
+                        </a>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         MONITOREO
+                         ADMINISTRADOR + TÉCNICO
+                         ================================================= -->
+
+                    <div sec:authorize="
+                            hasAnyAuthority(
+                                'Administrador',
+                                'Técnico'
+                            )">
+
+
+                        <div class="sb-sidenav-menu-heading">
+
+                            Monitoreo
+
+                        </div>
+
+
+                        <a class="nav-link collapsed"
+                           href="#"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#collapseMonitoreo"
+                           aria-expanded="false"
+                           aria-controls="collapseMonitoreo">
+
+
+                            <div class="sb-nav-link-icon">
+
+                                <i class="fas fa-network-wired"></i>
+
+                            </div>
+
+                            Monitoreo
+
+
+                            <div class="sb-sidenav-collapse-arrow">
+
+                                <i class="fas fa-angle-down"></i>
+
+                            </div>
+
+                        </a>
+
+
+                        <div class="collapse"
+                             id="collapseMonitoreo"
+                             data-bs-parent="#sidenavAccordion">
+
+
+                            <nav class="sb-sidenav-menu-nested nav">
+
+
+                                <a class="nav-link"
+                                   th:href="@{/alertas-red}">
+
+                                    Alertas de red
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/historial-estados}">
+
+                                    Historial de estados
+
+                                </a>
+
+
+                                <a class="nav-link"
+                                   th:href="@{/reportes}">
+
+                                    Reportes
+
+                                </a>
+
+
+                            </nav>
+
+                        </div>
+
+
+                    </div>
+
 
                 </div>
+
             </div>
 
+
+
+            <!-- =====================================================
+                 FOOTER DEL SIDEBAR
+                 ===================================================== -->
+
             <div class="sb-sidenav-footer">
-                <div class="small">Sesión iniciada como:</div>
-                <span th:text="${#authentication != null ? #authentication.name : 'Usuario NetPulse'}">NetPulse</span>
+
+                <div class="small">
+
+                    Sesión iniciada como:
+
+                </div>
+
+
+                <span
+                        th:text="${#authentication != null
+                        ? #authentication.name
+                        : 'Usuario NetPulse'}">
+
+                    NetPulse
+
+                </span>
+
             </div>
+
+
         </nav>
+
     </div>
+
 
 
     <!-- =====================================================
          CONTENIDO PRINCIPAL
          ===================================================== -->
+
     <div id="layoutSidenav_content">
 
+
         <main>
+
             <div class="container-fluid px-4 py-3">
 
+
                 <div layout:fragment="content">
+
                 </div>
 
+
             </div>
+
         </main>
 
+
+
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
+
         <footer class="py-4 bg-light mt-auto">
+
+
             <div class="container-fluid px-4">
+
+
                 <div class="d-flex align-items-center justify-content-between small">
+
+
                     <div class="text-muted">
+
                         Copyright &copy; NetPulse 2026
+
                     </div>
+
+
                     <div>
-                        <a th:href="@{/privacidad}">Política de privacidad</a>
+
+                        <a th:href="@{/privacidad}">
+
+                            Política de privacidad
+
+                        </a>
+
+
                         &middot;
-                        <a th:href="@{/terminos}">Términos y condiciones</a>
+
+
+                        <a th:href="@{/terminos}">
+
+                            Términos y condiciones
+
+                        </a>
+
                     </div>
+
+
                 </div>
+
             </div>
+
         </footer>
+
 
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script th:src="@{/js/scripts.js}"></script>
 
-<!-- Fragmento opcional para que las vistas Hijas agreguen sus propios scripts (DataTables, Chart.js, etc.) -->
-<th:block layout:fragment="page-scripts"></th:block>
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous">
+</script>
+
+
+<script th:src="@{/js/scripts.js}">
+</script>
+
+
+<th:block layout:fragment="page-scripts">
+</th:block>
+
 
 </body>
+
 </html>

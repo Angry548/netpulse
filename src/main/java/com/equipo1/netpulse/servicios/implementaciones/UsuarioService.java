@@ -40,6 +40,12 @@ public class UsuarioService implements IUsuarioService {
             );
         }
 
+        if (usuario.getFechaCreacion() == null) {
+            usuario.setFechaCreacion(
+                    LocalDateTime.now()
+            );
+        }
+
         return usuarioRepository.save(usuario);
     }
 
